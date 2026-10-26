@@ -1,0 +1,31 @@
+---
+title: "Secure remote profile"
+description: "Reachable over the network with TLS required and a unique secret."
+---
+
+# Secure remote profile
+
+<Warning>
+  **Not multi-user-safe in v0.1.0.** Database DDL is gated by superuser or `CREATEDB`, but `DROP DATABASE` is not owner-scoped (any `CREATEDB` role can drop any database) and column/row-level controls are absent. This profile hardens transport and identity for a **single-operator** host only. Do not use it for shared, multi-user, or cloud deployment. See [Beta status](/v0.1.0/getting-started/beta-status).
+</Warning>
+
+For any listener beyond loopback: TLS required, SCRAM, a unique password, and explicit capacity. The server refuses to start without all three — missing TLS, the built-in password, or `auth none` on a remote bind each fail closed with a remediation message.
+
+```sh
+plomid-server \
+  --host 0.0.0.0 \
+  --auth scram \
+  --password "$PLOMID_PASSWORD" \
+  --tls --tls-cert /etc/plomid/cert.pem --tls-key /etc/plomid/key.pem --tls-required \
+  --max-connections 100 \
+  --statement-timeout 30s \
+  --idle-in-transaction-timeout 60s
+```
+
+Without TLS yet (trusted LAN or container network only), substitute the explicit opt-in — authentication still required, transport unencrypted:
+
+```sh
+plomid-server --host 0.0.0.0 --password "$PLOMID_PASSWORD" --allow-remote-plaintext
+```
+
+Prefer TLS as soon as it is available. Confirm `tls_required=true` and `allow_remote_plaintext=false` in the `effective_config` log.

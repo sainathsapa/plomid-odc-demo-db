@@ -1,0 +1,39 @@
+---
+title: "Create and use your first database"
+description: "Databases, schemas, search_path, and selecting a database."
+---
+
+# Create and use your first database
+
+## Concepts
+
+- A **database** is an isolated namespace with its own tables and write-ahead log. Database `plomid` is the default; every other database is isolated from it.
+- A **schema** is a namespace inside a database (`public` by default). `search_path` controls unqualified name resolution.
+- Database names must match `[_A-Za-z][_A-Za-z0-9]*`.
+
+## Steps
+
+```sql
+CREATE DATABASE shop;
+USE shop;                    -- switch session database
+CREATE SCHEMA analytics;
+SET search_path TO analytics, public;
+SHOW databases;              -- also: SHOW database | SHOW schemas | SHOW tables
+```
+
+Via the wire protocol, connect with `database=shop` in the startup message (`psql "postgresql://plomid:secret@localhost:5432/shop"`).
+
+## Behavior
+
+- `CREATE DATABASE shop` creates an isolated database; other names are fully separated from `plomid`.
+- `USE <db>` switches the session's database context; unknown names error.
+- `SHOW tables` lists the current database's tables.
+
+## Constraints
+
+- `CREATE/DROP DATABASE`, `USE`, and `SHOW DATABASES` run outside the normal statement path and cannot execute inside an explicit transaction.
+- No `RENAME DATABASE` in v0.1.0.
+
+## Next
+
+- [Create a table](/v0.1.0/build/create-table) · [Configuration](/v0.1.0/operations/configuration)

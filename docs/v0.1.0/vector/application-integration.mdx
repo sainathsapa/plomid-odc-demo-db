@@ -1,0 +1,90 @@
+---
+title: "Vector application integration"
+description: "Call vector search from Python and JavaScript with parameterized queries and safe connection handling."
+---
+
+# Vector application integration
+
+Embeddings are produced **outside** PLOMID (your model, your pipeline). PLOMID stores the resulting vectors and serves similarity queries. This page shows the database half in two verified ecosystems; for connection setup, pooling, and error handling see [Connect](/v0.1.0/connect/overview).
+
+Prerequisites: the `docs` table from [Quickstart](/v0.1.0/vector/quickstart), server on `127.0.0.1:5432`, credentials via environment variables.
+
+## Python (psycopg 3, verified)
+
+```python
+import os
+import psycopg
+
+conn = psycopg.connect(
+    host=os.environ.get("PLOMID_HOST", "127.0.0.1"),
+    port=int(os.environ.get("PLOMID_PORT", "5432")),
+    dbname=os.environ.get("PLOMID_DB", "plomid"),
+    user=os.environ["PLOMID_USER"],
+    password=os.environ["PLOMID_PASSWORD"],
+)
+try:
+    with conn.cursor() as cur:
+        query_vector = "[1.0, 0.0, 0.0]"
+        cur.execute(
+            """
+            SELECT id, label, embedding <-> %s AS dist
+            FROM docs
+            ORDER BY embedding <-> %s
+            LIMIT %s;
+            """,
+            (query_vector, query_vector, 5),
+        )
+        for row in cur.fetchall():
+            print(row)
+finally:
+    conn.close()
+```
+
+Notes: pass the vector as a text parameter (`"[1.0, 0.0, 0.0]"`) — vector parameters are text-only. `BIGINT` columns arrive as Python `int`. Always parameterize; never interpolate vectors into SQL strings.
+
+## JavaScript / TypeScript (`pg`, verified)
+
+```javascript
+import { Client } from "pg";
+
+const client = new Client({
+  host: process.env.PLOMID_HOST ?? "127.0.0.1",
+  port: Number(process.env.PLOMID_PORT ?? 5432),
+  database: process.env.PLOMID_DB ?? "plomid",
+  user: process.env.PLOMID_USER,
+  password: process.env.PLOMID_PASSWORD,
+});
+
+await client.connect();
+try {
+  const queryVector = "[1.0, 0.0, 0.0]";
+  const { rows } = await client.query(
+    `SELECT id, label, embedding <-> $1 AS dist
+     FROM docs
+     ORDER BY embedding <-> $1
+     LIMIT $2;`,
+    [queryVector, 5]
+  );
+  console.log(rows);
+} finally {
+  await client.end();
+}
+```
+
+Notes: `node-postgres` returns `BIGINT` as strings by default (standard driver behavior, not a PLOMID quirk) — parse with `Number()` or set a type parser when you need numbers. Vector parameters are text, same as Python.
+
+## Retrieval-shaped query (both languages)
+
+```sql
+SELECT id, label, embedding <=> $1 AS dist
+FROM docs
+WHERE category = $2
+ORDER BY embedding <=> $1
+LIMIT $3;
+```
+
+Parameters: `($1 = "[...]", $2 = "guide", $3 = 5)`. Filter first with ordinary SQL, rank with the vector operator — see [Filtering](/v0.1.0/vector/filtering).
+
+## Where embeddings come from
+
+A typical pipeline: chunk documents → call an embedding model → store each chunk's vector in the `embedding` column with its metadata. PLOMID has no native embedding feature in `v0.1.0`; any claim otherwise is wrong. The [Semantic retrieval guide](/v0.1.0/guides/semantic-retrieval) walks a complete small example with predefined vectors so no model key is required.

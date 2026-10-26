@@ -1,0 +1,94 @@
+---
+title: "Quickstart"
+description: "From installed binary to working database — tables, CRUD, index, transaction, and persistence."
+---
+
+# Quickstart
+
+**Goal:** a working database with data you created, indexed, transacted, and proved durable. **Prerequisites:** PLOMID installed ([Installation](/v0.1.0/getting-started/installation)), `psql` available. **Time:** ~15 minutes.
+
+```mermaid
+flowchart LR
+    S["start server"] --> C["connect\npsql"] --> Q["CREATE → INSERT → SELECT"] --> I["index + transaction"] --> P["restart\nrows survive"]
+```
+
+<Steps>
+  <Step title="Start PLOMID">
+    ```sh
+    plomid-server --data ./data --host 127.0.0.1 --port 5432 \
+      --username plomid --password secret
+    ```
+
+    Leave it running. The startup banner confirms the listen address and auth mode. (The `./start.sh` development wrapper starts a debug build with equivalent defaults.)
+  </Step>
+  <Step title="Connect">
+    ```sh
+    psql "postgresql://plomid:secret@localhost:5432/plomid"
+    ```
+
+    GUI clients use the same values: host `127.0.0.1`, port `5432`, database `plomid`, user `plomid`, password `secret`.
+  </Step>
+  <Step title="Create and load">
+    ```sql
+    CREATE TABLE users (
+      id   BIGINT PRIMARY KEY,
+      name TEXT NOT NULL,
+      meta JSONB
+    );
+    INSERT INTO users VALUES
+      (1, 'ada', '{"team": "engine"}'),
+      (2, 'grace', '{"team": "research"}');
+    SELECT id, name, meta->>'team' AS team FROM users ORDER BY id;
+    ```
+
+    Expected: two rows with `team` extracted from JSON (`engine`, `research`).
+  </Step>
+  <Step title="Update and delete">
+    ```sql
+    UPDATE users SET name = 'ada lovelace' WHERE id = 1;
+    DELETE FROM users WHERE id = 2;
+    SELECT * FROM users ORDER BY id;
+    -- one row left: (1, 'ada lovelace', ...)
+    INSERT INTO users VALUES (2, 'grace', '{"team": "research"}');
+    ```
+  </Step>
+  <Step title="Index it">
+    ```sql
+    CREATE INDEX users_name_idx ON users (name);
+    EXPLAIN SELECT * FROM users WHERE name = 'ada lovelace';
+    ```
+  </Step>
+  <Step title="Transact">
+    ```sql
+    BEGIN;
+    UPDATE users SET name = 'tmp' WHERE id = 1;
+    ROLLBACK;
+    SELECT name FROM users WHERE id = 1;  -- still 'ada lovelace'
+    ```
+
+    The rolled-back write is gone — the transaction was atomic. See [Run transactions](/v0.1.0/build/run-transactions).
+  </Step>
+  <Step title="Prove persistence">
+    Restart the server, reconnect, re-run the `SELECT`. Rows survive restart (WAL + storage sync).
+  </Step>
+</Steps>
+
+## Shared example schema
+
+Most guides reuse this schema so examples compose:
+
+```sql
+CREATE TABLE users  (id BIGINT PRIMARY KEY, name TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT now());
+CREATE TABLE orders (id BIGINT PRIMARY KEY, user_id BIGINT NOT NULL, total NUMERIC(12,2) NOT NULL, placed_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE events (id BIGINT PRIMARY KEY, user_id BIGINT, kind TEXT NOT NULL, payload JSONB, ts TIMESTAMPTZ NOT NULL);
+CREATE INDEX orders_user_idx ON orders (user_id);
+CREATE INDEX events_ts_idx ON events (ts);
+```
+
+## Next steps
+
+- [First database](/v0.1.0/getting-started/first-database) — schemas, `search_path`, multi-database.
+- [Connect](/v0.1.0/connect/overview) — wire your application (Python, JavaScript).
+- [SQL fundamentals](/v0.1.0/learn/sql-fundamentals) — filtering, joins, aggregation.
+- [Vector quickstart](/v0.1.0/vector/quickstart) — similarity search on the same server.
+- [Beta status](/v0.1.0/getting-started/beta-status) — know the limits before going further.

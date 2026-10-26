@@ -1,0 +1,95 @@
+---
+title: "TLS transport security"
+description: "rustls setup, modes, certificates, Docker, verification, and scope limits."
+---
+
+# TLS transport security
+
+PLOMID speaks the PostgreSQL wire protocol with a real TLS boundary (rustls, an audited Rust TLS stack). No TLS code is hand-rolled: the server loads operator-supplied PEM material, validates it at startup (fail closed), answers `SSLRequest` with `S`, and runs the rustls handshake.
+
+## Modes
+
+| Mode | Flags | Behavior |
+| --- | --- | --- |
+| Plaintext (loopback dev) | none | `SSLRequest` → `N`; plaintext startup works. Default. |
+| TLS optional | `--tls --tls-cert cert.pem --tls-key key.pem` | `SSLRequest` → `S` + handshake; plaintext startup still accepted. |
+| TLS required | above + `--tls-required` | Plaintext startup refused with `FATAL 28000` before authentication. Remote default you should choose. |
+
+`--tls-required` without `--tls` is a startup error. `GSSENCRequest` is always answered `N` (no GSSAPI support).
+
+## Minting a certificate (self-signed, development)
+
+```sh
+# Private key + self-signed cert valid 365 days for CN=localhost
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes \
+  -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+chmod 600 key.pem
+```
+
+Production: use a certificate from your internal CA or a public CA with the server's DNS name in SAN. Restart the server to rotate (no hot reload in v0.1.0).
+
+Env form: `PLOMID_TLS_CERT=/path/cert.pem PLOMID_TLS_KEY=/path/key.pem` with `--tls`.
+
+## Running with TLS
+
+```sh
+cargo run --bin plomid-server -- --data ./data --host 0.0.0.0 \
+  --username plomid --password '<unique-secret>' \
+  --tls --tls-cert ./cert.pem --tls-key ./key.pem --tls-required
+```
+
+Startup failures (exit 1, nothing listens): missing files, unparsable PEM, empty chain, missing key, key that does not match the chain, expired or not-yet-valid leaf. The log line `tls_ready required=true cert=…` confirms the loaded identity (paths only — never key material).
+
+Client side: `psql "postgresql://plomid@host:5432/plomid?sslmode=require"` (add `sslrootcert` for self-signed). A client that does not request TLS against a `--tls-required` listener gets `FATAL (28000): TLS is required for this listener`.
+
+## Docker
+
+The image binds `0.0.0.0` with **no** insecure opt-in baked in. Choose:
+
+```sh
+# (a) TLS (recommended): mount material, pass cert/key + unique password
+docker run -d --name plomid-server -p 5432:5432 \
+  -v plomid-data:/var/lib/plomid/data \
+  -v ./certs:/certs:ro \
+  -e PLOMID_USER=plomid -e PLOMID_PASSWORD='<unique-secret>' \
+  -e PLOMID_TLS_CERT=/certs/cert.pem -e PLOMID_TLS_KEY=/certs/key.pem \
+  <image> --tls --tls-required
+
+# (b) Trusted network only: explicit opt-in + unique password
+docker run -d --name plomid-server -p 5432:5432 \
+  -v plomid-data:/var/lib/plomid/data \
+  -e PLOMID_USER=plomid -e PLOMID_PASSWORD='<unique-secret>' \
+  -e PLOMID_ALLOW_INSECURE_REMOTE=1 \
+  <image>
+```
+
+`make docker-run` requires `PLOMID_PASSWORD` to be set to a non-default secret and passes the opt-in explicitly (trusted-network dev path).
+
+## Password rule
+
+The built-in password is public (`plomid` for the server binary default, `secret` for `start.sh`/CLI defaults). Loopback listeners may keep it (developer mode); **any non-loopback listener refuses it at startup** — set a unique `PLOMID_PASSWORD`. Authentication can never be disabled remotely (`--auth none` + non-loopback is rejected).
+
+## Verification
+
+```sh
+# Handshake offered?
+(echo > /dev/tcp/127.0.0.1/5432) && python3 - <<'EOF'
+import socket
+s = socket.create_connection(("127.0.0.1", 5432))
+s.sendall((8).to_bytes(4, "big") + (80877103).to_bytes(4, "big"))
+print("reply:", s.recv(1))  # b'S' = TLS, b'N' = plaintext
+EOF
+# Counters (in-band, no extra port):
+psql -c "SELECT tls_connections, tls_handshake_failures, tls_plaintext_refusals FROM plomid_stat_counters();"
+```
+
+## Scope limits (read before claiming more)
+
+TLS provides **transport encryption + server authentication**. It does not provide:
+
+- client-certificate (mTLS) authentication — not implemented;
+- at-rest encryption — not implemented (see findings F-09);
+- authorization/RBAC beyond the single credential pair (Phase 2);
+- any certification (ISO/SOC 2/FIPS/Common Criteria) — TLS working is necessary evidence, never sufficient. No compliance is claimed from this page.
+
+**Next:** [Configuration](/v0.1.0/operations/configuration) · [Run the server](/v0.1.0/operations/run-server)

@@ -1,0 +1,14 @@
+---
+title: "Developer profile"
+description: "Loopback defaults for local development."
+---
+
+# Developer profile
+
+Plain defaults. Loopback bind keeps the built-in `plomid`/`plomid` pair valid; everything else enforces the production posture (100 connections, 30 s statements, 60 s idle transactions, bounded COPY/prepared/portal state) so code that passes locally behaves the same remotely.
+
+```sh
+plomid-server --data ./data
+```
+
+Loosen timeouts per session while iterating (`SET statement_timeout = 0` for a long backfill), never by changing the server flags — the flags are the posture the deploy will run. `effective_config` at startup shows what is actually in force.

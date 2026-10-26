@@ -1,0 +1,51 @@
+---
+title: "Pooling, timeouts, and errors"
+description: "Productionize PLOMID connections — pool sizing, timeouts, retries, migrations, and shutdown."
+---
+
+# Pooling, timeouts, and errors
+
+## Pool sizing
+
+- Default server cap is **100 concurrent connections** (`--max-connections` / `PLOMID_MAX_CONNECTIONS`). The engine serializes mutations behind a single writer, so connections past the low hundreds queue rather than add write throughput.
+- Size pools to concurrent _active_ writers, not total clients. A pooler (PgBouncer-style) in front multiplexes many application clients onto fewer server connections.
+- Budget worst-case memory as `max_connections × max_copy_buffer_bytes` (defaults: 100 × 64 MiB ≈ 6.4 GiB if every connection COPYs at once — the realistic mix is far lower, but the product is the bound that must fit).
+- Watch the `connection_rejected` warning: it means the pool is too small or the cap too low.
+
+## Timeouts
+
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `statement_timeout` | 30s | Kills runaway statements; override per session with `SET` for analytics. |
+| `idle_in_transaction_session_timeout` | 60s | Closes transactions a client abandoned mid-way, releasing locks. |
+
+```sql
+SET statement_timeout = '120s';  -- long analytics in this session only
+```
+
+Tighten globally, loosen per session — never disable server-wide because one workload wants it.
+
+## Retries
+
+Retry safely on: connection loss before commit, statement timeouts on idempotent reads, serialization-style conflicts **after rollback**. Rules:
+
+1. Roll back the failed transaction first — a failed statement aborts it; continuing on the same transaction fails.
+2. Retry idempotent operations only. Make writes idempotent with natural keys + `ON CONFLICT DO NOTHING / DO UPDATE`.
+3. Bound retries (count + backoff + jitter); log and surface after exhaustion.
+4. Never retry `CREATE/DROP DATABASE` inside a transaction — those statements cannot run in a transaction block at all.
+
+## Migrations
+
+- Apply schema changes as ordered, idempotent migration files (explicit `CREATE TABLE IF NOT EXISTS`, additive `ALTER`, backfill, then constrain).
+- `UPDATE…FROM` and `COPY` are unsupported inside explicit transactions — run those steps in autocommit.
+- Vector index creation (`USING hnsw` et al.) must also run in autocommit.
+- Test every migration against a copy first; keep a [cold backup](/v0.1.0/operations/backup-restore) before production migrations.
+
+## Startup and shutdown
+
+- On startup: connect, run `SELECT version();` plus a cheap catalog probe, then open the pool. Fail fast if the probe fails.
+- On shutdown: stop accepting work, drain in-flight requests, close the pool (`pool.end()` / `pool.close()`), then exit. Idle-in-transaction timeouts bound how long a drain can stall.
+
+## Error mapping
+
+Permission denials arrive as SQLSTATE `42501`, unknown databases as `3D000`, TLS refusals as `28000`, timeouts/cancels as `57014`, aborted transactions as `25P02`. Full table: [Errors](/v0.1.0/reference/errors). Map these to typed application errors once, at the boundary — not inline at every call site.

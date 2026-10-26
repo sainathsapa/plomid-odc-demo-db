@@ -1,0 +1,42 @@
+---
+title: "Elastic engine roadmap"
+description: "From single-writer to elastic scale, wall by wall, with gates."
+---
+
+# Elastic engine roadmap
+
+Status: V1 is single-writer. Reads already scale; writes hit a proven mutex wall. This page is the phased plan to an elastic engine, where each phase names its wall, its change, and its measurement gate. No phase lands without moving the `elastic_scale` bench curves.
+
+## Measured baseline (2026-10-08, debug build)
+
+`cargo bench -p plomid-txn --bench elastic_scale`:
+
+- **Writes are flat:** 1/2/4/8 concurrent writers → ~97/109/116/113 total commits/sec. Disjoint keys, so the flat curve is pure engine serialization (one commit mutex), not logical contention.
+- **Reads are already near-max:** setup-free point gets measure ~90 ns/op (~65 ns/key batched) through lock-free facades, scaling with threads until the version lock contends. There is no per-op setup worth cutting — per-thread read throughput is already at the level where cores, not code, are the limit.
+
+Consequences today: size direct connections to active writers, front with a pooler, scale CPUs for read/analytics concurrency (see the [production profile](/v0.1.0/operations/profile-production)).
+
+## Phase E1 — Squeeze the single writer (no architecture change)
+
+- Batch small commits on the client path (one transaction, many puts — already supported; audit hot paths that commit per row).
+- Shrink mutex hold time: move work out of the commit critical section (version install, WAL barrier ordering) where ordering allows.
+- Gate: write_wall total tps rises with the same 1-writer/8-writer shape.
+
+## Phase E2 — Partitioned commit (multi-writer, single node)
+
+- Commit striping by table (or key-range) lanes with a global commit-timestamp oracle preserving snapshot ordering; WAL stays a single ordered log.
+- Cross-lane transactions fall back to the global lane (correctness first, speed second).
+- Gate: write_wall rises with writers on disjoint tables; single-row linearizability and MVCC semantics unchanged (full regression suite).
+
+## Phase E3 — Read replicas (single writer, many readers)
+
+- Ship WAL to replicas; replicas replay into the same version-store shape and serve snapshot reads. Staleness is explicit (replay watermark).
+- Gate: read_scale multiplied by replica count; replica lag observable.
+
+## Phase E4 — Horizontal scale-out
+
+- Range sharding with distributed commit across shards; pooler routes by key. This is the enterprise/datacenter phase and starts only after E2 proves partitioned commit on one node.
+
+## Non-goals per phase
+
+No phase changes durability (WAL → generations → derived caches), the lifecycle authority, or the safe production defaults. Scale never weakens crash recovery: every phase re-runs the lifecycle, WAL-recovery, and generation-GC suites.

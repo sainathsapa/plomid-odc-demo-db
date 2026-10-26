@@ -1,0 +1,87 @@
+---
+title: "Logging, health, and diagnostics"
+description: "Log levels, trace fields, startup banner, and diagnostic commands."
+---
+
+# Logging, health, diagnostics
+
+## Levels
+
+Default `info`. `PLOMID_LOG_LEVEL=debug ./start.sh` or `RUST_LOG=server=debug,server::protocol=trace ./start.sh`. Use `info` operations, `debug` lifecycle, `trace` protocol/parser. `RUST_LOG=plomid::perf=debug` for per-op timers.
+
+## Trace fields
+
+Every connection/query log: `connection_id query_id statement_type sql_len elapsed_ms` (+ error context). Values/passwords excluded.
+
+## Banner
+
+`PLOMID ENTERPRISE v<version>`, PG wire v3, OS/ARCH, boot checklist, listen/port/data dir/role/auth (`tls off|enabled(scram-sha-256|md5|password|disabled)`)/tls.
+
+## Commands
+
+```sh
+./target/debug/plomid db readiness --port 5432
+./target/debug/plomid db health --port 5432 --json
+./target/debug/plomid db diagnostics --port 5432
+./target/debug/plomid metrics --port 5432
+```
+
+`live_connections` gauge + `drain(5 s)` on shutdown; `shutdown_checkpoint` logged; maintenance worker shutdown reports `{submitted, completed, inline_fallbacks}`.
+
+## Metrics SQL surface
+
+In-process counters, exposed in-band (no ports, no scraping sidecar). All counters are process-wide and monotonic; histograms use fixed `≤1ms … >10s` buckets with count/total/max (`mean = total / count`).
+
+| Function | Families |
+| --- | --- |
+| `plomid_stat_counters()` | queries, errors, connections, slow queries, maintenance, checkpoints, stale tables, TLS (`tls_connections`, `tls_handshake_failures`, `tls_plaintext_refusals`), analytical totals |
+| `plomid_stat_tables()` | per-table writes + `is_stale` freshness (only tables written since boot appear) |
+| `plomid_vector_indexes()` | per-index vector index state (builds, readiness, sizes) |
+| `plomid_stat_transactions()` | begun/committed/aborted/conflicts, active gauge, lifetime + commit-latency histograms |
+| `plomid_stat_wal()` | bytes/appends/covered, backlog gauge, rotations, flush + sync durations |
+| `plomid_stat_contention()` | engine-mutex, write-gate, group-commit barrier + formation, maintenance-queue waits |
+| `plomid_stat_buffer()` | pool hits/misses/evictions, last-sync dirty sample, checkpoint bytes + durations |
+| `plomid_stat_columnar()` | segments examined/skipped, columns read, batches, spill bytes/files, stale tables |
+| `plomid_stat_analytical()` | fast-path counts by path |
+| `plomid_htap_stats()` | admission, memory hierarchy, result buffers |
+| `plomid_vector_stats()` | exact/ANN/sparse/binary, cache hits/misses, fallbacks, builds, rebuilds + duration, fresh/stale |
+| `plomid_vector_backend()` | compute setting, CPU arch/threads, GPU requested vs available |
+| `plomid_stat_security()` | 8 counters: `auth_failures`, `authz_denials`, `account_lockouts`, `auth_locked_out`, `legacy_auth_uses`, `tls_connections`, `tls_handshake_failures`, `tls_plaintext_refusals` |
+| `plomid_stat_admin()` | admin actions by name (`reindex`, `vacuum`, `analyze`) |
+
+### Vector counter semantics
+
+`ann_queries_total` and `ann_cache_hits_total` count ANN *invocations*, not SQL
+statements. One statement can produce more than one invocation: the first
+Describe of a prepared statement runs a read-only shape probe with NULL
+parameters, and the Execute that follows runs the query itself. Subsequent
+portal Describes reuse the cached statement shape and do not touch the ANN
+graph. Treat these counters as "work performed" (assert `>= 1` for a query
+that may be described), not as a statement counter. The `sql::execute`
+trace event remains the per-execution accounting record.
+
+## Authentication diagnostics
+
+Every password, MD5, or SCRAM decision also emits a `security_auth_diagnostics` line
+with the user, peer, method, decision, and timing/state fields. These fields
+separate the cost sources and credential provenance for post-crash triage:
+
+| Field | Meaning |
+| --- | --- |
+| `connection_id`, `peer` | Correlates this line with the connection and its `security_decision` event. |
+| `total_ms` | Connection setup start → authentication decision. |
+| `executor_ms` | Catalog + statistics load before authentication. A large value here is session-open cost, not a password check. |
+| `auth_ms` | The credential exchange itself (cleartext compare, MD5, or SCRAM). |
+| `rate_limit_failures`, `rate_limit_delay_ms` | Per-IP failure count and the delay applied before this attempt. |
+| `locked_out`, `lockout_triggered` | Rejected because the account was already locked; or this failure newly locked it. |
+| `role_present`, `has_verifier`, `has_legacy_password`, `bootstrap_name` | Which catalog state the attempt saw: role row, stored verifier, legacy plaintext, or the configured bootstrap identity. |
+
+Alert on `security_decision … action=lockout` or `reason=locked_out` after a crash
+restart: those are never routine. `account_lockouts` counts newly locked
+accounts; `auth_locked_out` counts attempts rejected while locked. A
+post-crash `auth_locked_out` without a preceding `bad_credentials` burst is
+suspect. Use `executor_ms` vs `auth_ms` to tell a slow catalog reopen from a
+real credential failure; lockout state is in-memory and clears on restart by
+design.
+
+When stuck: [Troubleshooting](/v0.1.0/troubleshooting/overview).

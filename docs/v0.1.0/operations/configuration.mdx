@@ -1,0 +1,54 @@
+---
+title: "Configuration"
+description: "Every server and lifecycle option — name, type, default, behavior."
+---
+
+# Configuration
+
+Connection limits and session enforcement are applied at startup and per session.
+
+## Server flags (CLI + env)
+
+| Flag | Env | Type | Default | Behavior |
+| --- | --- | --- | --- | --- |
+| `--host/-H` | `PLOMID_HOST` | addr | `127.0.0.1` | bind; non-loopback requires TLS or `--allow-remote-plaintext` |
+| `--port/-p` | `PLOMID_PORT` | u16 | `5432` |  |
+| `--data/-D` | `PLOMID_DATA_DIR` | path | `./data` | created if missing |
+| `--username/-U` | `PLOMID_USER` | string | `plomid` | SCRAM/MD5 identity |
+| `--password/-W` | `PLOMID_PASSWORD` | string | `plomid` (server) | note: CLI default `secret`, start.sh default `secret` |
+| `--log-level` | — | enum | `info` | `trace\|debug\|info\|warn\|error` |
+| `--auth` | `PLOMID_AUTH` | enum | `scram` | `scram\|password\|md5\|none` (lowercased; md5 needs `--allow-legacy-md5`) |
+| `--allow-legacy-md5` | `PLOMID_ALLOW_LEGACY_MD5` | flag | off | re-enables deprecated `--auth md5`; startup warns, each MD5 login counted (`legacy_auth_uses`) |
+| `--tls` | — | flag | off | enables the rustls handshake; requires `--tls-cert/--tls-key` (validated at startup: parse, expiry, key match) |
+| `--tls-cert/--tls-key` | `PLOMID_TLS_CERT/KEY` | path | `""` | empty/unparsable/expired/mismatched → exit 1 when `--tls` |
+| `--tls-required` | — | flag | off | without `--tls` → error; with `--tls` → plaintext refused (FATAL 28000) |
+| `--checkpoint-wal-bytes` | `PLOMID_CHECKPOINT_WAL_BYTES` | bytes | `67108864` | `0` disables |
+| `--checkpoint-segments` | `PLOMID_CHECKPOINT_SEGMENTS` | u64 | `16` | `0` disables |
+| `--checkpoint-interval-secs` | `PLOMID_CHECKPOINT_INTERVAL_SECS` | secs | `900` | `0` disables |
+| `--allow-remote-plaintext` | `PLOMID_ALLOW_INSECURE_REMOTE` | flag | off | opt-in for non-loopback without TLS |
+| `--no-auto-checkpoint` | — | flag | off | disables auto checkpoint |
+| `--max-connections` | `PLOMID_MAX_CONNECTIONS` | usize | `100` | concurrent clients; `0` fails closed; rejections keep the listener |
+| `--statement-timeout` | `PLOMID_STATEMENT_TIMEOUT` | duration | `30s` | bare ms or `ms/s/min/h`; `0` disables; stamped as the session default, `SET` overrides per session |
+| `--idle-in-transaction-timeout` | `PLOMID_IDLE_IN_TRANSACTION_TIMEOUT` | duration | `60s` | same syntax; `0` disables |
+| `--max-copy-buffer-bytes` | `PLOMID_MAX_COPY_BUFFER_BYTES` | bytes | `67108864` | per-connection COPY accumulation cap |
+| `--max-prepared-statements` | `PLOMID_MAX_PREPARED_STATEMENTS` | usize | `1024` | per connection |
+| `--max-portals` | `PLOMID_MAX_PORTALS` | usize | `1024` | per connection |
+| `--copy-dir` | `PLOMID_COPY_DIR` | path | `<data-dir>/copy` | file `COPY` jail; symlinks/non-dirs fail closed |
+| `--audit-log` | `PLOMID_AUDIT_LOG` | path | unset | append-only JSONL allow/deny log, fsynced + rotated; open failure exits 1 |
+| `--profile` | `PLOMID_PROFILE` | enum | `auto` | `edge\|laptop\|server\|auto`; typos fail closed; see [Performance](/v0.1.0/operations/performance) |
+
+`validate_security()`: `--tls-required` w/o `--tls` → error; `auth none` + non-loopback → error; non-loopback w/o tls w/o opt-in → error with remediation message; built-in password `plomid` + non-loopback → error (set a unique `PLOMID_PASSWORD`); any zero capacity limit (`--max-connections`, COPY/prepared/portal caps) → error; unparseable timeouts → error. `lock_timeout` stays `SET`-accepted but unenforced (statement deadline bounds). See the [TLS runbook](/v0.1.0/operations/tls) for transport setup.
+
+## Production defaults and overrides
+
+Defaults are safe, not permissive: 100 connections, 30 s statements, 60 s idle transactions, bounded COPY/prepared/portal state. Tighten with flags/env above; loosen (`0` disables a timeout) only with a reason — timeouts are the backstop that keeps one bad client from holding locks or memory. Session `SET` overrides the stamped defaults per session, and client startup parameters beat the stamp. At startup the server logs the redacted effective configuration (`effective_config` events, one per knob): usernames, paths, and limits appear; the password renders `<redacted>` and TLS material appears as file paths only — key contents never enter logs.
+
+## Lifecycle / engine
+
+`pool_capacity` by tier (edge 256 / laptop 1024 / server 4096 pages), `segment_size_bytes=8 MiB`, `wal_segment_size_bytes=8 MiB`, `wal_durability=Force`. Mount/demount/recovery authority is `PlomidStorageEngine` (`create`/`open` mount, `shutdown` demounts in stop → flush → checkpoint → sync order). `DEFAULT_DATABASE=plomid`, `MAX_FRONTEND_MESSAGE_SIZE=64 MiB`. Spill is per-operation bounded (`SpillConfig::temp_limit_bytes`, default 1 GiB); the maintenance worker runs a bounded channel (one queued-or-running item per table; a full queue degrades to inline passes).
+
+## Logging
+
+`PLOMID_LOG_LEVEL` or `RUST_LOG` (e.g. `RUST_LOG=server=debug,server::protocol=trace`, `plomid::perf=debug` for timers). Connection/query logs carry `connection_id query_id statement_type sql_len elapsed_ms`; values/passwords never logged.
+
+Full CLI surface: [CLI](/v0.1.0/operations/cli) · Reference table: [Config reference](/v0.1.0/reference/config-reference) (same content, denser).

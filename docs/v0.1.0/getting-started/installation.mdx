@@ -1,0 +1,45 @@
+---
+title: "Installation"
+description: "Canonical installation overview — compare verified methods and follow one guide."
+---
+
+# Installation
+
+This is the canonical installation overview. Pick **one** verified method and follow its guide — the commands below point there rather than duplicating them.
+
+## Methods
+
+| Method | Guide |
+| --- | --- |
+| Native prebuilt binaries (macOS `.dmg`, Windows `.exe`/`.zip`, Linux `.deb`/`.rpm`/`.tar.gz`) | [Native binaries](/v0.1.0/install/binaries) |
+| Shell installer for macOS/Linux (`install.sh`, checksum-enforced) | [Shell installer](/v0.1.0/install/shell-installer) |
+| Docker (binary-only runtime image) | [Docker](/v0.1.0/install/docker) |
+| Build from source (pinned Rust toolchain) | [Build from source](/v0.1.0/install/source) |
+| Offline / air-gapped (pre-staged artifacts) | [Offline install](/v0.1.0/install/offline) |
+
+Full comparison with status and evidence: [Choose an installation method](/v0.1.0/install/overview).
+
+## Minimum to verify any method
+
+```sh
+plomid-server --version
+plomid-server --data ./data --host 127.0.0.1 --port 5432 \
+  --username plomid --password "$PLOMID_PASSWORD"
+psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5432/plomid" -c "SELECT version();"
+```
+
+Flag names: `--data` (not `--data-dir`), `--username` (not `--user`). If `plomid-server` is not on `PATH` after a source build, it is at `./target/release/plomid-server` (or `./target/debug/plomid-server`).
+
+## What is not supported
+
+No Compose file ships (the `docker run` invocation is the verified container path). No Kubernetes manifests, Helm charts, or hosted package repositories exist for `v0.1.0`. Anything claiming otherwise is wrong — see the [Support matrix](/v0.1.0/reference/support-matrix).
+
+## Troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| Port in use | Change `--port` / `PLOMID_PORT`. |
+| Non-loopback bind refused | Expected without TLS — pass the explicit opt-in on trusted networks only, or enable TLS. See [Run the server](/v0.1.0/operations/run-server). |
+| No releases listed | Fresh beta tags may have no published artifacts yet — check the releases page. |
+
+Next: [Quickstart](/v0.1.0/getting-started/quickstart).

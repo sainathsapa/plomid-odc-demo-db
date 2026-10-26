@@ -1,0 +1,71 @@
+---
+title: "Vector indexes"
+description: "Supported index methods, creation syntax, session settings, and which paths actually accelerate queries."
+---
+
+# Vector indexes
+
+## Supported methods
+
+```sql
+CREATE INDEX docs_emb_hnsw ON docs USING hnsw (embedding);
+```
+
+| Method | Best for | Status in v0.1.0 |
+| --- | --- | --- |
+| `hnsw` | General approximate search (dense columns) | **Supported** — see [HNSW](/v0.1.0/vector/hnsw) |
+| `flat` | Tiny datasets, exact baseline (any vector type) | **Supported** (exact by design; never accelerates) |
+| `ivf_flat` | Large dense datasets; real inverted-list partitioning (k-means lists, `nprobe`) | **Supported** (dense; small scans may still run exact) |
+| `ivf_sq` | Dense datasets, lower memory: global SQ8 scalar-quantized scan **without** inverted lists in v0.1.0 | **Supported** with limits (INT4 goes through float promotion) |
+| `ivf_pq` | Dense datasets, smallest memory: global PQ/ADC scan **without** inverted lists in v0.1.0 | **Supported** with limits (dimension must be a multiple of 8; INT8/UINT8 via float promotion; INT4/binary rejected) |
+| `diskann` | Dense datasets; SSD-backed graph segments with a bounded RAM resident set. Checkpoints persist, but v0.1.0 rebuilds the serving graph from rows on open | **Supported** (dense) |
+| `sparse_inverted` | Sparse vectors | **Experimental** (sparse SQL surface is experimental) |
+| `binary` | Binary vectors, Hamming ANN with exact rerank | **Limited** (Jaccard stays exact-only) |
+
+Every method above is gated by an executable envelope: `CREATE INDEX` accepts
+a method only when the server has a wired execution path for that column's
+declared type (for at least one metric), and otherwise rejects it with the
+executable alternative named. `flat` is the exception by design — it *is*
+the exact baseline. A per-query metric the method cannot serve (for example
+Jaccard on an HNSW index) still returns **correct** results: the engine
+falls back to exact computation rather than wrong answers. `EXPLAIN` tells
+you which path a query actually took.
+
+## Rules
+
+- A vector index requires an explicit `USING <method>` clause naming the method above. Omitting `USING` on a vector column is rejected.
+- One indexed column per index; composite (multi-column) vector indexes are rejected.
+- `UNIQUE` vector indexes are rejected.
+- Create vector indexes in **autocommit**, not inside `BEGIN ... COMMIT` — index creation inside an explicit transaction is refused (see [Troubleshooting](/v0.1.0/vector/troubleshooting)).
+- A **dense** vector column gets an automatic HNSW structure at `CREATE TABLE` time; an explicit `CREATE INDEX` gives you control over method and parameters. `BINARY`, `SPARSE_VECTOR` and `MULTI_VECTOR` columns receive no automatic index — declare `USING BINARY` / `USING SPARSE_INVERTED` explicitly (and note `MULTI_VECTOR` has no ANN method in v0.1.0).
+
+## Session settings
+
+```sql
+SHOW vector.ann_enabled;        -- on | off (master switch)
+SET vector.ann_enabled = off;   -- force exact scans
+```
+
+Supporting knobs (all under the `vector.` prefix):
+
+| Setting | Controls |
+| --- | --- |
+| `vector.ann_enabled` | Master switch for index-backed search |
+| `vector.ef_search` | HNSW candidate list size (higher = better recall, slower) |
+| `vector.candidate_oversample` | Oversampling factor before re-rank |
+| `vector.max_ann_rows` | Row ceiling for ANN eligibility |
+| `vector.auto_ann_min_rows` | Table size (default 4096 rows) above which automatic index use is considered |
+| `vector.max_memory_bytes` | Memory budget for ANN structures |
+| `vector.max_index_vectors` | Index size cap |
+| `vector.cache_graphs` | Whether to keep index graphs cached |
+| `vector.compute` | `auto` (default) \| `cpu` \| `gpu` — compute backend request; `gpu` has no working backend in v0.1.0 and degrades to CPU, `auto` selects CPU |
+
+Unknown `vector.*` names fail closed with an error rather than being silently ignored — a typo will not masquerade as a tuned setting.
+
+## How to tell what ran
+
+```sql
+EXPLAIN SELECT id FROM docs ORDER BY embedding <-> [1.0, 0.0, 0.0] LIMIT 2;
+```
+
+Read the `Vector:` lines: scan strategy, metric, limit, options, and `estimated cost exact=… ann=…`. If it says `Vector Exact scan`, your query ran exactly (correct, unaccelerated). If it names an index path, ANN served it. Small tables deliberately report `Index: usable` with an exact scan — the optimizer measured that scanning is cheaper. See [Exact vs approximate](/v0.1.0/vector/exact-vs-approximate).

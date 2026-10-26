@@ -1,0 +1,17 @@
+[package]
+name = "plomid-htap"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "HTAP workload classes, resource governor, scheduler, and admission control for PLOMID."
+
+[dependencies]
+plomid-core = { workspace = true }
+plomid-hw = { workspace = true }
+
+[lints]
+workspace = true

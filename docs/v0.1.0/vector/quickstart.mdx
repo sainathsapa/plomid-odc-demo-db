@@ -1,0 +1,111 @@
+---
+title: "Vector quickstart"
+description: "From an empty database to an executed similarity search — exact query, HNSW index, and metadata filtering."
+---
+
+# Vector quickstart
+
+**Goal:** store a small dataset with embeddings and run similarity search. **Prerequisites:** a running PLOMID server and `psql` (see [Quickstart](/v0.1.0/getting-started/quickstart)). **Time:** ~10 minutes. No embedding API key needed — example vectors are predefined so you learn storage and search mechanics first.
+
+## 1. Create a table with a vector column
+
+```sql
+CREATE TABLE docs (
+  id        BIGINT PRIMARY KEY,
+  label     TEXT NOT NULL,
+  category  TEXT NOT NULL,
+  embedding VECTOR(FLOAT32, 3)
+);
+```
+
+The dimension (`3`) is fixed at table-creation time. Every vector inserted into `embedding` must have exactly 3 elements. Real workloads use hundreds or thousands of dimensions (for example `VECTOR(FLOAT32, 1536)`); `3` keeps this tutorial readable. See [Vector types](/v0.1.0/vector/vector-types).
+
+## 2. Insert example vectors
+
+```sql
+INSERT INTO docs VALUES
+  (1, 'alpha', 'guide', [1.0, 0.0, 0.0]),
+  (2, 'beta',  'guide', [0.0, 1.0, 0.0]),
+  (3, 'gamma', 'ref',   [0.9, 0.1, 0.0]);
+```
+
+Vectors are written as bracket literals: `[1.0, 0.0, 0.0]`. Mismatched dimensions are rejected:
+
+```sql
+-- ERROR: vector dimension mismatch
+INSERT INTO docs VALUES (4, 'bad', 'guide', [1.0, 0.0]);
+```
+
+## 3. Run an exact nearest-neighbor query
+
+```sql
+SELECT id, label, embedding <-> [1.0, 0.0, 0.0] AS dist
+FROM docs
+ORDER BY embedding <-> [1.0, 0.0, 0.0]
+LIMIT 3;
+```
+
+Expected result:
+
+| id | label | dist |
+| --- | --- | --- |
+| 1 | alpha | 0 |
+| 3 | gamma | 0.1414… |
+| 2 | beta | 1.4142… |
+
+`<->` is Euclidean (L2) distance: **smaller is closer**. Row 1 is the query vector itself (distance 0); row 3 is nearly identical; row 2 is orthogonal and farthest. `ORDER BY distance LIMIT k` is the similarity-search pattern — the operator in `ORDER BY` must match the one in `SELECT` for the ordering to be meaningful.
+
+## 4. Try cosine distance
+
+```sql
+SELECT id, label, embedding <=> [1.0, 0.0, 0.0] AS dist
+FROM docs
+ORDER BY embedding <=> [1.0, 0.0, 0.0]
+LIMIT 3;
+```
+
+`<=>` measures angle rather than magnitude: rows 1 and 3 are near-identical in direction (distances 0 and ~0.006), row 2 is maximally different (1). Use `<->` when magnitude matters, `<=>` when only direction matters. See [Distance operators](/v0.1.0/vector/distance-operators).
+
+## 5. Add an HNSW index
+
+```sql
+CREATE INDEX docs_emb_hnsw ON docs USING hnsw (embedding);
+```
+
+Then re-run the query from step 3 — results are identical on this tiny dataset. Verify the plan:
+
+```sql
+EXPLAIN SELECT id FROM docs ORDER BY embedding <-> [1.0, 0.0, 0.0] LIMIT 2;
+```
+
+On 3 rows the plan reports a `Vector Exact scan` with `Index: usable` — the engine correctly judges that scanning 3 rows beats traversing an index. The HNSW path engages as data grows. See [HNSW](/v0.1.0/vector/hnsw) and [Exact vs approximate](/v0.1.0/vector/exact-vs-approximate).
+
+<Warning>
+  Create vector indexes in autocommit (outside `BEGIN ... COMMIT`). `CREATE INDEX ... USING hnsw` inside an explicit transaction is refused — this is a current restriction, not a syntax error. See [Troubleshooting](/v0.1.0/vector/troubleshooting).
+</Warning>
+
+## 6. Add metadata filtering
+
+```sql
+SELECT id, label
+FROM docs
+WHERE category = 'guide'
+ORDER BY embedding <-> [1.0, 0.0, 0.0]
+LIMIT 2;
+```
+
+Expected: rows 1 (`alpha`) and 2 (`beta`). The relational filter applies alongside vector ordering — this is how real retrieval combines "only guides" with "most similar". Filtered queries are served by the exact path in `v0.1.0`. See [Filtering](/v0.1.0/vector/filtering).
+
+## 7. When to use exact vs approximate
+
+- **Exact scan:** correct by construction. Right for thousands of rows, evaluation baselines, and any workload where recall must be 100%.
+- **HNSW:** faster at scale (tens of thousands of rows and up) with a small, tunable recall trade-off. Right when latency matters more than perfect recall.
+
+If your table fits comfortably in memory and queries are fast enough, skip the index. Measure first — see [Performance](/v0.1.0/vector/performance).
+
+## Next steps
+
+- [Vector types](/v0.1.0/vector/vector-types) — element types, dimensions, validation rules.
+- [Similarity search](/v0.1.0/vector/similarity-search) — top-k patterns, limits, NULL handling.
+- [Application integration](/v0.1.0/vector/application-integration) — call this from Python and JavaScript.
+- [Semantic retrieval guide](/v0.1.0/guides/semantic-retrieval) — build a small end-to-end retrieval example.

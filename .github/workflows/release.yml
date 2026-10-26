@@ -1,0 +1,483 @@
+# 
+# © 2026 PLOMID Technologies INDIA
+# PLOMID — Platform for Modern Intelligence and Data
+# Author: Sainath Sapa
+# Email: info.djsai@gmail.com
+# GitHub: https://github.com/sainathsapa
+# Organization: https://github.com/plomid
+name: Release
+
+# Beta and stable releases ship from version tags only:
+#
+#   make release-beta VERSION=0.1.0-beta.1   # runs every gate locally, then tags
+#
+# Nothing is published unless every gate job below succeeds first. Each job
+# builds natively on its own runner (no cross-compilation), packages with the
+# scripts in dist/, and uploads one directory per platform. The `publish` job
+# checksums everything and creates the GitHub Release; the `docker` job pushes
+# the multi-arch image, skipping the push (without failing the release) if
+# the version tag already exists on Docker Hub; the `homebrew` job refreshes
+# the tap formula from the macOS tarballs.
+# Release policy: platform builds + `publish` are the release (strict).
+# `docker` and `homebrew` are secondary distribution channels: both run
+# best-effort (`continue-on-error`) so a Docker Hub or tap hiccup never
+# fails or blocks the GitHub Release.
+# Tag format: v<semver>, e.g. v0.1.0-beta.1
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  packages: write
+  # Keyless Sigstore signing (cosign) needs an OIDC token.
+  id-token: write
+
+env:
+  CARGO_TERM_COLOR: always
+  # See ci.yml: fresh runners gain nothing from incremental artifacts, and
+  # incremental bloat is unbounded on the disk-constrained runners.
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  gates:
+    name: 🚦 gates
+    runs-on: ubuntu-latest
+    # Required release gate (Tier C: unit + bounded integration, scale and
+    # benchmarks excluded). Routine budget: 30 minutes (warm rust-cache
+    # assumed, same as CI). A timeout or out-of-space failure fails the
+    # release — never silently green.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # ~14 GiB runners: preinstalled tooling eats ~10 GiB; free it before
+      # the workspace test build or the runner dies mid-link (see CI).
+      - run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h && df -i
+      - name: 🏷️ tag matches Cargo.toml
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME#v}"
+          CARGO="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
+          test "$TAG" = "$CARGO" || {
+            echo "tag v$TAG != Cargo.toml $CARGO; bump the version first"; exit 1;
+          }
+      - name: 🔒 version must not exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          TAG="${{ github.ref_name }}"
+          if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
+            echo "release $TAG already exists; bump Cargo.toml and tag a new version instead of reusing it"
+            exit 1
+          fi
+          # Docker tag reuse does not block the release: the docker job
+          # skips the push if the tag already exists and the rest of the
+          # release (platform artifacts + GitHub Release) still publishes.
+          if curl -fsSL "https://hub.docker.com/v2/repositories/plomid/plomid/tags/${TAG}/" >/dev/null 2>&1; then
+            echo "::warning::docker tag plomid/plomid:$TAG already exists; docker push will be skipped, release continues"
+          fi
+          echo "version $TAG is fresh, proceeding"
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: make fmt-check
+      - run: make check-ci
+      - run: make clippy-ci
+      # Full functional gate (every functional test; #[ignore] scale,
+      # bench, and gauntlet benchmark families excluded by default):
+      # keeps the release safe without the nightly scale cost. Scale +
+      # benchmarks run in nightly scale only, never in releases.
+      - run: make test-ci
+      - name: 💾 disk after tests
+        run: df -h; df -i; du -sh target
+      - name: 🧹 sweep test scratch + report disk
+        if: always()
+        run: |
+          rm -rf "${TMPDIR:-/tmp}"/plomid-* "${RUNNER_TEMP:-/tmp}"/plomid-* ./target/tmp/plomid-* 2>/dev/null || true
+          df -h; df -i; du -sh target
+
+  macos-arm64:
+    name: 🍎 macOS arm64
+    needs: [gates]
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: cargo build --release --locked -p plomid-server
+      - run: bash dist/macos/make-dmg.sh "${{ github.ref_name }}" arm64
+      - run: tar -czf "dist/artifacts/plomid-${{ github.ref_name }}-macos-arm64.tar.gz" -C dist/stage/plomid plomid-server README.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: macos-arm64
+          path: dist/artifacts/*
+
+  macos-x64:
+    name: 🍎 macOS x64
+    needs: [gates]
+    # No Intel macOS runners remain: cross-compile x86_64 from Apple silicon.
+    # Rust cross-compilation needs no extra toolchain for this target.
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          targets: x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+        with:
+          key: macos-x64
+      - run: cargo build --release --locked --target x86_64-apple-darwin -p plomid-server
+      - run: BIN=target/x86_64-apple-darwin/release/plomid-server bash dist/macos/make-dmg.sh "${{ github.ref_name }}" x64
+      - run: tar -czf "dist/artifacts/plomid-${{ github.ref_name }}-macos-x64.tar.gz" -C dist/stage/plomid plomid-server README.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: macos-x64
+          path: dist/artifacts/*
+
+  windows-x64:
+    name: 🪟 Windows x64
+    needs: [gates]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: cargo build --release --locked -p plomid-server
+      - name: 📦 portable zip
+        run: |
+          New-Item -ItemType Directory -Force dist/artifacts | Out-Null
+          New-Item -ItemType Directory -Force dist/stage | Out-Null
+          Copy-Item target/release/plomid-server.exe dist/stage/plomid.exe
+          Copy-Item README.md dist/stage/README.txt
+          Copy-Item assets/plomid-emblem-copper.png dist/stage/plomid-emblem-copper.png
+          Compress-Archive -Path dist/stage/plomid.exe,dist/stage/README.txt,dist/stage/plomid-emblem-copper.png `
+            -DestinationPath "dist/artifacts/plomid-${{ github.ref_name }}-windows-x64.zip" -Force
+      - name: 🎨 installer icon
+        run: |
+          python -m pip install --quiet pillow
+          python -c "from PIL import Image; Image.open('assets/plomid-emblem-copper.png').save('dist/stage/plomid.ico', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)])"
+          if (-not (Test-Path dist/stage/plomid.ico)) { throw "icon generation failed" }
+      - name: 🔧 install NSIS
+        run: choco install nsis -y --no-progress
+      - name: 💿 installer exe
+        run: |
+          # makensis resolves relative paths against the script's directory
+          # (dist/windows/), not the repo root — pass absolute paths.
+          & "C:\Program Files (x86)\NSIS\makensis.exe" `
+            /DVERSION="${{ github.ref_name }}" /DOUTDIR="$(Resolve-Path dist/artifacts)" /DICON="$(Resolve-Path dist/stage/plomid.ico)" dist/windows/plomid.nsi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-x64
+          path: dist/artifacts/*
+
+  linux-x64:
+    name: 🐧 Linux x64
+    needs: [gates]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: cargo build --release --locked -p plomid-server
+      - run: mkdir -p dist/artifacts && cp target/release/plomid-server dist/artifacts/ && tar -czf "dist/artifacts/plomid-${{ github.ref_name }}-linux-x64.tar.gz" -C dist/artifacts plomid-server && rm dist/artifacts/plomid-server
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-x64
+          path: dist/artifacts/*
+
+  linux-arm64:
+    name: 🐧 Linux arm64
+    needs: [gates]
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: cargo build --release --locked -p plomid-server
+      - run: mkdir -p dist/artifacts && cp target/release/plomid-server dist/artifacts/ && tar -czf "dist/artifacts/plomid-${{ github.ref_name }}-linux-arm64.tar.gz" -C dist/artifacts plomid-server && rm dist/artifacts/plomid-server
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-arm64
+          path: dist/artifacts/*
+
+  linux-packages:
+    name: 📦 Linux deb/rpm
+    needs: [linux-x64]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: linux-x64
+          path: dist/artifacts
+      - name: 🔧 install nfpm
+        run: |
+          set -euo pipefail
+          NFPM_VERSION=2.35.1
+          curl -fsSL -o /tmp/nfpm.deb "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_amd64.deb"
+          sudo dpkg -i /tmp/nfpm.deb
+      - run: bash dist/linux/make-packages.sh "${{ github.ref_name }}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-packages
+          path: |
+            dist/artifacts/*.deb
+            dist/artifacts/*.rpm
+          if-no-files-found: error
+
+  sbom:
+    name: 📋 software bill of materials
+    needs: [gates]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # SPDX SBOM of the locked dependency tree (Cargo.lock): what ships
+      # in every platform artifact, in a machine-readable format.
+      - name: 📋 generate SPDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
+        with:
+          path: ./
+          format: spdx-json
+          output-file: plomid-sbom.spdx.json
+      - name: 📦 stage SBOM under a release-matching name
+        run: |
+          set -euo pipefail
+          mkdir -p dist/artifacts
+          cp plomid-sbom.spdx.json "dist/artifacts/plomid-${{ github.ref_name }}-sbom.spdx.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sbom
+          path: dist/artifacts/*
+          if-no-files-found: error
+
+  publish:
+    name: 🚀 publish release
+    needs: [macos-arm64, macos-x64, windows-x64, linux-x64, linux-arm64, linux-packages, sbom]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          path: dist/artifacts
+          pattern: '{macos-arm64,macos-x64,windows-x64,linux-x64,linux-arm64,linux-packages,sbom}'
+          merge-multiple: true
+      - name: 🔐 install cosign
+        uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
+      - name: 🔐 checksums
+        run: |
+          set -euo pipefail
+          printf '\033[38;2;226;104;60m==>\033[0m \033[1mPLOMID %s checksums\033[0m\n' "${{ github.ref_name }}"
+          cd dist/artifacts
+          ls -l
+          # NOTE: deb files are plomid_<ver>_<arch>.deb (underscore), so the
+          # glob must be plomid* not plomid-* or the .deb is silently skipped.
+          sha256sum plomid* > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: ✍️ sign artifacts (keyless Sigstore)
+        run: |
+          set -euo pipefail
+          cd dist/artifacts
+          # Sign every release file (tarballs, packages, SBOM, checksums):
+          # each foo gains foo.sig + foo.pem, verified with
+          # `cosign verify-blob --cert foo.pem --signature foo.sig foo`.
+          for file in plomid* SHA256SUMS.txt; do
+            [ -f "$file" ] || continue
+            case "$file" in *.sig|*.pem) continue;; esac
+            cosign sign-blob --yes --output-signature "$file.sig" --output-certificate "$file.pem" "$file"
+          done
+          ls *.sig
+      - name: 🚀 create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # This job does not check out the repository (it only downloads
+          # artifacts), so gh has no .git to infer the repo from — set it.
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          printf '\033[38;2;226;104;60m==>\033[0m \033[1mPLOMID %s GitHub Release\033[0m\n' "${{ github.ref_name }}"
+          NOTES="PLOMID ${{ github.ref_name }}. See SHA256SUMS.txt for checksums."
+          if [[ "${{ github.ref_name }}" == *beta* || "${{ github.ref_name }}" == *alpha* || "${{ github.ref_name }}" == *rc* ]]; then
+            PRE="--prerelease"
+          else
+            PRE=""
+          fi
+          # shellcheck disable=SC2086
+          # NOTE: plomid* (not plomid-*) so the underscore-named .deb is included.
+          # Signatures (.sig) and certificates (.pem) ride the same glob;
+          # SHA256SUMS.txt and its signature are named explicitly.
+          gh release create "${{ github.ref_name }}" $PRE --title "${{ github.ref_name }}" --notes "$NOTES" dist/artifacts/plomid* dist/artifacts/SHA256SUMS.txt dist/artifacts/SHA256SUMS.txt.sig dist/artifacts/SHA256SUMS.txt.pem
+
+  docker:
+    name: 🐳 docker multi-arch
+    needs: [gates, linux-x64, linux-arm64]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      # Docker Hub personal access token (write access to plomid/plomid).
+      # Repo secret DOCKERHUB_TOKEN; username in DOCKERHUB_USERNAME.
+      DOCKER_PAT: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: 🔍 check docker tag
+        id: check
+        run: |
+          set -euo pipefail
+          TAG="${{ github.ref_name }}"
+          if curl -fsSL "https://hub.docker.com/v2/repositories/plomid/plomid/tags/${TAG}/" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::docker tag plomid/plomid:$TAG already exists; skipping docker push, release continues"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "docker tag plomid/plomid:$TAG not found, proceeding"
+          fi
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+        if: steps.check.outputs.exists != 'true'
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        if: steps.check.outputs.exists != 'true'
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        if: steps.check.outputs.exists != 'true'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKER_PAT }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        if: steps.check.outputs.exists != 'true'
+        with:
+          name: linux-x64
+          path: dist/linux-amd64
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        if: steps.check.outputs.exists != 'true'
+        with:
+          name: linux-arm64
+          path: dist/linux-arm64
+      - run: |
+          set -euo pipefail
+          printf '\033[38;2;226;104;60m==>\033[0m \033[1mPLOMID %s multi-arch image\033[0m\n' "${{ github.ref_name }}"
+          # The Dockerfile copies dist/linux-${TARGETARCH}/plomid-server, so
+          # unpack each tarball into the layout it expects.
+          mkdir -p dist/linux-amd64 dist/linux-arm64
+          tar -xzf dist/linux-amd64/plomid-*.tar.gz -C dist/linux-amd64
+          tar -xzf dist/linux-arm64/plomid-*.tar.gz -C dist/linux-arm64
+          ls -l dist/linux-amd64 dist/linux-arm64
+        if: steps.check.outputs.exists != 'true'
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        if: steps.check.outputs.exists != 'true'
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            plomid/plomid:${{ github.ref_name }}
+            plomid/plomid:latest
+
+  homebrew:
+    name: 🍺 update homebrew tap
+    needs: [publish]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: 📥 checkout plomid
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: 📥 download macOS release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh release download "${GITHUB_REF_NAME}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern "plomid-${GITHUB_REF_NAME}-macos-arm64.tar.gz" \
+            --pattern "plomid-${GITHUB_REF_NAME}-macos-x64.tar.gz" \
+            --dir dist
+      - name: 🔐 calculate SHA256
+        id: sha
+        run: |
+          set -euo pipefail
+          ARM64_SHA256="$(sha256sum "dist/plomid-${GITHUB_REF_NAME}-macos-arm64.tar.gz" | awk '{print $1}')"
+          X64_SHA256="$(sha256sum "dist/plomid-${GITHUB_REF_NAME}-macos-x64.tar.gz" | awk '{print $1}')"
+          echo "arm64=${ARM64_SHA256}" >> "$GITHUB_OUTPUT"
+          echo "x64=${X64_SHA256}" >> "$GITHUB_OUTPUT"
+      - name: 📥 checkout homebrew tap
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          set -euo pipefail
+          # actions/checkout fetches refs/heads/main explicitly and fails on
+          # an empty tap repo (no branches yet). Plain clone handles empty
+          # repos and any default branch; fall back to a fresh init.
+          rm -rf homebrew-plomid
+          if gh repo clone plomid/homebrew-plomid homebrew-plomid -- --depth=1 2>&1; then
+            echo "tap cloned"
+          else
+            echo "::warning::tap clone failed (empty or missing repo); initializing fresh"
+            mkdir -p homebrew-plomid/Formula
+            git -C homebrew-plomid init -b main
+            git -C homebrew-plomid remote add origin "https://github.com/plomid/homebrew-plomid.git"
+          fi
+          # gh repo clone does not configure git credentials for later
+          # pushes: register GH_TOKEN as the github.com credential helper.
+          gh auth setup-git
+      - name: 🍺 generate formula
+        env:
+          VERSION: ${{ github.ref_name }}
+          ARM64_SHA256: ${{ steps.sha.outputs.arm64 }}
+          X64_SHA256: ${{ steps.sha.outputs.x64 }}
+        run: |
+          set -euo pipefail
+          NUM_VERSION="${VERSION#v}"
+          REPO="${GITHUB_REPOSITORY}"
+          mkdir -p homebrew-plomid/Formula
+          cat > homebrew-plomid/Formula/plomid.rb <<EOF
+          class Plomid < Formula
+            desc "PLOMID database server (PostgreSQL wire protocol)"
+            homepage "https://github.com/${REPO}"
+            version "${NUM_VERSION}"
+            license "Apache-2.0"
+
+            on_arm do
+              url "https://github.com/${REPO}/releases/download/${VERSION}/plomid-${VERSION}-macos-arm64.tar.gz"
+              sha256 "${ARM64_SHA256}"
+            end
+
+            on_intel do
+              url "https://github.com/${REPO}/releases/download/${VERSION}/plomid-${VERSION}-macos-x64.tar.gz"
+              sha256 "${X64_SHA256}"
+            end
+
+            def install
+              bin.install "plomid-server"
+            end
+
+            service do
+              run [opt_bin/"plomid-server", "--data", var/"plomid", "--host", "127.0.0.1", "--port", "5432"]
+              keep_alive true
+              log_path var/"log/plomid.log"
+              error_log_path var/"log/plomid.log"
+            end
+
+            test do
+              assert_match "plomid", shell_output("#{bin}/plomid-server --help 2>&1", 0)
+            end
+          end
+          EOF
+      - name: 📤 commit and push formula
+        working-directory: homebrew-plomid
+        env:
+          VERSION: ${{ github.ref_name }}
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "PLOMID Release Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/plomid.rb
+          if git diff --cached --quiet; then
+            echo "Formula already up to date."
+            exit 0
+          fi
+          git commit -m "chore: update plomid to ${VERSION}"
+          # -u covers a freshly-initialized tap with no upstream yet.
+          git push -u origin main

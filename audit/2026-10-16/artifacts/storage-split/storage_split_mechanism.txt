@@ -1,0 +1,76 @@
+Storage B+Tree internal-split failure — raw instrumented evidence (2026-10-16)
+=============================================================================
+
+Binary under test: target/release/plomid-server built from the 2026-10-16 tranche
+tree (straight from `cargo build --release -p plomid-server`, plus two temporary
+local instrumentation patches that were reverted before the commit).
+
+Temporary instrumentation (local, reverted):
+  crates/storage/src/btree.rs  write_node(): append len/cap/node_entries and
+      Location::caller() to the "B+Tree node exceeds page payload" message.
+  crates/storage/src/btree.rs  internal split: tracing::error!("dbg_btree",
+      page, total, middle, left_len, right_len, lens) when a split half would
+      exceed the payload.
+  crates/index/src/btree/node.rs  same message decoration for the index tree
+      (never fired: the failure is in the storage B+Tree).
+
+Run 1 (no dbg log, caller reported):
+  batch 0: OK
+  batch 1: OK
+  batch 2: OK
+  batch 3: FAIL: B+Tree node exceeds page payload [storage len=17234 cap=16332
+             node_entries=14 caller=crates/storage/src/btree.rs:277]
+  (line 277 in the unmodified file = write_node of the LEFT half inside the
+   count-based internal split.)
+
+Run 2 (dbg_btree log enabled), same deterministic fixture:
+  ERROR ThreadId(03) dbg_btree: internal split would exceed payload page=39
+    total=28 middle=14 left_len=17234 right_len=328 first_len=1312
+    lens=[1312, 1312, 1312, 1312, 1312, 1312, 1313, 1313, 1313, 1313, 1313,
+          1313, 1314, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+          14]
+  caller reported in the same run: crates/storage/src/btree.rs:292 (line number
+  shifted by the inserted dbg block; same left-half write).
+
+Reading:
+  - 28 separators: 13 large (1,312-1,314 bytes; text-rendered vector index
+    keys) and 15 small (14 bytes; PK/staging keys).
+  - Fit evolution: 12 large + 15 small = 16,240 <= 16,332 cap (fits); adding
+    the 13th large separator = 17,562 > cap, so the split runs.
+  - Count midpoint 28/2 = 14 puts 13 large + 1 small into the left half:
+    17,234 > 16,332 -> write_node rejects it. The right half is 328 bytes.
+  - The leaf split in the same file is byte-aware and carries a comment
+    explaining exactly this hazard ("a count-based midpoint can produce a half
+    that itself exceeds the page payload"); the internal split still uses
+    `separators.len() / 2`.
+
+User-visible failure without instrumentation:
+  PL-INVALID-ARGUMENT: B+Tree node exceeds page payload
+  (elapsed_ms=..., statement_type="INSERT")
+
+Second finding confirmed from code + lifecycle bench evidence (2026-10-16):
+EXPLAIN label disagrees with execution when vector.auto_ann_min_rows is set
+below the built-in AUTO_ANN_MIN_ROWS (4096):
+  - explain.rs:359-371 applies the session threshold first, then calls
+    planner_api::choose_exact_vs_ann, which re-applies its own hard gate
+    (`row_count > AUTO_ANN_MIN_ROWS`) at planner_api.rs:151.
+  - execution (vector_ann.rs:899-906) applies only the session threshold and
+    max_ann_rows; choose_exact_vs_ann is never consulted (grep: only
+    explain.rs calls it).
+  - Live evidence: lifecycle bench cell hnsw n=2000 with
+    SET vector.auto_ann_min_rows = 0 -> EXPLAIN "Vector Exact scan" while
+    plomid_vector_stats() deltas show miss=1 builds=1 (ANN executed).
+  - Impact: misleading plans for operators who tune the knob down; no wrong
+    results. Comment in explain.rs ("the plan can never disagree with the
+    run") and vector_ann.rs ("shared with EXPLAIN") are both inaccurate in
+    this configuration. Severity P3 (observability).
+
+Containment observed in experiments (release binary, scratch servers):
+  - control: auto index dropped before the load -> 8,000 rows dim 128 OK.
+  - dim 8 / dim 32 vector indexes at 8,000 rows -> OK (keys too small to mix
+    into an oversized count half).
+  - explicit HNSW index created AFTER a 2,000-row load (build_bulk path), then
+    1,000-row batch insert -> OK; the failure needs enough large separators in
+    one internal node.
+  - threshold degrades with server history: later runs failed at batch 0 of a
+    fresh table on a server that had processed several vector-index tables.

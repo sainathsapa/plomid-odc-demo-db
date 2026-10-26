@@ -1,0 +1,80 @@
+---
+title: "Vector types"
+description: "Supported vector column types, element types, dimension limits, literals, and validation rules."
+---
+
+# Vector types
+
+## Dense vectors — supported
+
+```sql
+CREATE TABLE docs (
+  id        BIGINT PRIMARY KEY,
+  embedding VECTOR(FLOAT32, 3)
+);
+```
+
+`VECTOR(element, dimensions)` declares a dense vector column. The shorthand `VECTOR(n)` means `VECTOR(FLOAT32, n)`.
+
+| Element type | Stores | Notes |
+| --- | --- | --- |
+| `FLOAT32` | 32-bit floats | Default; use unless you have a reason not to. |
+| `FLOAT16` | 16-bit floats | Half the storage of `FLOAT32`; small precision trade-off. |
+| `BFLOAT16` | Brain float 16 | Same size as `FLOAT16`, larger range, less precision. |
+| `INT8` | Signed bytes (−128…127) | Quantized embeddings; smaller storage. |
+| `UINT8` | Unsigned bytes (0…255) | Quantized embeddings. |
+| `INT4` | 4-bit signed nibbles | Smallest numeric form; accepted by some index paths via promotion — see [Indexes](/v0.1.0/vector/indexes). |
+
+Integer elements must be whole numbers within range; non-finite values (`NaN`, `Infinity`) are rejected at insert.
+
+## Dimension limits
+
+- Dimensions: **1 to 65536**.
+- A single vector value is capped at **64 MiB**.
+- The dimension is fixed when the table is created; every row in that column must match it. A mismatch is a hard error, not a silent truncation:
+
+```sql
+-- ERROR: vector dimension mismatch
+SELECT [1.0, 0.0] <-> [1.0, 0.0, 0.0];
+```
+
+## Literals and input forms
+
+Dense vectors are written as bracket literals of numbers:
+
+```sql
+INSERT INTO docs VALUES (4, 'delta', 'guide', [0.5, 0.5, 0.0]);
+SELECT [1.0, 0.0, 0.0] <-> [0.0, 1.0, 0.0];  -- works on bare literals too
+```
+
+Integer-element columns accept integer literals (`[1, 2, 3]` into `VECTOR(INT8, 3)`). Values outside the element range are rejected.
+
+`NULL` vectors are allowed (column without `NOT NULL`) and propagate as `NULL` distances — a `NULL` embedding never matches; it sorts per normal `NULL` ordering. Zero-norm vectors (e.g. `[0, 0, 0]`) yield `NULL` for cosine distance rather than a division-by-zero error.
+
+## Binary vectors — limited
+
+```sql
+CREATE TABLE bdocs (
+  id        BIGINT PRIMARY KEY,
+  embedding VECTOR(BINARY, 8)
+);
+```
+
+`VECTOR(BINARY, n)` stores bit strings of exactly `n` bits. Literals use the quoted bit-string form:
+
+```sql
+INSERT INTO bdocs VALUES (1, '10101010');
+SELECT embedding <~> '11101010' AS hamming FROM bdocs;
+```
+
+Use `<~>` (Hamming) or `<%>` (Jaccard) with binary columns — L2/cosine/dot are numeric-only. Binary ANN indexes fall back to exact computation in `v0.1.0`; results are correct, just not index-accelerated. See [Limitations](/v0.1.0/vector/limitations).
+
+## Sparse and multivector types — experimental
+
+`SPARSE_VECTOR(element, dimensions)` and `MULTI_VECTOR(element, max_vectors, dimensions)` parse in DDL, but there is **no verified literal or insert path** through SQL in `v0.1.0`. Do not build on them yet; they are tracked under [Limitations](/v0.1.0/vector/limitations).
+
+## Choosing
+
+- Text/image embeddings from standard models → `VECTOR(FLOAT32, <model dim>)`.
+- Tight storage with acceptable quantization error → `INT8`/`UINT8`.
+- Bit-hash / fingerprint workloads → `VECTOR(BINARY, n)` with Hamming distance.

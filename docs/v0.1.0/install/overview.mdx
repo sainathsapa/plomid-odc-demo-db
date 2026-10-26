@@ -1,0 +1,31 @@
+---
+title: "Choose an installation method"
+description: "Compare verified PLOMID installation methods and pick the right one for your machine."
+---
+
+# Choose an installation method
+
+| Method | Best for | Status | Guide |
+| --- | --- | --- | --- |
+| Native prebuilt binaries (`.dmg`, `.exe`/`.zip`, `.deb`, `.rpm`, `.tar.gz`) | Most users on macOS, Windows, Linux | **Supported** (per tagged release; see evidence below) | [Native binaries](/v0.1.0/install/binaries) |
+| Shell installer (`install.sh`) | macOS / Linux quick install from releases | **Supported** | [Shell installer](/v0.1.0/install/shell-installer) |
+| Docker image (`plomid/plomid`) | Containers, CI, reproducible deploys | **Supported** (binary-only runtime image) | [Docker](/v0.1.0/install/docker) |
+| Build from source | Contributors, unreleased features, custom builds | **Supported** (requires Rust toolchain) | [Build from source](/v0.1.0/install/source) |
+| Offline / air-gapped | Machines without network access | **Supported** (via pre-staged artifacts) | [Offline install](/v0.1.0/install/offline) |
+| Docker Compose file | — | **Unsupported** (no Compose file ships) | — |
+| Kubernetes manifests / Helm / operator | — | **Planned** (not shipped; do not expect manifests) | — |
+| Package managers (Homebrew, apt repos, Chocolatey) | — | **Limited** (release pipeline refreshes a Homebrew tap on a best-effort basis; no hosted apt/yum repos) | [Native binaries](/v0.1.0/install/binaries) |
+
+## Evidence
+
+Every tagged release builds all platforms together from one pipeline (`.github/workflows/release.yml`): macOS `.dmg` + `.tar.gz` for Apple silicon and Intel, Windows `.zip` + installer `.exe`, Linux `.tar.gz` for x64 and arm64 plus `.deb`/`.rpm`, an SPDX SBOM, `SHA256SUMS.txt`, and a multi-arch Docker image. The shell installer's asset names mirror that pipeline, and it refuses to install artifacts that fail checksum verification.
+
+No releases may be published yet for the current beta tag — `sh install.sh --list` shows what actually exists. Do not assume a version is downloadable until the release page or `--list` confirms it.
+
+## After installing
+
+1. [Run the server](/v0.1.0/operations/run-server) — start, verify, stop.
+2. [Quickstart](/v0.1.0/getting-started/quickstart) — first database in minutes.
+3. [Connect](/v0.1.0/connect/overview) — wire your application.
+
+Contributor builds (workspace check, format, lint, full test tiers) live in [Build from source](/v0.1.0/install/source) and the contributor area — not in the binary guides above.

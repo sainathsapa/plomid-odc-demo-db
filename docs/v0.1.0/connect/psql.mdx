@@ -1,0 +1,67 @@
+---
+title: "Connect with psql"
+description: "Use the PostgreSQL interactive shell with PLOMID for queries, scripts, and inspection."
+---
+
+# Connect with psql
+
+**Status: Supported.** `psql` is the fastest way to run the guides in this documentation.
+
+## Prerequisites
+
+- A running server ([Quickstart](/v0.1.0/getting-started/quickstart) or [Run the server](/v0.1.0/operations/run-server)).
+- `psql` installed (PostgreSQL client package).
+
+## Connect
+
+```sh
+psql "postgresql://plomid:secret@localhost:5432/plomid"
+```
+
+DBeaver and other GUI clients use the same values: host `127.0.0.1`, port `5432`, database `plomid`, user `plomid`, password `secret` (or your configured values).
+
+## Everyday commands
+
+```sql
+-- Schema inspection
+\dt              -- list tables
+\d users         -- describe a table
+\dn              -- list schemas
+\l               -- list databases
+
+-- Work
+SELECT * FROM users ORDER BY id LIMIT 5;
+EXPLAIN SELECT * FROM users WHERE name = 'ada';
+BEGIN; UPDATE acct SET bal = bal - 10 WHERE id = 1; COMMIT;
+```
+
+PLOMID also answers catalog queries directly: `SHOW <setting>`, `DESCRIBE <table>`, `USE <database>`, and live rows from `pg_catalog` / `information_schema` — see [Catalog](/v0.1.0/reference/pg-catalog) and [SHOW / DESCRIBE](/v0.1.0/sql/show-describe).
+
+## Scripts and timing
+
+```sh
+psql "postgresql://plomid:secret@localhost:5432/plomid" -f schema.sql
+psql "postgresql://plomid:secret@localhost:5432/plomid" -c "SELECT count(*) FROM users;"
+```
+
+```sql
+\timing on   -- per-statement timings inside psql (useful with EXPLAIN ANALYZE)
+```
+
+## TLS
+
+```sh
+psql "postgresql://plomid:secret@localhost:5432/plomid?sslmode=require" -c "SELECT 1;"
+```
+
+Against a TLS-enabled server, `sslmode=require` negotiates a TLS session (verified). Without server-side `--tls`, the parameter is refused or downgraded per libpq policy — see [TLS](/v0.1.0/operations/tls).
+
+## Troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| `connection refused` | Server not running or wrong port — check the startup banner and `PLOMID_PORT`. |
+| `password authentication failed` | Wrong user/password — the server default is `plomid`, `start.sh` uses `secret`; always confirm which you started with. |
+| `CREATE/DROP DATABASE cannot be executed inside a transaction block` | Run it as a bare statement (psql sends `-c` strings plainly; drivers may wrap — see [Pooling and errors](/v0.1.0/connect/pooling-errors)). |
+
+Next: [SQL fundamentals](/v0.1.0/learn/sql-fundamentals) · [Python](/v0.1.0/connect/python).

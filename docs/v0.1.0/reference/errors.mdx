@@ -1,0 +1,54 @@
+---
+title: "Error reference"
+description: "Actual PLOMID errors — meaning, cause, example, fix."
+---
+
+# Error reference
+
+Every failure arrives as a PostgreSQL SQLSTATE over the wire. The table below is the complete mapping: internal error kinds on the left, the SQLSTATE your driver surfaces on the right, with keyword refinements where the message selects a more specific code.
+
+## Kind → code → SQLSTATE
+
+| `ErrorKind` | `PL-*` code | Primary SQLSTATE | Keyword refinements |
+| --- | --- | --- | --- |
+| `Syntax` | `PL-SYNTAX` | `42601` syntax_error | — |
+| `Catalog` | `PL-CATALOG` | `42P01` undefined_table | `database`→`3D000`, `column`→`42703`, `function`/`procedure`→`42883` |
+| `NotFound` | `PL-NOT-FOUND` | `42P01` undefined_table | same as `Catalog` |
+| `AlreadyExists` | `PL-ALREADY-EXISTS` | `42710` duplicate_object | `database` in message→`42P04` |
+| `Conflict` | `PL-CONFLICT` | `40001` serialization_failure | `null value`/`not-null`→`23502`, `unique`/`duplicate`→`23505`, `check`→`23514`, `foreign`→`23503`, `aborted`/`commands ignored`→`25P02` |
+| `Transaction` | `PL-TRANSACTION` | `25P02` in_failed_sql_transaction | — |
+| `Aborted` | `PL-ABORTED` | `25P02` in_failed_sql_transaction | — |
+| `InvalidArgument` | `PL-INVALID-ARGUMENT` | `22023` invalid_parameter_value | `division by zero`→`22012`, `out of range`→`22003` |
+| `RowEncoding` | `PL-ROW-ENCODING` | `22000` data_exception | — |
+| `PermissionDenied` | `PL-PERMISSION-DENIED` | `42501` insufficient_privilege | — |
+| `Unsupported` | `PL-UNSUPPORTED` | `0A000` feature_not_supported | — |
+| `Io` | `PL-IO` | `58000` system_error | `no such file`/`not found`→`58P01` |
+| `Wal` | `PL-WAL` | `58000` system_error | — |
+| `Corruption` | `PL-CORRUPTION` | `XX001` data_corrupted | — |
+| `Internal` | `PL-INTERNAL` | `XX000` internal_error | only kind allowed to emit `XX000` |
+
+Adding a new error kind without extending this table fails the project's own gates. Error semantics are stable: codes are not remapped casually.
+
+| Error | Meaning | Typical cause | Fix |
+| --- | --- | --- | --- |
+| `ParseError::Unsupported {message, detail}` | SQL parsed far enough to reject | e.g. file `COPY`, non-table `ALTER`, bad precision | use supported form in [Compatibility](/v0.1.0/sql/compatibility) |
+| `Conflict: BEGIN without COMMIT or ROLLBACK` | unclosed explicit txn | missing `COMMIT` | terminate every `BEGIN` |
+| `Unsupported (txn COPY / UPDATE…FROM)` | staged op not allowed in-txn | `COPY`/`UPDATE…FROM` after `BEGIN` | run in autocommit |
+| `Transaction` (double commit/abort, write-after-end) | lifecycle violation | app retry bug | fix txn state machine |
+| `Conflict` (row/unique lane) | concurrent write won by another txn | hot key | retry whole transaction |
+| Unique/PK violation | duplicate key | replay without `ON CONFLICT` | `DO NOTHING/DO UPDATE` or dedup |
+| `28P01` | auth failed | wrong user/password, bad SCRAM, unknown user, `none`-mode misuse | check creds, `--auth` mode |
+| `28000` | TLS required, plaintext refused | server runs `--tls-required`, client connected without TLS | reconnect with `sslmode=require` |
+| `57014` | statement canceled / timeout | `statement_timeout` exceeded or explicit cancel | raise timeout per session or optimize the query |
+| `25P03` | idle transaction reaped | `idle_in_transaction_session_timeout` exceeded; connection closed | commit/rollback promptly; retry the unit of work |
+| `53200` | resource exhausted | vector or spill budgets exceeded (e.g. `spill storage exhausted`, `memory budget exceeded`) | shrink the operation or raise the budget |
+| `08P01` | protocol error | malformed extended flow | fix client bind/describe order |
+| `Corruption` | checksum/continuity failure | torn write, truncated segment, gap | restore from backup; never ignore |
+| `Unsupported` (version skew) | `unsupported … version <found> (expected <expected>)` for WAL record / checkpoint / catalog | data written by a newer engine | upgrade the binary; do NOT restore from backup for a version error |
+| `AlreadyExists` (create) | durable state present | re-`create` on existing root | `open`, not `create` |
+| `stale` checkpoint | backward lsn/gen | old checkpoint file | use latest valid (automatic) |
+| `InvalidArgument` (oversize WAL record) | record exceeds segment | \>64 MiB payload / larger than segment | shrink write |
+| `connection_limit` + drop | `max_connections` hit | load spike | back off / pool |
+| `InFailedTransaction` (E) | extended error until Sync | failed Execute | `Sync` then retry |
+
+Ambiguous column, arity mismatch (set ops), non-integer `LIMIT`, unknown `USE` database: fix the SQL per linked reference. Values/passwords never appear in logs — include the statement shape (not literals) when reporting.

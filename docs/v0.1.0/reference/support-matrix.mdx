@@ -1,0 +1,92 @@
+---
+title: "Support matrix"
+description: "The durable record — every installation method, interface, SQL area, vector capability, and operational feature with verified status."
+---
+
+# Support matrix
+
+Status labels: **Supported** (verified working) · **Limited** (works with stated restrictions) · **Experimental** (available, not established) · **Planned** (not available; roadmap only) · **Unsupported** (not available). Evidence for key claims is recorded in the restructure report (`docs/DOCS_RESTRUCTURE_REPORT.md`); tutorials link to the authoritative reference for each feature.
+
+## Installation methods
+
+| Method | Status | Notes |
+| --- | --- | --- |
+| Native binaries (`.dmg`, `.exe`/`.zip`, `.deb`, `.rpm`, `.tar.gz` + `SHA256SUMS.txt`) | **Supported** | Per tagged release; verify checksums. |
+| Shell installer (`install.sh`, macOS/Linux) | **Supported** | Checksum-enforced; Windows explicitly out of scope. |
+| Docker image (`plomid/plomid:<tag>`) | **Supported** | Binary-only runtime, unprivileged user, volume required. |
+| Build from source | **Supported** | Pinned Rust toolchain; contributor gates documented. |
+| Offline / air-gapped (pre-staged artifacts) | **Supported** | Same binaries; installer needs network, so not used here. |
+| Docker Compose file | **Unsupported** | None ships; the `docker run` path is verified. |
+| Kubernetes / Helm / operator | **Planned** | Nothing ships; do not expect manifests. |
+| Hosted package repos (apt/yum/Homebrew as hosted repos) | **Limited** | Homebrew tap refresh is best-effort per release; no hosted apt/yum repos. |
+
+## Interfaces
+
+| Interface | Status | Notes |
+| --- | --- | --- |
+| PostgreSQL wire protocol v3 (simple + extended, prepared statements) | **Supported** | Verified with `psql`, `psycopg` 3, `node-postgres`. |
+| `psql` / DBeaver / GUI PG clients | **Supported** | Same parameters as any PostgreSQL connection. |
+| Python (`psycopg`) | **Supported** | Parameters incl. text vector params; see Python guide. |
+| JavaScript/TypeScript (`pg`) | **Supported** | `BIGINT` arrives as strings (driver behavior); text vector params. |
+| Other PG drivers | **Limited** | Same protocol, unverified per-driver — test prepared statements + typing. |
+| Official PLOMID SDK | **Unsupported** | None exists; use PostgreSQL drivers. |
+| TLS transport (`sslmode=require`) | **Supported** | Handshake verified live; `--tls-required` refuses plaintext. |
+| Binary wire values | **Limited** | Text only, except vector results (binary-encodable shapes). |
+
+## SQL
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| DDL/DML, joins (incl. lateral), subqueries, CTEs (`WITH [RECURSIVE]`), set ops, window functions, `GROUPING SETS/ROLLUP/CUBE`, `DISTINCT [ON]`, `FILTER`, `ON CONFLICT`, `RETURNING`, `EXPLAIN [ANALYZE]`, `COPY … STDIN/STDOUT`, sequences, enums/domains/composites, `pg_catalog`/`information_schema` | **Supported** | See SQL reference. |
+| JSON/JSONB operators, constructors, `JSON_TABLE` | **Supported** | See JSON section. |
+| Temporal types, `EXTRACT`, `date_trunc`, `age`, interval arithmetic | **Supported** | See time-series guides. |
+| Transactions (`BEGIN/COMMIT/ROLLBACK`), MVCC snapshots | **Supported** | Single-writer; see transaction guides. |
+| `LIKE` / `ILIKE` with `ESCAPE` | **Supported** | Case-insensitive `ILIKE`; `ESCAPE` honored on row-scan and join paths (verified). |
+| `TABLE name`, bare `VALUES`, SQL `PREPARE`/`EXECUTE`, `RESET`/`DISCARD ALL`, `TABLESAMPLE` | **Unsupported** | Syntax errors; extended-protocol prepared statements _are_ supported. |
+| `setval()` | **Unsupported** | Sequences advance via `nextval` only. |
+| Savepoints | **Supported** (connection layer) | True partial rollback over ordinary connections; drivers that _prepare_ savepoint statements may see rejection — keep transactions retryable. |
+| `EXTRACT` fields | **Limited** | `year month day quarter dow isodow doy hour minute second milliseconds microseconds century decade`; `week`/`epoch`/`millennium` rejected. |
+| `GROUP BY` ordinals | **Unsupported** | `GROUP BY 1` rejected; repeat the expression or name the column. `ORDER BY` ordinals work. |
+| `FOR UPDATE` | **Limited** | Accepted, ignored. |
+| `CREATE FUNCTION/PROCEDURE/TRIGGER/EXTENSION/MATERIALIZED VIEW` | **Limited** | Parse to stubs without execution. |
+| `DROP ROLE` / `DROP USER` | **Supported** | Single-name, `IF EXISTS`, ownership/privilege guards; no `REASSIGN OWNED`/`DROP OWNED`, no multi-name lists. |
+| `RENAME DATABASE` | **Unsupported** | Rejected with descriptive errors. |
+| `UPDATE…FROM` / `COPY` inside explicit transactions | **Unsupported** | Run in autocommit. |
+| Foreign-key enforcement, cursors, stored-procedure execution, `plpgsql` beyond subset, file `COPY`, `LISTEN/NOTIFY` effects | **Unsupported** | See compatibility page. |
+| `CREATE/DROP DATABASE` authorization | **Limited** | Superuser or `CREATEDB`; denials return `42501` with no side effects. `DROP` is not owner-scoped: any `CREATEDB` role can drop any database. |
+| `CREATE/DROP DATABASE` inside a transaction | **Unsupported** | Refused; use autocommit. |
+
+## Vectors
+
+| Capability | Status | Notes |
+| --- | --- | --- |
+| Dense `VECTOR` (FLOAT32/16, BFLOAT16, INT8/UINT8/INT4), dims 1–65536 | **Supported** | Bracket literals; strict validation. |
+| Operators `<->` `<=>` `<#>` + functions (`l2/cosine/neg_inner/dot/similarity` family) | **Supported** | Ordering: distances ascending, similarities descending. |
+| Exact top-k (`ORDER BY distance LIMIT k`, ≤1M) | **Supported** | Deterministic `(distance, row id)` ordering. |
+| HNSW index (dense × L2/cosine/dot) | **Supported** | Autocommit creation; engages with scale. |
+| `flat`, `ivf_flat`, `ivf_sq`, `ivf_pq`, `diskann` declarations | **Limited** | Dense columns only; small scans may run exact; `ivf_sq`/`ivf_pq` are global quantized scans (no inverted lists) with documented promotions; `ivf_pq` needs dimension % 8 = 0. |
+| Metadata filtering (`WHERE` + vector order) | **Supported** | Served by exact path. |
+| Binary vectors + Hamming/Jaccard | **Limited** | Queries correct; Hamming ANN with an explicit `USING BINARY` index; Jaccard stays exact-only. |
+| Sparse / multivector | **Experimental** | DDL parses; no verified SQL write path. |
+| GPU acceleration | **Unsupported** | CPU only. |
+| Hybrid (RRF/weighted) SQL surface | **Unsupported** | Implement in application. |
+| Distributed vector search | **Planned** | Single node only. |
+
+## Operations and security
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Loopback + SCRAM auth, `allow-remote-plaintext` opt-in | **Supported** | Fail-closed startup validation. |
+| TLS + `--tls-required` | **Supported** | Verified handshake. |
+| `--copy-dir`, `--audit-log`, `--profile` | **Supported** | File-COPY jail, JSONL audit log, hardware-tier override. |
+| `plomid test run` non-connectivity modules | **Unsupported** | `write/persistence/recovery/performance` are hard errors. |
+| Roles, `GRANT`/`REVOKE`, database-connect gating | **Limited** | Connect gating enforced; database DDL requires superuser/`CREATEDB`, but `DROP` is not owner-scoped. No column/row-level control. |
+| Cold full backup → clean restore (+ inspect) | **Supported** | Verified incl. vector data; no hot/incremental/PITR. |
+| Logging, diagnostics, CLI (`readiness`, `health`, `info`, `diagnostics`, `benchmark`) | **Supported** | Stable connection/query IDs; no SQL values in logs. |
+| Deployment profiles (developer, single-node offline) | **Supported** | Local use. |
+| Secure-remote / production profiles | **Limited** | Single-operator hosts only: `CREATEDB` can drop any database and there is no column/row-level control — must not be read as multi-user-safe. |
+| Replication, failover, multi-node, managed cloud | **Planned** | Not in `v0.1.0`. |
+
+## Compatibility deltas (PostgreSQL users)
+
+`NULL AND TRUE → false` (is-true checks, not strict 3VL), `COUNT(DISTINCT)` dedups by text form, `AVG(int)` returns `Numeric`, default passwords differ by entrypoint (always set explicitly), no compatibility percentage claimed. Full record: [SQL compatibility](/v0.1.0/sql/compatibility) and [For PostgreSQL users](/v0.1.0/migration/postgres-users).

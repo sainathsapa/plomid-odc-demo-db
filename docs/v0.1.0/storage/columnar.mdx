@@ -1,0 +1,24 @@
+---
+title: "Columnar segments and pruning filters"
+description: "Columnar format, encodings, zone maps, BRIN, and XOR filters."
+---
+
+# Columnar segments and pruning filters
+
+**Label:** Internal with developer-visible effects (pruning speeds time-range scans).
+
+## Columnar (`crates/columnar`)
+
+64 B `PLCS v1` header; 80 B column meta `{col_id,type: Null|Integer|Bytes|String,compression,stats,offsets}`; 56 B `PLCC v1` chunk header + `[u32 len][value]` payloads (NULL = zero-len, bitmap authoritative). Header→body→per-chunk CRCs; absolute offsets so pruning never touches payloads.
+
+Encodings: `Raw | Rle | DeltaBitpack (i64 LE, targets integer/time-series) | Dictionary (≤64 K)`, `Auto` keeps smallest. Chunking ~16 MiB; `Zstd` feature-gated (default `None`). Pipeline: materialize (hot rows/snapshot → `MaterializedColumn`) → flush (encode+compress+stats+BRIN) → `ColumnarStore` via `GenerationManager` → lazy `SegmentReader::decode`/`read_chunk`.
+
+Statistics conservative (unavailable on unordered/all-NULL/mixed). Compaction + vector helpers for `COUNT/SUM/AVG/MIN/MAX` live here — not pgvector.
+
+## Pruning pipeline
+
+`ZoneMap → BRIN → XOR → exact`. Pruning rule: **PRUNE only if metadata proves no match; missing/uncertain/malformed → KEEP**. `XorFilter` (~0.83% false-positive rate) is never authoritative — a `true` answer always falls through to exact evaluation. (An earlier revision of this page described Roaring bitmaps on this path; that implementation was removed — no bitmap structure participates.)
+
+Flush and tiling thresholds are not user-tunable in v0.1.0 — there are no knobs for them, and that is intentional, not an omission. `ANALYZE` persists real table statistics (row/null/distinct/min/max); with no cost-based planner in v0.1.0, statistics feed maintenance/freshness accounting and diagnostics rather than plan choice — see [Performance](/v0.1.0/operations/performance).
+
+`XorFilter` 3-hash 8-bit (~0.83% false-positive rate), never authoritative (a `true` answer always falls through to exact evaluation). Filters are rebuilt at flush; they carry no WAL/MVCC state.

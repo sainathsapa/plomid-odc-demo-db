@@ -1,0 +1,9 @@
+audit date (UTC): 2026-10-14T16:51Z onwards
+host: Darwin 24.4.0 arm64, Apple M2 Pro, 12 logical CPUs, 16 GiB RAM
+toolchain: rustc 1.99.0, cargo 1.99.0, psql (PostgreSQL) 18.x client, python 3.12 + psycopg 3
+server binaries: target/debug/plomid-server (rebuilt 2026-10-14 from HEAD 6a935b4, 2m21s),
+  target/release/plomid-server (rebuilt 2026-10-14 from HEAD, 58.93s incr)
+ports: 55432 (debug data1), 55433 (debug data_restored), 55434 (debug TLS), 55435 (release data_rel)
+data dirs: /tmp/plomid-audit-20261014/{data1,data_restored,data_tls,data_rel,backup1} (disposable, outside tree)
+build profile: debug (live probes) unless noted; release noted explicitly
+machine load during probes: ~3-4 (shared dev box; timings are provenance-labelled, not SLA claims)

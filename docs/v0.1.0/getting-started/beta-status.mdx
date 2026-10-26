@@ -1,0 +1,37 @@
+---
+title: "Beta status and support contract"
+description: "What v0.1.0 beta guarantees, what it does not, and how to deploy accordingly."
+---
+
+# Beta status and support contract
+
+PLOMID `v0.1.0` is a **beta**. It is complete enough to build real applications on a single node, and honest enough to tell you where the edges are. This page is the contract: what you can rely on, what you must work around, and what is out of scope until fixed.
+
+## Supported for beta use
+
+- Single-node server on loopback or trusted networks with explicit credentials.
+- Full SQL lifecycle: DDL, CRUD, joins, CTEs, window functions, JSON, temporal types, transactions with MVCC snapshots.
+- Dense vector storage and similarity search (exact + HNSW), metadata-filtered search.
+- TLS transport (verified handshake; `sslmode=require` negotiates successfully).
+- Cold full backup → clean restore, with post-restore verification.
+- `psql`, Python `psycopg`, and JavaScript `node-postgres` drivers (all verified end-to-end).
+
+## Known restrictions (ship with the beta)
+
+| Area | Restriction |
+| --- | --- |
+| **`DROP DATABASE` is not owner-scoped** | `CREATE`/`DROP DATABASE` require superuser or the `CREATEDB` role attribute; denials return `42501` and leave no side effects. Per-database ownership is not tracked, so any `CREATEDB` role can drop any database — grant it sparingly. Column/row-level controls and grant delegation are also absent, so shared multi-user deployment remains unsupported. See [RBAC](/v0.1.0/operations/rbac) and [Secure remote profile](/v0.1.0/operations/profile-secure-remote). |
+| `DROP ROLE` / `DROP USER` | Unsupported (`unsupported DROP object`) — plan role lifecycle accordingly. |
+| Vector index in transaction | `CREATE INDEX ... USING hnsw` inside `BEGIN ... COMMIT` is refused; use autocommit. |
+| Backup model | Cold full copies only; no hot, incremental, or point-in-time recovery. |
+| Sparse / multivector | DDL parses; no verified SQL write path. Experimental. |
+| GPU | No working backend; CPU only. |
+| Distribution | Single node; no replication, Kubernetes manifests, or multi-region. |
+
+## Out of scope for v0.1.0
+
+Graph queries, blobs, key-value APIs, continuous aggregates/retention automation, hot backups, managed cloud, and any performance or production-readiness promise beyond what this page and the [Support matrix](/v0.1.0/reference/support-matrix) state.
+
+## Reporting issues
+
+Security findings follow `SECURITY.md` (private report, never a public issue). Correctness bugs should include: server version, exact statements, expected vs actual output, and whether the behavior reproduces on a fresh data directory.

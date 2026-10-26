@@ -1,0 +1,47 @@
+[package]
+name = "plomid-hw"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Hardware-adaptive runtime for PLOMID: host detection (HardwareProfile) and ISA-dispatched vector reductions (VectorOps) with a portable scalar fallback."
+
+[lib]
+path = "src/lib.rs"
+
+[[bench]]
+name = "vector_ops"
+harness = false
+
+[dev-dependencies]
+criterion = "0.5"
+
+[lints.rust]
+# PLOMID workspace policy sets `unsafe_code = "forbid"` for every member.
+# This component is the second sanctioned exception (see crc32c): explicit
+# SIMD lane arithmetic (AVX2/AVX-512/NEON) is only reachable through `unsafe`
+# intrinsics. The override is scoped to this crate alone; `profile::` and
+# `vector::scalar::` re-forbid `unsafe` internally, so `unsafe` blocks exist
+# only inside the per-ISA backend modules, each callable solely after the
+# runtime CPU-feature check in `VectorOps::select` succeeded.
+unsafe_code = "allow"
+
+[lints.clippy]
+# Mirrors [workspace.lints.clippy] (this manifest cannot use
+# `lints.workspace = true` alongside the sanctioned `unsafe_code`
+# override above; keep the two lists in sync).
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_precision_loss = "allow"
+redundant_pub_crate = "allow"
+missing_const_for_fn = "allow"
+single_match_else = "allow"
+collapsible_if = "allow"
+comparison_chain = "allow"
+manual_clamp = "allow"
+decimal_bitwise_operands = "allow"
+identity_op = "allow"
+chunks_exact_to_as_chunks = "allow"

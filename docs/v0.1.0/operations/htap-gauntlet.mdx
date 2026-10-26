@@ -1,0 +1,76 @@
+---
+title: "Final HTAP Gauntlet"
+description: "Run PloMID's end-to-end qualification across OLTP, OLAP, HTAP, freshness, resource, and scale."
+---
+
+## What it measures
+
+The Gauntlet runs six families in one pass and checks exact correctness in each:
+
+| Family | What you learn |
+| --- | --- |
+| OLTP | Mixed point writes/reads: durable rows/s and point-lookup p99 |
+| OLAP | Scans and aggregations over the packed copy: GB/s and rows/s |
+| HTAP | Writers plus analytical readers at once: interference penalty with split writer/reader latencies |
+| Freshness | Per-row commit-to-visible latency |
+| Resource | RSS, file descriptors, and data/WAL footprint before and after churn |
+| Scale | Load plus scan behavior at each measured row count |
+
+## How to run
+
+In-engine qualification (fast CI defaults; writes `target/gauntlet_report.md`):
+
+```bash
+cargo test -p plomid-gauntlet
+```
+
+Wire-level harness (through a real server; writes `benchmarks/harness/results/gauntlet.json`):
+
+```bash
+python3 benchmarks/harness/workloads/gauntlet.py
+```
+
+Full 1M/2M scale points only run when opted in:
+
+```bash
+PLOMID_SCALE_ROWS=full python3 benchmarks/harness/workloads/gauntlet.py
+```
+
+Or pass an explicit comma list: `PLOMID_SCALE_ROWS=1000000,2000000`.
+
+## Pipeline
+
+Every qualification follows the same stages in order:
+
+`INSPECT` → `MEASURE` → `DIAGNOSE` → `DESIGN` → `IMPLEMENT` → `BENCHMARK` → `COMPARE` → `TEST` → `FIX` → `REGRESSION` → `REPORT` → `STOP`
+
+The markdown report carries this checklist. `STOP` completes when the report has been reviewed.
+
+The checklist also carries a **docs-vs-probe** item: when a documented behavior changes, update the prose and §00 of `tests/PLOMID_FULL_PRODUCTION_QUALIFICATION.sql` together. Every probe there must read `PASS` before `STOP`; a docs edit that contradicts a probe is a failure, not a wording issue.
+
+## Thresholds and targets
+
+All targets are internal to PloMID — the Gauntlet never compares against other databases:
+
+- **Row engine:** minimize point-lookup p99; maximize durable rows/s.
+- **Column engine:** maximize scan GB/s and rows/s.
+- **HTAP penalty:** p99 latency under combined load divided by p99 alone. Near `1.0` means writes and analytics barely disturb each other. (An earlier revision of this page called it a throughput ratio — the harness's headline penalty is the p99 ratio.)
+- **Freshness:** per-row commit-to-visible latency stays bounded while writes continue.
+
+## The seven questions
+
+The report answers each with YES or NO:
+
+1. Did throughput improve?
+2. Did p99 improve?
+3. Did CPU efficiency improve?
+4. Did memory improve?
+5. Did storage footprint improve?
+6. Did correctness remain exact?
+7. Did OLTP and OLAP and HTAP interference improve?
+
+A single run records healthy measurement; cross-run _improvement_ is judged by comparing reports over time. `NO` means "not demonstrated by this run", never "proven worse".
+
+## Scale honesty rule
+
+Only measured row counts are reported — unmeasured scales are never extrapolated. Smoke runs use small points; the 1M/2M points appear only when `PLOMID_SCALE_ROWS` opts in.

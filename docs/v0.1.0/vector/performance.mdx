@@ -1,0 +1,41 @@
+---
+title: "Vector performance"
+description: "How to measure vector search honestly — what to record, what affects results, and what is not claimed."
+---
+
+# Vector performance
+
+No benchmark numbers are claimed in this documentation. Vector latency depends on row count, dimension, metric, index method and settings, concurrent load, and hardware — any number without that context is misleading. This page tells you how to produce your own trustworthy numbers.
+
+## What affects search cost
+
+- **Row count.** Exact scans scale linearly; HNSW traversal scales slowly. The crossover on typical hardware is in the tens of thousands of rows — measure yours.
+- **Dimension.** Wider vectors cost more per comparison and more memory. A 1536-dim index behaves nothing like the 3-dim tutorial.
+- **Metric.** L2, cosine, and inner-product have similar costs; bit operations on binary vectors are cheaper per row.
+- **Settings.** `ef_search`, candidate oversampling, memory caps, and the 4096-row automatic threshold (`vector.auto_ann_min_rows`) all move the latency/recall point.
+- **Filters.** Filtered queries run exact — their cost follows the number of matching rows, not the index.
+
+## A minimal honest benchmark
+
+```sql
+-- Baseline: exact
+SET vector.ann_enabled = off;
+-- time this (psql \timing on, or your driver's timing):
+SELECT id FROM docs ORDER BY embedding <-> [1.0, ...] LIMIT 10;
+
+-- Candidate: indexed
+SET vector.ann_enabled = on;
+-- time the identical query, then compare recall row-for-row:
+SELECT id FROM docs ORDER BY embedding <-> [1.0, ...] LIMIT 10;
+```
+
+Record every run with: build type (release vs debug), row count, dimension, metric, index method + settings, `LIMIT`, client and network path, dataset (synthetic uniform? real embeddings?), and the full result lists so recall is computable. One cold run plus several warm runs; report the distribution, not just the best.
+
+## What not to do
+
+- Do not compare debug-build timings against any production expectation.
+- Do not extrapolate from 3-dim tutorial vectors to 1536-dim production vectors.
+- Do not tune `ef_search` upward without checking whether latency still meets budget.
+- Do not publish "HNSW is N× faster" without the environment, workload, command, and result provenance above.
+
+CPU dispatch: distance kernels run on the CPU with portable code plus instruction-set dispatch where the host supports it. There is no GPU execution path in `v0.1.0` — see [Limitations](/v0.1.0/vector/limitations).

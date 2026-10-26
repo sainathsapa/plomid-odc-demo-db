@@ -1,0 +1,35 @@
+---
+title: "Lock ordering"
+description: "The verified lock hierarchy — what nests inside what, and the rules that keep it acyclic."
+---
+
+# Lock ordering
+
+Single-writer engine, many shared structures. The hierarchy below is verified against the code (call sites cited); any change that nests locks in the opposite direction must update this page **and** the reasoning, or revert.
+
+## The order (outer → inner)
+
+```text
+engine mutex (single-writer guard)
+  → version-store mutex (MVCC chains)
+    → leaf mutexes (brief, never held while acquiring anything else):
+       transaction-manager registry, gate-table map, per-gate state,
+       WAL internals, observability maps, worker inflight set,
+       maintenance claims
+```
+
+Condvar/barrier waits (liveness, not mutex nesting) always run with no outer mutex held: write-gate lanes are acquired without the engine mutex (first lane may block; further domains use try-acquire + conflict), and the group-commit barrier is waited on after dropping the engine guard.
+
+## Verified rules
+
+1. **Lanes are acquired outside the engine mutex.** `lock_for_write` fetches the gate Arc under one short acquisition, drops the guard, then blocks on the gate (`concurrent.rs`). On contention past the first lane the statement fails with a conflict and the executor aborts, releasing lanes — no A-holds-X-wants-Y cycle.
+2. **The engine mutex is never acquired while holding the version lock.** The fast path takes the version lock alone; the fallback drops it before locking the engine (`committed_read`).
+3. **The durability barrier runs free of outer locks.** `commit_phases` drops the engine guard before `wait_durable`, and the flush runs after dropping barrier state — a slow fsync never wedges commits behind it.
+4. **Maintenance claims are leaf-scoped.** Single-flight claim per table, released by `Drop`; never held across engine acquisition.
+5. **Observability locks hash short strings only** and are never taken while holding engine, gate, or barrier state.
+
+## What would break it
+
+- Blocking on a gate while holding the engine mutex (inverts 1).
+- Taking the engine mutex under the version lock (inverts 2).
+- Waiting on the barrier while holding the engine guard (inverts 3 — the test-only `commit_concurrent` path is exempt only because it never runs concurrently).

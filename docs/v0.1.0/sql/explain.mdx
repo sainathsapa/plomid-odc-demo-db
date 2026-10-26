@@ -1,0 +1,32 @@
+---
+title: "EXPLAIN"
+description: "Plan inspection — syntax, output shapes, and what to look for."
+---
+
+# EXPLAIN
+
+```text
+EXPLAIN [(ANALYZE, FORMAT json|text, COSTS|BUFFERS|…)] statement
+EXPLAIN ANALYZE statement
+```
+
+```sql
+EXPLAIN SELECT * FROM users WHERE id = 5;
+EXPLAIN (ANALYZE, FORMAT JSON) SELECT * FROM orders WHERE user_id = 5;
+```
+
+Returns a single `QUERY PLAN : text` row (or one JSON document with `FORMAT JSON`).
+
+| Input | Output shape |
+| --- | --- |
+| `SELECT` | `Seq Scan on T (cost=1.01..1.01 rows=N width=W) [(filter: WHERE)]` |
+| Join | `Seq Scan on A JOIN B` (+ filter) |
+| `UNION` / `INTERSECT` / `EXCEPT` | `Append [ALL]` / `Hash Intersect [ALL]` / `Hash Except [ALL]` |
+| `WITH` | `CTE Scan (N CTEs)` |
+| `INSERT/UPDATE/DELETE` | `Insert on T` etc. |
+| `ANALYZE` | appends `Actual Rows: N, Execution Time: 0.00ms` (executes inner stmt) |
+| `FORMAT JSON` | `Plan{Node Type, Relation, Startup/Total Cost, Plan Rows/Width}` + actuals |
+
+`SELECT` plans over a table also append a `Hybrid Plan (N stages, estimated rows E):` section describing the fast path, one numbered stage per line (`INDEX LOOKUP` when the `WHERE` matches an index, `ROW IDS`, `COLUMN FETCH columns=[…]`, `VECTOR FILTER predicate=filter`, `AGGREGATION` for aggregates). Stage labels are generic (`predicate=filter`, `aggs=[count(*)]`) — they do not repeat your SQL text. Columnar segment pruning (zone-map/BRIN/XOR skips) is invisible in `EXPLAIN`: pruned segments simply never appear as work. The only signal is `plomid_stat_columnar().segments_skipped` — see [Logging & diagnostics](/v0.1.0/operations/logging-diagnostics). No hybrid section for `SELECT` without a table, non-`SELECT` statements, or `FORMAT JSON`. Worked example in [Inspect a query](/v0.1.0/build/inspect-query).
+
+No cost-based index-choice trace in v0.1.0. Use `ANALYZE` actuals and [Performance](/v0.1.0/operations/performance) to validate.

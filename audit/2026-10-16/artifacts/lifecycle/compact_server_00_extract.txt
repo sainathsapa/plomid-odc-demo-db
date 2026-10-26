@@ -1,0 +1,13 @@
+# server_00.log extract — compact lifecycle matrix boot 0 (full 7.7 MB debug log left in scratch: audit16-lifecompact/results/server_00.log)
+# lines: diskann checkpoint classification, readiness, shutdown
+50:2026-10-16T12:41:45.565253Z  INFO ThreadId(01) server: event="storage_ready" path=/private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/data
+78:2026-10-16T12:41:45.567789Z  INFO ThreadId(01) server: event="network_ready" listening_on=127.0.0.1:6191
+79:2026-10-16T12:41:45.567801Z  INFO ThreadId(01) server{service="plomid" host=127.0.0.1 port=6191 data_dir=/private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/data}: server: PLOMID is ready to accept connections event="server_ready" listening_on=127.0.0.1:6191 storage=/private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/data wal=/private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/data/wal
+25414:2026-10-16T12:41:49.964013Z  WARN ThreadId(15) connection{connection_id=3 peer=127.0.0.1:55383}: sql::vector_ann: diskann checkpoint unusable (no graph checkpoint); rebuilding from snapshot rows
+42017:2026-10-16T12:42:01.644560Z  WARN ThreadId(15) connection{connection_id=3 peer=127.0.0.1:55383}: sql::vector_ann: diskann checkpoint unusable (no graph checkpoint); rebuilding from snapshot rows
+42384:2026-10-16T12:42:39.165689Z  INFO ThreadId(01) server: event="shutdown_requested"
+42385:2026-10-16T12:42:39.166289Z  INFO ThreadId(01) server: event="maintenance_worker_shutdown" submitted=8 completed=4 inline_fallbacks=0 queue_depth=0
+42390:2026-10-16T12:42:39.244863Z DEBUG ThreadId(01) plomid::perf: event="checkpoint" trigger="shutdown" lsn=40770 duration_us=48624 wal_bytes=20852292 reclaimed_segments=2
+42391:2026-10-16T12:42:39.244908Z  INFO ThreadId(01) storage: event="checkpoint" trigger="shutdown" lsn=40770 duration_ms=48 wal_bytes=20852292 reclaimed_segments=2
+42392:2026-10-16T12:42:39.247321Z  INFO ThreadId(01) server: event="shutdown_checkpoint" stages=5 lsn=40770 duration_ms=81 reclaimed_segments=2 wal_bytes=20852292
+42393:2026-10-16T12:42:39.247342Z  INFO ThreadId(01) server: event="server_shutdown" drained_cleanly=true

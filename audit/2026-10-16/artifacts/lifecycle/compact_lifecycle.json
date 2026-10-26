@@ -1,0 +1,204 @@
+{
+  "bin": "/Users/sainathsapa/dsk/PloMID/plomid/target/release/plomid-server",
+  "dim": 64,
+  "diskann_recovery_lines": {
+    "server_00.log": [
+      "2026-10-16T12:41:49.964013Z  WARN ThreadId(15) connection{connection_id=3 peer=127.0.0.1:55383}: sql::vector_ann: diskann checkpoint unusable (no graph checkpoint); rebuilding from snapshot rows",
+      "2026-10-16T12:42:01.644560Z  WARN ThreadId(15) connection{connection_id=3 peer=127.0.0.1:55383}: sql::vector_ann: diskann checkpoint unusable (no graph checkpoint); rebuilding from snapshot rows"
+    ],
+    "server_01.log": [
+      "2026-10-16T12:42:41.839295Z DEBUG ThreadId(02) connection{connection_id=3 peer=127.0.0.1:55432}: sql::vector_ann: diskann checkpoint ready; rebuilding from snapshot rows",
+      "2026-10-16T12:42:53.433247Z DEBUG ThreadId(06) connection{connection_id=3 peer=127.0.0.1:55432}: sql::vector_ann: diskann checkpoint ready; rebuilding from snapshot rows"
+    ]
+  },
+  "dsn": "postgresql://plomid:plomid@127.0.0.1:6191/plomid",
+  "k": 10,
+  "machine": "arm64",
+  "methods": [
+    "hnsw",
+    "diskann"
+  ],
+  "queries": 8,
+  "results": [
+    {
+      "cache_files_before_restart": {},
+      "cold_builds": 1,
+      "cold_miss": 1,
+      "cold_ms": 270.77304100384936,
+      "cold_rebuild_us": 264751,
+      "ddl_ms": 4.231499995512422,
+      "dim": 64,
+      "explain": "Vector: Vector Exact scan on VECTOR(FLOAT32, 64) metric <-> limit 10",
+      "insert_ms": 235.44079100247473,
+      "method": "hnsw",
+      "rebuild_hits": 10,
+      "rebuild_miss": 0,
+      "rebuild_ms": 9.394749999046326,
+      "recall_at_k": 1.0,
+      "size": 2000,
+      "warm_fallbacks": 0,
+      "warm_hits": 12,
+      "warm_max_ms": 11.41316699795425,
+      "warm_p50_ms": 7.747916501102736
+    },
+    {
+      "cache_files_before_restart": {},
+      "cold_builds": 1,
+      "cold_miss": 1,
+      "cold_ms": 1727.8965419973247,
+      "cold_rebuild_us": 1705555,
+      "ddl_ms": 5.143417001818307,
+      "dim": 64,
+      "explain": "Vector: Vector ANN scan on VECTOR(FLOAT32, 64) metric <-> limit 10",
+      "insert_ms": 1008.0601669978932,
+      "method": "hnsw",
+      "rebuild_hits": 10,
+      "rebuild_miss": 0,
+      "rebuild_ms": 40.637584002979565,
+      "recall_at_k": 0.9,
+      "size": 8000,
+      "warm_fallbacks": 0,
+      "warm_hits": 12,
+      "warm_max_ms": 42.075709003256634,
+      "warm_p50_ms": 31.661437496950384
+    },
+    {
+      "cache_files_before_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000
+      },
+      "cold_builds": 1,
+      "cold_miss": 1,
+      "cold_ms": 10431.46029199852,
+      "cold_rebuild_us": 10421692,
+      "ddl_ms": 4.5218340019346215,
+      "dim": 64,
+      "explain": "Vector: Vector Exact scan on VECTOR(FLOAT32, 64) metric <-> limit 10",
+      "insert_ms": 233.70449999492848,
+      "method": "diskann",
+      "rebuild_hits": 10,
+      "rebuild_miss": 0,
+      "rebuild_ms": 14.404082998225931,
+      "recall_at_k": 0.0,
+      "size": 2000,
+      "warm_fallbacks": 0,
+      "warm_hits": 12,
+      "warm_max_ms": 16.457083002023865,
+      "warm_p50_ms": 12.485707997257123
+    },
+    {
+      "cache_files_before_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/graph.dat": 745432,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/vectors.dat": 2176000
+      },
+      "cold_builds": 1,
+      "cold_miss": 1,
+      "cold_ms": 36810.56841600366,
+      "cold_rebuild_us": 36779627,
+      "ddl_ms": 4.507375000684988,
+      "dim": 64,
+      "explain": "Vector: Vector ANN scan on VECTOR(FLOAT32, 64) metric <-> limit 10",
+      "insert_ms": 1003.4964580045198,
+      "method": "diskann",
+      "rebuild_hits": 10,
+      "rebuild_miss": 0,
+      "rebuild_ms": 53.90033299772767,
+      "recall_at_k": 0.2,
+      "size": 8000,
+      "warm_fallbacks": 0,
+      "warm_hits": 12,
+      "warm_max_ms": 57.4720000004163,
+      "warm_p50_ms": 41.92768700158922
+    },
+    {
+      "cache_files_after_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/graph.dat": 745432,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/vectors.dat": 2176000
+      },
+      "dim": 64,
+      "method": "hnsw",
+      "restart_accept_ms": 135.29058299900498,
+      "restart_cold_builds": 1,
+      "restart_cold_miss": 1,
+      "restart_cold_ms": 297.9481250004028,
+      "restart_cold_rebuild_us": 286733,
+      "restart_ready_ms": 162.51962499518413,
+      "restart_shutdown_ms": 122.98525000369409,
+      "restart_warm_hits": 12,
+      "restart_warm_p50_ms": 7.576000498374924,
+      "size": 2000,
+      "state_after_restart": "READY"
+    },
+    {
+      "cache_files_after_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/graph.dat": 745432,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/vectors.dat": 2176000
+      },
+      "dim": 64,
+      "method": "hnsw",
+      "restart_accept_ms": 135.29058299900498,
+      "restart_cold_builds": 1,
+      "restart_cold_miss": 1,
+      "restart_cold_ms": 1757.517915997596,
+      "restart_cold_rebuild_us": 1737100,
+      "restart_ready_ms": 162.51962499518413,
+      "restart_shutdown_ms": 122.98525000369409,
+      "restart_warm_hits": 12,
+      "restart_warm_p50_ms": 29.854500000510598,
+      "size": 8000,
+      "state_after_restart": "READY"
+    },
+    {
+      "cache_files_after_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/graph.dat": 745432,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/vectors.dat": 2176000
+      },
+      "dim": 64,
+      "method": "diskann",
+      "restart_accept_ms": 135.29058299900498,
+      "restart_cold_builds": 1,
+      "restart_cold_miss": 1,
+      "restart_cold_ms": 11456.550583003263,
+      "restart_cold_rebuild_us": 11445437,
+      "restart_ready_ms": 162.51962499518413,
+      "restart_shutdown_ms": 122.98525000369409,
+      "restart_warm_hits": 12,
+      "restart_warm_p50_ms": 11.356312501447974,
+      "size": 2000,
+      "state_after_restart": "READY"
+    },
+    {
+      "cache_files_after_restart": {
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/graph.dat": 454072,
+        "vector_ann/plomid/public_lc_t_diskann_2000/e/vectors.dat": 544000,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/graph.dat": 745432,
+        "vector_ann/plomid/public_lc_t_diskann_8000/e/vectors.dat": 2176000
+      },
+      "dim": 64,
+      "method": "diskann",
+      "restart_accept_ms": 135.29058299900498,
+      "restart_cold_builds": 1,
+      "restart_cold_miss": 1,
+      "restart_cold_ms": 40393.965999996,
+      "restart_cold_rebuild_us": 40362563,
+      "restart_ready_ms": 162.51962499518413,
+      "restart_shutdown_ms": 122.98525000369409,
+      "restart_warm_hits": 12,
+      "restart_warm_p50_ms": 41.4256665026187,
+      "size": 8000,
+      "state_after_restart": "READY"
+    }
+  ],
+  "sizes": [
+    2000,
+    8000
+  ]
+}

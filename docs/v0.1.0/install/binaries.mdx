@@ -1,0 +1,76 @@
+---
+title: "Install native binaries"
+description: "Install PLOMID from prebuilt release artifacts on macOS, Windows, and Linux."
+---
+
+# Install native binaries
+
+**Status: Supported** for every tagged release. Each release publishes all platforms together with `SHA256SUMS.txt`.
+
+## Prerequisites
+
+- A tagged release that includes your platform (check the [releases page](https://github.com/plomid/plomid/releases) or `sh install.sh --list`).
+- macOS: Apple silicon (`macos-arm64`) or Intel (`macos-x64`).
+- Windows: x64. Linux: x64 or arm64.
+
+## macOS
+
+1. Download the `.dmg` for your architecture from the release page.
+2. Open it and drag PLOMID to Applications.
+3. First launch of a beta build shows the standard unknown-publisher prompt — right-click → Open to proceed.
+
+Prefer the shell path? See [Shell installer](/v0.1.0/install/shell-installer) (same `.tar.gz` assets, checksum-verified).
+
+## Windows
+
+1. Download the installer `.exe` and run it, **or** download the portable `.zip`, unpack it, and run `plomid.exe`.
+2. SmartScreen notes the unknown publisher on beta builds — proceed explicitly.
+
+## Linux
+
+```sh
+# Debian/Ubuntu (ships a systemd unit):
+sudo apt install ./plomid_*.deb
+
+# RPM distros:
+sudo rpm -i plomid-*.rpm
+# or
+sudo dnf install ./plomid-*.rpm
+
+# Any distro (static tarball):
+tar xzf plomid-<version>-linux-<arch>.tar.gz
+./plomid-server --help
+```
+
+## Verify every artifact
+
+```sh
+sha256sum -c SHA256SUMS.txt   # verify checksums before installing
+./plomid-server --version
+```
+
+## Start, persist, connect
+
+```sh
+plomid-server --data /var/lib/plomid/data --host 127.0.0.1 --port 5432 \
+  --username plomid --password "$PLOMID_PASSWORD"
+psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5432/plomid"
+```
+
+Flag names matter: `--data` (not `--data-dir`), `--username` (not `--user`). Full reference: [Run the server](/v0.1.0/operations/run-server) and [Configuration](/v0.1.0/reference/config-reference). Data persists in the `--data` directory — back it up per [Backup and restore](/v0.1.0/operations/backup-restore).
+
+## Update / uninstall
+
+- **Update:** stop the server, take a [cold backup](/v0.1.0/operations/backup-restore), install the new package over the old one, restore to a clean directory with the new binary, and verify. Never skip the backup.
+- **Uninstall:** stop the server, remove the package (`apt remove plomid` / `rpm -e` / delete the app or directory), and delete the data directory only if you intend to discard the data.
+
+## Troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| Checksum mismatch | Do not install — re-download; never bypass verification. |
+| Unknown-publisher / SmartScreen prompt | Expected for unsigned beta builds; open explicitly. |
+| Port 5432 in use | Change `--port` / `PLOMID_PORT`. |
+| Non-loopback bind refused | Expected without TLS — see [Run the server](/v0.1.0/operations/run-server). |
+
+Next: [Quickstart](/v0.1.0/getting-started/quickstart).

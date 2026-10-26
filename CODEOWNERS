@@ -1,0 +1,16 @@
+# © 2026 PLOMID Technologies INDIA
+# PLOMID — Platform for Modern Intelligence and Data
+# Author: Sainath Sapa <info.djsai@gmail.com>
+# GitHub: https://github.com/sainathsapa (@sainathsapa)
+# Organization: PLOMID Technologies INDIA (https://github.com/plomid)
+# Default ownership for the PLOMID repository.
+* @plomid
+
+
+# Kernel crates require the engine owners' review.
+/crates/ @plomid
+@sainathsapa
+@plomid-admin
+
+# CI and repository automation require engineering-owner review.
+/.github/ @plomid

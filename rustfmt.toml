@@ -1,0 +1,13 @@
+# 
+# © 2026 PLOMID Technologies INDIA
+# PLOMID — Platform for Modern Intelligence and Data
+# Author: Sainath Sapa
+# Email: info.djsai@gmail.com
+# GitHub: https://github.com/sainathsapa
+# Organization: https://github.com/plomid
+edition = "2021"
+max_width = 100
+newline_style = "Unix"
+reorder_imports = true
+use_field_init_shorthand = true
+use_try_shorthand = true

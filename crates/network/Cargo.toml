@@ -1,0 +1,49 @@
+[package]
+name = "plomid-network"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Server protocol and session transport foundations for PLOMID."
+
+[dependencies]
+plomid-core = { workspace = true }
+plomid-security = { workspace = true }
+plomid-executor = { workspace = true }
+plomid-sql = { workspace = true }
+plomid-txn = { workspace = true }
+plomid-types = { workspace = true }
+plomid-vector = { workspace = true }
+tracing = "0.1"
+tokio = { version = "1", features = ["net", "io-util", "rt", "rt-multi-thread", "macros", "sync", "time"] }
+bytes = "1"
+# TLS transport (Phase 1): audited rustls stack. `aws_lc_rs` is the crypto
+# provider (Apache-2.0/ISC, deny-clean); `ring` is deliberately NOT used
+# (its OpenSSL license text trips the workspace allow-list).
+rustls = { version = "0.23", default-features = false, features = ["std", "tls12", "aws_lc_rs", "logging"] }
+tokio-rustls = "0.26"
+# PEM parsing comes from rustls-pki-types directly (rustls-pemfile is
+# unmaintained / RUSTSEC-2025-0134 and fails `cargo deny`).
+rustls-pki-types = "1"
+x509-parser = "0.16"
+
+[target.'cfg(unix)'.dependencies]
+# fd-pinned COPY jail opens (`openat` + `O_NOFOLLOW`): MIT/Apache-2.0,
+# deny-clean, already in the tree via tokio. Used only to close the
+# check-then-use symlink race; all semantics stay in std.
+libc = "0.2"
+
+[dev-dependencies]
+# Test-only certificate minting (self-signed + expired fixtures).
+rcgen = "0.13"
+# Date arithmetic for expired/not-yet-valid certificate fixtures.
+time = "0.3"
+
+[lib]
+path = "src/lib.rs"
+
+[lints]
+workspace = true

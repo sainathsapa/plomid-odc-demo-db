@@ -1,0 +1,63 @@
+---
+title: "Similarity search"
+description: "Top-k search patterns — ORDER BY distance LIMIT k, limits, NULL handling, and EXPLAIN."
+---
+
+# Similarity search
+
+The core pattern:
+
+```sql
+SELECT id, label, embedding <-> <query-vector> AS dist
+FROM <table>
+ORDER BY embedding <-> <query-vector>
+LIMIT k;
+```
+
+The query vector is a literal (`[1.0, 0.0, 0.0]`) or a query parameter (`$1` / `%s` from a driver — see [Application integration](/v0.1.0/vector/application-integration)). The operator in `ORDER BY` defines the ranking; `LIMIT k` defines how many neighbors come back.
+
+## Top-k with each metric
+
+```sql
+-- Euclidean nearest neighbors
+SELECT id, embedding <-> [1.0, 0.0, 0.0] AS dist FROM docs
+ORDER BY embedding <-> [1.0, 0.0, 0.0] LIMIT 2;
+
+-- Cosine nearest neighbors
+SELECT id, embedding <=> [1.0, 0.0, 0.0] AS dist FROM docs
+ORDER BY embedding <=> [1.0, 0.0, 0.0] LIMIT 2;
+
+-- Max inner-product (note ascending order on the negated operator)
+SELECT id, embedding <#> [1.0, 0.0, 0.0] AS score FROM docs
+ORDER BY embedding <#> [1.0, 0.0, 0.0] LIMIT 2;
+```
+
+## Limits and behavior
+
+- Top-k supports large `LIMIT` values (up to 1,000,000). Results are deterministically ordered by `(distance, row id)` — ties break the same way every run.
+- Always put the distance expression in `ORDER BY`. Without it, `LIMIT` returns arbitrary rows, not neighbors.
+- `NULL` embeddings produce `NULL` distances and never rank as neighbors; filter them out explicitly if the column is nullable and you need strict control (`WHERE embedding IS NOT NULL`).
+- Dimension mismatches between stored vectors and the query vector fail the query with a descriptive error — check the column's declared dimension first (`VECTOR(FLOAT32, n)`).
+
+## Inspecting the plan
+
+```sql
+EXPLAIN SELECT id FROM docs ORDER BY embedding <-> [1.0, 0.0, 0.0] LIMIT 2;
+```
+
+The plan includes a `Vector:` section naming the scan strategy (`Vector Exact scan` vs index-backed), the metric, the limit, active options (`ef_search`, candidate oversampling), and estimated exact-vs-ANN costs. On small tables expect `Vector Exact scan` with `Index: usable` — the engine measures that scanning beats index traversal and says so. See [Exact vs approximate](/v0.1.0/vector/exact-vs-approximate).
+
+## Tuning knobs (session settings)
+
+```sql
+SHOW vector.ann_enabled;   -- on | off
+SET vector.ann_enabled = off;  -- force exact scans (evaluation baselines)
+```
+
+Related settings include candidate oversampling, `ef_search`, row thresholds for automatic index use, and memory caps — see [Indexes](/v0.1.0/vector/indexes). Unknown `vector.*` settings fail closed rather than being silently ignored.
+
+## Next steps
+
+- [Filtering](/v0.1.0/vector/filtering) — combine `WHERE` with vector ordering.
+- [HNSW](/v0.1.0/vector/hnsw) — accelerate large scans.
+- [Troubleshooting](/v0.1.0/vector/troubleshooting) — dimension errors, empty results, slow queries.

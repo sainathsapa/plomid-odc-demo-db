@@ -1,0 +1,40 @@
+---
+title: "Operators"
+description: "Comparison, arithmetic, string, bitwise, JSON, and array operators with NULL rules."
+---
+
+# Operators
+
+## Comparison and logic
+
+`= != <> < <= > >=`, `AND OR NOT` (implemented as is-true checks — `NULL AND TRUE → false` here, differing from strict 3VL; see [NULL semantics](/v0.1.0/sql/null-semantics)), quantified `op ANY|ALL|SOME`.
+
+## Arithmetic and string
+
+`+ - * / %`, `^` (power, right-assoc), unary `-x`, `||` concat, `& | # << >>` bitwise. Temporal overloads: `date ± int → date`, `ts ± interval → ts`, `date − date → int`, `ts − ts → interval`.
+
+## Pattern
+
+`LIKE [ESCAPE]`, `ILIKE` (case-insensitive; `ESCAPE` honored), `SIMILAR TO`, `~ ~* !~ !~*` (→ `regex_match*` functions).
+
+## Casts, vectors, ranges
+
+- `expr::type` casts (binds tightly; see [Data types](/v0.1.0/data/types)).
+- Vector distance operators `<->` (L2), `<=>` (cosine), `<#>` (negative inner product), `<~>` (Hamming), `<%>` (Jaccard) — full semantics, ordering, and functions in [Distance operators](/v0.1.0/vector/distance-operators).
+- Range containment and overlap (`<@`, `@>`, `&&` on ranges) — see [Ranges](/v0.1.0/data/ranges).
+
+## JSON (at multiplicative level)
+
+| Op | Meaning |
+| --- | --- |
+| `->` / `->>` | field/index as JSON / as text |
+| `#>` / `#>>` | path (`text[]`) as JSON / text |
+| `#-` | delete path |
+| `@> <@ ? ?\| ?& @? @@` | contains / contained / exists / path predicates |
+| `-` on jsonb | \`jsonb - key | index | keys\` (subtract) |
+| \` |  | \` on jsonb | object merge / array concatenation |
+| `arr[i]`, `jsonb['k']`, `(r).f` | 1-based subscript / row field |
+
+## NULL rules
+
+Any comparison/arithmetic/`BETWEEN`/`LIKE` with NULL → NULL; `WHERE` keeps only `true`. `IS NULL`, `IS DISTINCT FROM` are NULL-aware. Most scalar functions return NULL on NULL input (`concat` skips NULLs, `concat_ws` NULL sep → NULL).

@@ -1,0 +1,325 @@
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/aggregate.rs:197:
+                     }
+                     let as_numeric = match v {
+                         Value::Numeric(n) => Some(n.clone()),
+[31m-                        Value::Int2(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_i64(i64::from(*n)))
+(B[m[31m-                        }
+(B[m[31m-                        Value::Int4(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_i64(i64::from(*n)))
+(B[m[31m-                        }
+(B[m[32m+                        Value::Int2(n) => Some(plomid_types::Numeric::from_i64(i64::from(*n))),
+(B[m[32m+                        Value::Int4(n) => Some(plomid_types::Numeric::from_i64(i64::from(*n))),
+(B[m                         Value::Int8(n) => Some(plomid_types::Numeric::from_i64(*n)),
+[31m-                        Value::Float4(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_f64(f64::from(*n)))
+(B[m[31m-                        }
+(B[m[32m+                        Value::Float4(n) => Some(plomid_types::Numeric::from_f64(f64::from(*n))),
+(B[m                         Value::Float8(n) => Some(plomid_types::Numeric::from_f64(*n)),
+                         _ => None,
+                     };
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/aggregate.rs:213:
+                     if let Some(n) = as_numeric {
+                         *acc = acc
+                             .clone()
+[31m-                            .map(|existing| {
+(B[m[31m-                                existing.add(n.clone()).unwrap_or_else(|_| n.clone())
+(B[m[31m-                            })
+(B[m[32m+                            .map(|existing| existing.add(n.clone()).unwrap_or_else(|_| n.clone()))
+(B[m                             .or_else(|| Some(n.clone()));
+                         *has_any = true;
+                     }
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/aggregate.rs:258:
+                     }
+                     let as_numeric = match v {
+                         Value::Numeric(n) => Some(n.clone()),
+[31m-                        Value::Int2(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_i64(i64::from(*n)))
+(B[m[31m-                        }
+(B[m[31m-                        Value::Int4(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_i64(i64::from(*n)))
+(B[m[31m-                        }
+(B[m[32m+                        Value::Int2(n) => Some(plomid_types::Numeric::from_i64(i64::from(*n))),
+(B[m[32m+                        Value::Int4(n) => Some(plomid_types::Numeric::from_i64(i64::from(*n))),
+(B[m                         Value::Int8(n) => Some(plomid_types::Numeric::from_i64(*n)),
+[31m-                        Value::Float4(n) => {
+(B[m[31m-                            Some(plomid_types::Numeric::from_f64(f64::from(*n)))
+(B[m[31m-                        }
+(B[m[32m+                        Value::Float4(n) => Some(plomid_types::Numeric::from_f64(f64::from(*n))),
+(B[m                         Value::Float8(n) => Some(plomid_types::Numeric::from_f64(*n)),
+                         _ => None,
+                     };
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/aggregate.rs:688:
+             // §P2: left-numeric wins by converting the right tail to Numeric
+             // (mirrors the fixed feeder). Reproduces the single-pass fold
+             // where the first non-integer was numeric.
+[31m-            (
+(B[m[31m-                Self::AvgNumeric { sum, count: n },
+(B[m[31m-                Self::AvgN { sum: extra, count },
+(B[m[31m-            ) => {
+(B[m[32m+            (Self::AvgNumeric { sum, count: n }, Self::AvgN { sum: extra, count }) => {
+(B[m                 let addend = plomid_types::Numeric::from_i64(extra);
+                 Self::AvgNumeric {
+                     sum: sum.add(addend.clone()).unwrap_or(addend),
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/aggregate.rs:698:
+                     count: n + count,
+                 }
+             }
+[31m-            (
+(B[m[31m-                Self::AvgNumeric { sum, count: n },
+(B[m[31m-                Self::AvgF { sum: extra, count },
+(B[m[31m-            ) => {
+(B[m[32m+            (Self::AvgNumeric { sum, count: n }, Self::AvgF { sum: extra, count }) => {
+(B[m                 let addend = plomid_types::Numeric::from_f64(extra);
+                 Self::AvgNumeric {
+                     sum: sum.add(addend.clone()).unwrap_or(addend),
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/query/project.rs:387:
+                 if let Ok(idx) = schema.column_index(unqualify(column)) {
+                     if let Some(input) = schema.columns.get(idx) {
+                         match input.col_type.type_oid {
+[31m-                            plomid_types::TypeOid::FLOAT4
+(B[m[31m-                            | plomid_types::TypeOid::FLOAT8 => {
+(B[m[32m+                            plomid_types::TypeOid::FLOAT4 | plomid_types::TypeOid::FLOAT8 => {
+(B[m                                 return Some(ColumnType::new(
+                                     plomid_types::TypeOid::FLOAT8,
+                                     plomid_types::NO_TYPEMOD,
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/window.rs:669:
+             // `int_sum` holds ONLY post-numeric integers (`numeric_sum` holds
+             // pre-numeric ints + numerics so far).
+             let had_numeric_sum = numeric_sum.is_some();
+[31m-            let mut total =
+(B[m[31m-                numeric_sum.unwrap_or_else(|| plomid_types::Numeric::from_i64(int_sum));
+(B[m[32m+            let mut total = numeric_sum.unwrap_or_else(|| plomid_types::Numeric::from_i64(int_sum));
+(B[m             if had_numeric_sum {
+                 if int_sum != 0 {
+                     total = total
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/src/window.rs:710:
+     if has_numeric {
+         // §P2: fold trailing integers/floats (see AVG branch above).
+         let had_numeric_sum = numeric_sum.is_some();
+[31m-        let mut total =
+(B[m[31m-            numeric_sum.unwrap_or_else(|| plomid_types::Numeric::from_i64(int_sum));
+(B[m[32m+        let mut total = numeric_sum.unwrap_or_else(|| plomid_types::Numeric::from_i64(int_sum));
+(B[m         if had_numeric_sum {
+             if int_sum != 0 {
+                 total = total
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/p2_avg_drop_role.rs:24:
+     (storage, wal)
+ }
+ 
+[31m-fn setup(tag: &str) -> (Executor<PlomidStorageEngine>, std::path::PathBuf, std::path::PathBuf) {
+(B[m[32m+fn setup(
+(B[m[32m+    tag: &str,
+(B[m[32m+) -> (
+(B[m[32m+    Executor<PlomidStorageEngine>,
+(B[m[32m+    std::path::PathBuf,
+(B[m[32m+    std::path::PathBuf,
+(B[m[32m+) {
+(B[m     let (storage, wal) = unique_engine(tag);
+     let engine = PlomidStorageEngine::create(&storage, &wal, 64).expect("create engine");
+     let executor = Executor::new(engine).expect("executor");
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/p2_avg_drop_role.rs:95:
+     ok(&mut ex, "INSERT INTO t VALUES (1.5), (2.5)");
+     let result = ex.execute("SELECT AVG(v) FROM t").expect("avg float");
+     match result {
+[31m-        QueryResult::Rows { rows, column_types, .. } => {
+(B[m[32m+        QueryResult::Rows {
+(B[m[32m+            rows, column_types, ..
+(B[m[32m+        } => {
+(B[m             assert_eq!(rows.len(), 1);
+             match &rows[0][0] {
+                 Value::Float8(v) => assert!((v - 2.0).abs() < 1e-12, "AVG(1.5,2.5)=2.0 got {v}"),
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/p2_avg_drop_role.rs:121:
+     ok(&mut ex, "INSERT INTO t VALUES (1.5), (2.5)");
+     let result = ex.execute("SELECT SUM(v) FROM t").expect("sum float");
+     match result {
+[31m-        QueryResult::Rows { rows, column_types, .. } => {
+(B[m[32m+        QueryResult::Rows {
+(B[m[32m+            rows, column_types, ..
+(B[m[32m+        } => {
+(B[m             match &rows[0][0] {
+                 Value::Float8(v) => assert!((v - 4.0).abs() < 1e-12),
+                 other => panic!("SUM(float8) should be Float8, got {other:?}"),
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/p2_avg_drop_role.rs:143:
+     ok(&mut ex, "INSERT INTO t VALUES (1), (2)");
+     let result = ex.execute("SELECT AVG(v) FROM t").expect("avg int");
+     match result {
+[31m-        QueryResult::Rows { rows, column_types, .. } => {
+(B[m[32m+        QueryResult::Rows {
+(B[m[32m+            rows, column_types, ..
+(B[m[32m+        } => {
+(B[m             assert!(
+                 matches!(rows[0][0], Value::Numeric(_)),
+                 "AVG(int) should be Numeric, got {:?}",
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/unit_query_aggregate.rs:126:
+             "{context}: expected finite numeric, got {numeric:?}"
+         ),
+         // §P2: float aggregates now finalize as Float8 (PG typing).
+[31m-        Value::Float8(v) => assert!(
+(B[m[31m-            v.is_finite(),
+(B[m[31m-            "{context}: expected finite float, got {v:?}"
+(B[m[31m-        ),
+(B[m[32m+        Value::Float8(v) => assert!(v.is_finite(), "{context}: expected finite float, got {v:?}"),
+(B[m         other => panic!("{context}: expected Numeric/Float8, got {other:?}"),
+     }
+ }
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/executor/tests/unit_query_aggregate.rs:309:
+             match (&merged, &single) {
+                 (Value::Float8(a), Value::Float8(b)) => {
+                     if a.is_nan() || b.is_nan() {
+[31m-                        assert!(
+(B[m[31m-                            a.is_nan() && b.is_nan(),
+(B[m[31m-                            "NaN mismatch: {a:?} vs {b:?}"
+(B[m[31m-                        );
+(B[m[32m+                        assert!(a.is_nan() && b.is_nan(), "NaN mismatch: {a:?} vs {b:?}");
+(B[m                     } else {
+                         assert_eq!(merged, single);
+                     }
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/ast.rs:272:
+     /// `DROP ROLE|USER [IF EXISTS] name` (PostgreSQL: USER is an alias for
+     /// ROLE; multiple names and CASCADE/RESTRICT are accepted and mapped to
+     /// single-name drops — see parser).
+[31m-    DropRole { name: String, if_exists: bool },
+(B[m[32m+    DropRole {
+(B[m[32m+        name: String,
+(B[m[32m+        if_exists: bool,
+(B[m[32m+    },
+(B[m     AlterTableRename {
+         table: String,
+         new_name: String,
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/encoding.rs:861:
+     }
+     // §P1 fix (legacy path): restore schema high-water and sync allocators.
+     {
+[31m-        let max_schema = catalog.schemas.values().map(|id| id.get()).max().unwrap_or(0);
+(B[m[32m+        let max_schema = catalog
+(B[m[32m+            .schemas
+(B[m[32m+            .values()
+(B[m[32m+            .map(|id| id.get())
+(B[m[32m+            .max()
+(B[m[32m+            .unwrap_or(0);
+(B[m         catalog.next_schema_id = catalog
+             .next_schema_id
+             .max(max_schema.saturating_add(1).max(2));
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/encoding.rs:1714:
+     // so every post-restart CREATE SCHEMA re-minted SchemaId(2). Recompute
+     // from the decoded schemas regardless of persisted high-water.
+     {
+[31m-        let max_schema = catalog.schemas.values().map(|id| id.get()).max().unwrap_or(0);
+(B[m[32m+        let max_schema = catalog
+(B[m[32m+            .schemas
+(B[m[32m+            .values()
+(B[m[32m+            .map(|id| id.get())
+(B[m[32m+            .max()
+(B[m[32m+            .unwrap_or(0);
+(B[m         catalog.next_schema_id = catalog
+             .next_schema_id
+             .max(max_schema.saturating_add(1).max(2));
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/mod.rs:44:
+ /// persisted high-water in the meta value (`encoding::ID_ALLOC_MAGIC`) plus
+ /// `max(id+1)` reconstruction on load; `sync_id_allocators` re-syncs the
+ /// atomics after every load.
+[31m-static NEXT_SCHEMA_ID: std::sync::atomic::AtomicU64 =
+(B[m[31m-    std::sync::atomic::AtomicU64::new(2);
+(B[m[31m-static NEXT_TABLE_ID: std::sync::atomic::AtomicU64 =
+(B[m[31m-    std::sync::atomic::AtomicU64::new(1);
+(B[m[31m-static NEXT_COLUMN_ID: std::sync::atomic::AtomicU64 =
+(B[m[31m-    std::sync::atomic::AtomicU64::new(1);
+(B[m[31m-static NEXT_INDEX_ID: std::sync::atomic::AtomicU64 =
+(B[m[31m-    std::sync::atomic::AtomicU64::new(1);
+(B[m[32m+static NEXT_SCHEMA_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(2);
+(B[m[32m+static NEXT_TABLE_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+(B[m[32m+static NEXT_COLUMN_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+(B[m[32m+static NEXT_INDEX_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+(B[m 
+ /// Serializes catalog save read-modify-write (§P1): concurrent savers from
+ /// the same base image must rebase against durable state atomically, or the
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/mod.rs:61:
+     LOCK.get_or_init(|| std::sync::Mutex::new(()))
+ }
+ 
+[31m-fn alloc_id(
+(B[m[31m-    global: &std::sync::atomic::AtomicU64,
+(B[m[31m-    local: &mut u64,
+(B[m[31m-) -> u64 {
+(B[m[32m+fn alloc_id(global: &std::sync::atomic::AtomicU64, local: &mut u64) -> u64 {
+(B[m     use std::sync::atomic::Ordering;
+     // Ensure the global is at least the image's high-water (handles images
+     // loaded before another session bumped the global, and fresh images
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/mod.rs:958:
+             }
+             // Re-created names clear their tombstone.
+             for added in &names {
+[31m-                self.dropped_databases.retain(|d| !d.eq_ignore_ascii_case(added));
+(B[m[32m+                self.dropped_databases
+(B[m[32m+                    .retain(|d| !d.eq_ignore_ascii_case(added));
+(B[m             }
+             self.database_names = names;
+             self.mark_meta_dirty();
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/src/catalog/mod.rs:1181:
+             ));
+         }
+         let holds_grants = self.table_grants.keys().any(|(grantee, _)| grantee == name)
+[31m-            || self.schema_grants.keys().any(|(grantee, _)| grantee == name)
+(B[m[32m+            || self
+(B[m[32m+                .schema_grants
+(B[m[32m+                .keys()
+(B[m[32m+                .any(|(grantee, _)| grantee == name)
+(B[m             || self.db_grants.keys().any(|(grantee, _)| grantee == name)
+[31m-            || self.db_connect_denied.iter().any(|(grantee, _)| grantee == name);
+(B[m[32m+            || self
+(B[m[32m+                .db_connect_denied
+(B[m[32m+                .iter()
+(B[m[32m+                .any(|(grantee, _)| grantee == name);
+(B[m         if holds_grants {
+             return Err(PlomidError::with_detail(
+                 ErrorKind::PermissionDenied,
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/tests/concurrent_ddl_ids.rs:36:
+     let id_a = a.get_table("public.a").unwrap().table_id;
+     let id_b = b.get_table("public.b").unwrap().table_id;
+     assert_ne!(
+[31m-        id_a, id_b,
+(B[m[32m+        id_a,
+(B[m[32m+        id_b,
+(B[m         "concurrent CREATE TABLE minted duplicate TableId({})",
+         id_a.get()
+     );
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/tests/concurrent_ddl_ids.rs:127:
+         },
+     )
+     .unwrap();
+[31m-    let id_a = *a
+(B[m[31m-        .get_table("public.t")
+(B[m[31m-        .unwrap()
+(B[m[31m-        .column_ids
+(B[m[31m-        .last()
+(B[m[31m-        .unwrap();
+(B[m[31m-    let id_b = *b
+(B[m[31m-        .get_table("public.t")
+(B[m[31m-        .unwrap()
+(B[m[31m-        .column_ids
+(B[m[31m-        .last()
+(B[m[31m-        .unwrap();
+(B[m[32m+    let id_a = *a.get_table("public.t").unwrap().column_ids.last().unwrap();
+(B[m[32m+    let id_b = *b.get_table("public.t").unwrap().column_ids.last().unwrap();
+(B[m     assert_ne!(id_a, id_b, "concurrent ADD COLUMN reused ColumnId");
+ }
+ 
+Diff in /Users/sainathsapa/dsk/PloMID/plomid/crates/sql/tests/concurrent_ddl_ids.rs:231:
+     save_catalog(&mut b, &mut engine).unwrap();
+ 
+     let restored = load_catalog(&mut engine).unwrap();
+[31m-    assert!(restored.has_schema("s_a"), "concurrent CREATE SCHEMA s_a lost");
+(B[m[31m-    assert!(restored.has_schema("s_b"), "concurrent CREATE SCHEMA s_b lost");
+(B[m[32m+    assert!(
+(B[m[32m+        restored.has_schema("s_a"),
+(B[m[32m+        "concurrent CREATE SCHEMA s_a lost"
+(B[m[32m+    );
+(B[m[32m+    assert!(
+(B[m[32m+        restored.has_schema("s_b"),
+(B[m[32m+        "concurrent CREATE SCHEMA s_b lost"
+(B[m[32m+    );
+(B[m     assert_ne!(
+         restored.schema_id("s_a"),
+         restored.schema_id("s_b"),
+fmt_exit=1

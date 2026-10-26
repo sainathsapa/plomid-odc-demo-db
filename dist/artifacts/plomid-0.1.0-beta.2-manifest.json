@@ -1,0 +1,18 @@
+{
+ "name": "plomid-0.1.0-beta.2",
+ "source_commit": "7acf160606363be03aae987df7f0cb7eb1638d0d",
+ "rust_toolchain": "rustc 1.99.0 (b940084d7 2026-09-28)",
+ "build_env": {
+  "os": "darwin-arm64 (report host)",
+  "profile": "evidence-only"
+ },
+ "build_timestamp": "2026-10-09T03:26:17Z",
+ "sbom": {
+  "path": "dist/artifacts/plomid-0.1.0-beta.2-sbom.spdx.json",
+  "sha256": "48115a0a5be7ad8c32a4d53a37a757531e1b99f1d47beb562b2feb57e2d95a97",
+  "packages": 201,
+  "format": "SPDX-2.3"
+ },
+ "cargo_deny": "ok",
+ "notes": "Local evidence manifest; release attestation happens in release.yml (cosign)."
+}

@@ -1,0 +1,5095 @@
+{
+ "spdxVersion": "SPDX-2.3",
+ "dataLicense": "CC0-1.0",
+ "SPDXID": "SPDXRef-DOCUMENT",
+ "name": "plomid-0.1.0-beta.2",
+ "documentNamespace": "https://github.com/plomid/plomid/sbom/7acf160606363be03aae987df7f0cb7eb1638d0d",
+ "creationInfo": {
+  "created": "2026-10-09T03:22:25Z",
+  "creators": [
+   "Tool: plomid-sbom-spdx.py",
+   "Organization: PLOMID Technologies INDIA"
+  ],
+  "licenseListVersion": "3.24"
+ },
+ "packages": [
+  {
+   "SPDXID": "SPDXRef-Package-0",
+   "name": "aho-corasick",
+   "versionInfo": "1.1.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "5d5c9ff868733aaa"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/aho-corasick@1.1.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-1",
+   "name": "anes",
+   "versionInfo": "0.1.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "586545dddefbcdd0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anes@0.1.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-2",
+   "name": "anstream",
+   "versionInfo": "1.0.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "72acd5c1d7e8d17f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anstream@1.0.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-3",
+   "name": "anstyle",
+   "versionInfo": "1.0.14",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b5df7819d7c55c92"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anstyle@1.0.14"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-4",
+   "name": "anstyle-parse",
+   "versionInfo": "1.0.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0fe63fcfaa4cf082"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anstyle-parse@1.0.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-5",
+   "name": "anstyle-query",
+   "versionInfo": "1.1.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4f24d8934a34bcb7"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anstyle-query@1.1.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-6",
+   "name": "anstyle-wincon",
+   "versionInfo": "3.0.11",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3847a11b512705ab"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/anstyle-wincon@3.0.11"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-7",
+   "name": "asn1-rs",
+   "versionInfo": "0.6.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f023b82ad4da1de6"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/asn1-rs@0.6.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-8",
+   "name": "asn1-rs-derive",
+   "versionInfo": "0.5.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "5ae70a3a4b6d1ba7"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/asn1-rs-derive@0.5.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-9",
+   "name": "asn1-rs-impl",
+   "versionInfo": "0.2.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "def92207a830e5b5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/asn1-rs-impl@0.2.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-10",
+   "name": "autocfg",
+   "versionInfo": "1.5.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "dcc7d0ab351bd598"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/autocfg@1.5.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-11",
+   "name": "aws-lc-rs",
+   "versionInfo": "1.18.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c019f49861b83679"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/aws-lc-rs@1.18.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-12",
+   "name": "aws-lc-sys",
+   "versionInfo": "0.45.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0e85e273f36514c3"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/aws-lc-sys@0.45.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-13",
+   "name": "base64",
+   "versionInfo": "0.22.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "426ed524d9190009"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/base64@0.22.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-14",
+   "name": "block-buffer",
+   "versionInfo": "0.10.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c90dc54759ab0e0f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/block-buffer@0.10.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-15",
+   "name": "bumpalo",
+   "versionInfo": "3.20.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "461c0cf6b289929a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/bumpalo@3.20.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-16",
+   "name": "bytes",
+   "versionInfo": "1.12.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cc96a0859401731e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/bytes@1.12.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-17",
+   "name": "cast",
+   "versionInfo": "0.3.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "6c95d8948f29ac61"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/cast@0.3.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-18",
+   "name": "cc",
+   "versionInfo": "1.4.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7ac6c16fb7b170cf"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/cc@1.4.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-19",
+   "name": "cfg-if",
+   "versionInfo": "1.0.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "24e169df7f742461"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/cfg-if@1.0.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-20",
+   "name": "ciborium",
+   "versionInfo": "0.2.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "69828b63ea152a40"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/ciborium@0.2.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-21",
+   "name": "ciborium-io",
+   "versionInfo": "0.2.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8768a94004624732"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/ciborium-io@0.2.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-22",
+   "name": "ciborium-ll",
+   "versionInfo": "0.2.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cba43ce26bf4f5d3"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/ciborium-ll@0.2.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-23",
+   "name": "clap",
+   "versionInfo": "4.6.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "d51047b6ab4bf5bf"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/clap@4.6.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-24",
+   "name": "clap_builder",
+   "versionInfo": "4.6.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "22949fb5aa4c6ff2"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/clap_builder@4.6.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-25",
+   "name": "clap_derive",
+   "versionInfo": "4.6.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "ddf8312e2a2156d0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/clap_derive@4.6.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-26",
+   "name": "clap_lex",
+   "versionInfo": "1.1.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "92cd6f28a369931b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/clap_lex@1.1.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-27",
+   "name": "cmake",
+   "versionInfo": "0.1.58",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "1b01f8e5faa2728a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/cmake@0.1.58"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-28",
+   "name": "colorchoice",
+   "versionInfo": "1.0.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c1549ca946a4f8a5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/colorchoice@1.0.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-29",
+   "name": "cpufeatures",
+   "versionInfo": "0.2.17",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "11dd7222fc794d7d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/cpufeatures@0.2.17"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-30",
+   "name": "crc32c",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "25e40da0807acdf8"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-31",
+   "name": "criterion",
+   "versionInfo": "0.5.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "727d7c1d20b63634"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/criterion@0.5.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-32",
+   "name": "criterion-plot",
+   "versionInfo": "0.5.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b980a057e120e5b5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/criterion-plot@0.5.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-33",
+   "name": "crossbeam-deque",
+   "versionInfo": "0.8.8",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c908e92d2e811ff5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/crossbeam-deque@0.8.8"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-34",
+   "name": "crossbeam-epoch",
+   "versionInfo": "0.9.21",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0168f4eee95a42b1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/crossbeam-epoch@0.9.21"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-35",
+   "name": "crossbeam-utils",
+   "versionInfo": "0.8.23",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7dcc52e4550d84af"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/crossbeam-utils@0.8.23"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-36",
+   "name": "crunchy",
+   "versionInfo": "0.2.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "746febd6a63cac58"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/crunchy@0.2.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-37",
+   "name": "crypto-common",
+   "versionInfo": "0.1.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "78998a9e86bbb0a4"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/crypto-common@0.1.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-38",
+   "name": "data-encoding",
+   "versionInfo": "2.11.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "411f3a7a099be315"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/data-encoding@2.11.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-39",
+   "name": "der-parser",
+   "versionInfo": "9.0.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "231de6c94d84c534"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/der-parser@9.0.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-40",
+   "name": "deranged",
+   "versionInfo": "0.5.8",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c0ef3a843dede1f8"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/deranged@0.5.8"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-41",
+   "name": "digest",
+   "versionInfo": "0.10.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0350c8984ecc8e39"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/digest@0.10.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-42",
+   "name": "displaydoc",
+   "versionInfo": "0.2.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "34f59914bbcf7f54"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/displaydoc@0.2.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-43",
+   "name": "dunce",
+   "versionInfo": "1.0.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3685b481bb6e67dc"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/dunce@1.0.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-44",
+   "name": "either",
+   "versionInfo": "1.18.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7082d922aa5e6869"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/either@1.18.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-45",
+   "name": "errno",
+   "versionInfo": "0.3.14",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "271a8aa921645551"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/errno@0.3.14"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-46",
+   "name": "find-msvc-tools",
+   "versionInfo": "0.1.12",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "e2d405d192267625"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/find-msvc-tools@0.1.12"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-47",
+   "name": "fs_extra",
+   "versionInfo": "1.3.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c97fd1d9eb48ea03"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/fs_extra@1.3.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-48",
+   "name": "futures-core",
+   "versionInfo": "0.3.34",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "34bf0e62d87e61dd"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/futures-core@0.3.34"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-49",
+   "name": "futures-task",
+   "versionInfo": "0.3.34",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "236a6c6f825654f3"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/futures-task@0.3.34"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-50",
+   "name": "futures-util",
+   "versionInfo": "0.3.34",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0b83be8066d4df51"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/futures-util@0.3.34"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-51",
+   "name": "generic-array",
+   "versionInfo": "0.14.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f6b5106d98857701"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/generic-array@0.14.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-52",
+   "name": "getrandom",
+   "versionInfo": "0.2.17",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "d00a436a07288e78"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/getrandom@0.2.17"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-53",
+   "name": "getrandom",
+   "versionInfo": "0.3.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9acd07629d4f31f0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/getrandom@0.3.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-54",
+   "name": "getrandom",
+   "versionInfo": "0.4.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f7625a075467447b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/getrandom@0.4.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-55",
+   "name": "half",
+   "versionInfo": "2.7.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "412502c222088302"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/half@2.7.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-56",
+   "name": "heck",
+   "versionInfo": "0.5.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b2ba43a422bc319c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/heck@0.5.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-57",
+   "name": "hermit-abi",
+   "versionInfo": "0.5.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "afc7e3e4bf2667f0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/hermit-abi@0.5.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-58",
+   "name": "hmac",
+   "versionInfo": "0.12.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3a6e5c0386401044"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/hmac@0.12.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-59",
+   "name": "is-terminal",
+   "versionInfo": "0.4.17",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "58f85e133947ffce"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/is-terminal@0.4.17"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-60",
+   "name": "is_terminal_polyfill",
+   "versionInfo": "1.70.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "48119ad88ebb9ce9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/is_terminal_polyfill@1.70.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-61",
+   "name": "itertools",
+   "versionInfo": "0.10.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b99661d08c7bd479"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/itertools@0.10.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-62",
+   "name": "itoa",
+   "versionInfo": "1.0.18",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "aa2c9ab0f05b946b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/itoa@1.0.18"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-63",
+   "name": "jobserver",
+   "versionInfo": "0.1.35",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0fe6ff307f356b33"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/jobserver@0.1.35"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-64",
+   "name": "js-sys",
+   "versionInfo": "0.3.104",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "479bd66db268b413"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/js-sys@0.3.104"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-65",
+   "name": "lazy_static",
+   "versionInfo": "1.5.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "499652b12308d191"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/lazy_static@1.5.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-66",
+   "name": "libc",
+   "versionInfo": "0.2.189",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9f32f54c3df7626f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/libc@0.2.189"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-67",
+   "name": "log",
+   "versionInfo": "0.4.34",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "86597a478702e414"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/log@0.4.34"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-68",
+   "name": "matchers",
+   "versionInfo": "0.2.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "607b0f6dd05be683"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/matchers@0.2.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-69",
+   "name": "md-5",
+   "versionInfo": "0.10.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "10d6f436fb0fb919"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/md-5@0.10.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-70",
+   "name": "memchr",
+   "versionInfo": "2.8.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b0e9e8e79fcae4c1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/memchr@2.8.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-71",
+   "name": "minimal-lexical",
+   "versionInfo": "0.2.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7446b86266aca25b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/minimal-lexical@0.2.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-72",
+   "name": "mio",
+   "versionInfo": "1.2.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3bad1f1a561b3f12"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/mio@1.2.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-73",
+   "name": "nom",
+   "versionInfo": "7.1.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0935d9e18110486f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/nom@7.1.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-74",
+   "name": "nu-ansi-term",
+   "versionInfo": "0.50.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "fc831ca16f5bc724"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/nu-ansi-term@0.50.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-75",
+   "name": "num-bigint",
+   "versionInfo": "0.4.8",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0a6a8d7fe9ae9850"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/num-bigint@0.4.8"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-76",
+   "name": "num-conv",
+   "versionInfo": "0.2.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "e2fcd6c8f261ea6c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/num-conv@0.2.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-77",
+   "name": "num-integer",
+   "versionInfo": "0.1.47",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cdf078391552dd76"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/num-integer@0.1.47"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-78",
+   "name": "num-traits",
+   "versionInfo": "0.2.19",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a9d058ada5a8908b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/num-traits@0.2.19"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-79",
+   "name": "oid-registry",
+   "versionInfo": "0.7.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8ef7114e6106785f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/oid-registry@0.7.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-80",
+   "name": "once_cell",
+   "versionInfo": "1.21.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c08026ece3b9689d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/once_cell@1.21.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-81",
+   "name": "once_cell_polyfill",
+   "versionInfo": "1.70.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a19f96f39fdb878e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/once_cell_polyfill@1.70.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-82",
+   "name": "oorandom",
+   "versionInfo": "11.1.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "77f4dc58c7f2c89e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/oorandom@11.1.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-83",
+   "name": "pbkdf2",
+   "versionInfo": "0.12.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a0bc305e917829a2"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/pbkdf2@0.12.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-84",
+   "name": "pem",
+   "versionInfo": "3.0.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3b93ffe96e74e0c4"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/pem@3.0.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-85",
+   "name": "pin-project-lite",
+   "versionInfo": "0.2.17",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c951c4db0da5847f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/pin-project-lite@0.2.17"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-86",
+   "name": "pkg-config",
+   "versionInfo": "0.3.34",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a50275f1cc96e2c4"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/pkg-config@0.3.34"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-87",
+   "name": "plomid-cli",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "728d51bf6ea9bc6e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-88",
+   "name": "plomid-columnar",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "dc2c7242f04affea"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-89",
+   "name": "plomid-core",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "dc73258ab61cd8d6"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-90",
+   "name": "plomid-executor",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "ef8c3a0acf46d306"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-91",
+   "name": "plomid-filters",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "444e979af84b6cc5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-92",
+   "name": "plomid-gauntlet",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "833668a4b9f1ea43"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-93",
+   "name": "plomid-htap",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0dde666c612358a9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-94",
+   "name": "plomid-hw",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "610505ad7380a744"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-95",
+   "name": "plomid-index",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4a1d1a4ff6db3cbe"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-96",
+   "name": "plomid-json",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b72a314c3f165850"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-97",
+   "name": "plomid-memory",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "67e0d6b1408c3093"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-98",
+   "name": "plomid-mvcc",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "704ee0514fb2d026"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-99",
+   "name": "plomid-network",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "d61ce80074c76a1e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-100",
+   "name": "plomid-optimizer",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "094c0db812fca3d5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-101",
+   "name": "plomid-security",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "5df67fe23588644f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-102",
+   "name": "plomid-server",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "e9b30472a3a75b3a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-103",
+   "name": "plomid-spill",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "fa63cdd0c4fa60e1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-104",
+   "name": "plomid-sql",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "484726e42fae8ab2"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-105",
+   "name": "plomid-storage",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cc4ddbfdf209cf3c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-106",
+   "name": "plomid-stream",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "e70a16a5489283b1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-107",
+   "name": "plomid-txn",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "dca8990605f1c9f1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-108",
+   "name": "plomid-types",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "30aa02647a6b4da9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-109",
+   "name": "plomid-vector",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3ac681b170a5b711"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-110",
+   "name": "plomid-wal",
+   "versionInfo": "0.1.0-beta.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "NOASSERTION",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "245ad66b7d1c9808"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": []
+  },
+  {
+   "SPDXID": "SPDXRef-Package-111",
+   "name": "plotters",
+   "versionInfo": "0.3.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f91d0ac5aa985987"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/plotters@0.3.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-112",
+   "name": "plotters-backend",
+   "versionInfo": "0.3.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a3be1972b94402ea"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/plotters-backend@0.3.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-113",
+   "name": "plotters-svg",
+   "versionInfo": "0.3.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "2521d37ce6aa1238"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/plotters-svg@0.3.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-114",
+   "name": "powerfmt",
+   "versionInfo": "0.2.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "c980be404f69848c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/powerfmt@0.2.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-115",
+   "name": "proc-macro2",
+   "versionInfo": "1.0.107",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "e666f66fb4ec2628"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/proc-macro2@1.0.107"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-116",
+   "name": "quote",
+   "versionInfo": "1.0.47",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a5ee0ed70fe2256c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/quote@1.0.47"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-117",
+   "name": "r-efi",
+   "versionInfo": "5.3.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9d57c5af81ee446d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/r-efi@5.3.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-118",
+   "name": "r-efi",
+   "versionInfo": "6.0.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "5f8585b65bf978ef"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/r-efi@6.0.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-119",
+   "name": "rand_core",
+   "versionInfo": "0.9.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "39e1ca79373383e1"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rand_core@0.9.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-120",
+   "name": "rayon",
+   "versionInfo": "1.12.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9969b52567662abf"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rayon@1.12.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-121",
+   "name": "rayon-core",
+   "versionInfo": "1.13.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "70d3b7e4ebd09f69"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rayon-core@1.13.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-122",
+   "name": "rcgen",
+   "versionInfo": "0.13.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "18eb08d7307d13d6"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rcgen@0.13.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-123",
+   "name": "regex",
+   "versionInfo": "1.13.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b22f0520159958c8"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/regex@1.13.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-124",
+   "name": "regex-automata",
+   "versionInfo": "0.4.18",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "036751a6f519378f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/regex-automata@0.4.18"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-125",
+   "name": "regex-syntax",
+   "versionInfo": "0.8.11",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "6130ceea89dd03cd"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/regex-syntax@0.8.11"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-126",
+   "name": "ring",
+   "versionInfo": "0.17.14",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "b35d7cf84c724315"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/ring@0.17.14"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-127",
+   "name": "rusticata-macros",
+   "versionInfo": "4.1.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0141052019c363b9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rusticata-macros@4.1.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-128",
+   "name": "rustls",
+   "versionInfo": "0.23.45",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "6b6d1cb29295eae6"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rustls@0.23.45"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-129",
+   "name": "rustls-pki-types",
+   "versionInfo": "1.15.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "87ee20085d383de7"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rustls-pki-types@1.15.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-130",
+   "name": "rustls-webpki",
+   "versionInfo": "0.103.15",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "47fc59d8ad04ea64"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rustls-webpki@0.103.15"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-131",
+   "name": "rustversion",
+   "versionInfo": "1.0.23",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "926e46fc8d42db53"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/rustversion@1.0.23"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-132",
+   "name": "same-file",
+   "versionInfo": "1.0.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4051b822913ed9ce"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/same-file@1.0.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-133",
+   "name": "serde",
+   "versionInfo": "1.0.229",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "841bbbdc7e91a389"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/serde@1.0.229"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-134",
+   "name": "serde_core",
+   "versionInfo": "1.0.229",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "ec6f50f49efe7415"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/serde_core@1.0.229"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-135",
+   "name": "serde_derive",
+   "versionInfo": "1.0.229",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "32418dfd07a67ea3"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/serde_derive@1.0.229"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-136",
+   "name": "serde_json",
+   "versionInfo": "1.0.151",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0f234275570bd704"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/serde_json@1.0.151"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-137",
+   "name": "sha2",
+   "versionInfo": "0.10.9",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "2c2bf613edec2833"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/sha2@0.10.9"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-138",
+   "name": "sharded-slab",
+   "versionInfo": "0.1.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8cf8f888ebdc632f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/sharded-slab@0.1.7"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-139",
+   "name": "shlex",
+   "versionInfo": "2.0.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "409bf6a1222b86a5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/shlex@2.0.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-140",
+   "name": "signal-hook-registry",
+   "versionInfo": "1.4.8",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "16852468a970fbb7"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/signal-hook-registry@1.4.8"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-141",
+   "name": "slab",
+   "versionInfo": "0.4.12",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "da9475db2e97268c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/slab@0.4.12"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-142",
+   "name": "smallvec",
+   "versionInfo": "1.16.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0adc3c18863deac9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/smallvec@1.16.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-143",
+   "name": "socket2",
+   "versionInfo": "0.6.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "ea5dac51fc0a6717"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/socket2@0.6.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-144",
+   "name": "strsim",
+   "versionInfo": "0.11.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4451b80eae06e256"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/strsim@0.11.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-145",
+   "name": "subtle",
+   "versionInfo": "2.6.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "1a41c3e39c03e1f5"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/subtle@2.6.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-146",
+   "name": "syn",
+   "versionInfo": "2.0.119",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "48b5981612ffba47"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/syn@2.0.119"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-147",
+   "name": "syn",
+   "versionInfo": "3.0.4",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f0eab9e0ab4d8c79"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/syn@3.0.4"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-148",
+   "name": "synstructure",
+   "versionInfo": "0.13.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "dd5424b067496827"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/synstructure@0.13.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-149",
+   "name": "thiserror",
+   "versionInfo": "1.0.69",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "d4e3dc3bb91cc4c8"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/thiserror@1.0.69"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-150",
+   "name": "thiserror-impl",
+   "versionInfo": "1.0.69",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "d8f7e0037e6ffd7d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/thiserror-impl@1.0.69"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-151",
+   "name": "thread_local",
+   "versionInfo": "1.1.10",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "229dec4e128bca9a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/thread_local@1.1.10"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-152",
+   "name": "time",
+   "versionInfo": "0.3.55",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7fef77539208a246"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/time@0.3.55"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-153",
+   "name": "time-core",
+   "versionInfo": "0.1.9",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3e92e881b620aabd"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/time-core@0.1.9"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-154",
+   "name": "time-macros",
+   "versionInfo": "0.2.32",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "05de77e52ca66d43"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/time-macros@0.2.32"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-155",
+   "name": "tinytemplate",
+   "versionInfo": "1.2.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8c4a2e6ae7b28833"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tinytemplate@1.2.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-156",
+   "name": "tokio",
+   "versionInfo": "1.53.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3b8b762e3a863814"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tokio@1.53.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-157",
+   "name": "tokio-macros",
+   "versionInfo": "2.7.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "26d380de243161ac"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tokio-macros@2.7.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-158",
+   "name": "tokio-rustls",
+   "versionInfo": "0.26.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8f0904c260882f0e"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tokio-rustls@0.26.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-159",
+   "name": "tracing",
+   "versionInfo": "0.1.44",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "3c92d3f8823d4d0c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tracing@0.1.44"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-160",
+   "name": "tracing-attributes",
+   "versionInfo": "0.1.31",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "0e015966a3805910"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tracing-attributes@0.1.31"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-161",
+   "name": "tracing-core",
+   "versionInfo": "0.1.36",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4ea406a5a360e6ed"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tracing-core@0.1.36"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-162",
+   "name": "tracing-log",
+   "versionInfo": "0.2.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7b1b4395f3c82efe"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tracing-log@0.2.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-163",
+   "name": "tracing-subscriber",
+   "versionInfo": "0.3.23",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "48cfb6a7f9e8a517"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/tracing-subscriber@0.3.23"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-164",
+   "name": "typenum",
+   "versionInfo": "1.20.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "ce2f59760c5864ee"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/typenum@1.20.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-165",
+   "name": "unicode-ident",
+   "versionInfo": "1.0.24",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a6b32a6a28a3d774"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/unicode-ident@1.0.24"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-166",
+   "name": "untrusted",
+   "versionInfo": "0.9.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "50933cd2fbde64df"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/untrusted@0.9.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-167",
+   "name": "utf8parse",
+   "versionInfo": "0.2.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "777dffbcbc50db2c"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/utf8parse@0.2.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-168",
+   "name": "valuable",
+   "versionInfo": "0.1.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "143d231f24250f39"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/valuable@0.1.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-169",
+   "name": "version_check",
+   "versionInfo": "0.9.5",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "50dc74b8091e7d76"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/version_check@0.9.5"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-170",
+   "name": "walkdir",
+   "versionInfo": "2.5.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "2daf884bf92c2fa3"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/walkdir@2.5.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-171",
+   "name": "wasi",
+   "versionInfo": "0.11.1+wasi-snapshot-preview1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "7489d2a7c41dfd80"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasi@0.11.1+wasi-snapshot-preview1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-172",
+   "name": "wasip2",
+   "versionInfo": "1.0.4+wasi-0.2.12",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "99c453521e7b4214"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasip2@1.0.4+wasi-0.2.12"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-173",
+   "name": "wasm-bindgen",
+   "versionInfo": "0.2.127",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "25b5a67ad41224db"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasm-bindgen@0.2.127"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-174",
+   "name": "wasm-bindgen-macro",
+   "versionInfo": "0.2.127",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "82b07a558a82bcc0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasm-bindgen-macro@0.2.127"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-175",
+   "name": "wasm-bindgen-macro-support",
+   "versionInfo": "0.2.127",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "63e7004da4f7d9b6"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasm-bindgen-macro-support@0.2.127"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-176",
+   "name": "wasm-bindgen-shared",
+   "versionInfo": "0.2.127",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f3e18bd4faec2bca"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wasm-bindgen-shared@0.2.127"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-177",
+   "name": "web-sys",
+   "versionInfo": "0.3.104",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "61147ca37d1c69de"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/web-sys@0.3.104"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-178",
+   "name": "winapi-util",
+   "versionInfo": "0.1.11",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "8a54ff9fc7f16749"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/winapi-util@0.1.11"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-179",
+   "name": "windows-link",
+   "versionInfo": "0.2.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "1b5aa1e7d7e381c0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows-link@0.2.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-180",
+   "name": "windows-sys",
+   "versionInfo": "0.52.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "2af2271ed4989d9a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows-sys@0.52.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-181",
+   "name": "windows-sys",
+   "versionInfo": "0.61.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "97694da6ea85eeba"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows-sys@0.61.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-182",
+   "name": "windows-targets",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "76ddc57df022eae0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows-targets@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-183",
+   "name": "windows_aarch64_gnullvm",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "101ba07fbd993984"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_aarch64_gnullvm@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-184",
+   "name": "windows_aarch64_msvc",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f22167edd82b4f2d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_aarch64_msvc@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-185",
+   "name": "windows_i686_gnu",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "f76513c237b9e91b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_i686_gnu@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-186",
+   "name": "windows_i686_gnullvm",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "867afbc413fbe251"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_i686_gnullvm@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-187",
+   "name": "windows_i686_msvc",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "65cd6bdb52ea6f43"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_i686_msvc@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-188",
+   "name": "windows_x86_64_gnu",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9ddf66996be6d349"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_x86_64_gnu@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-189",
+   "name": "windows_x86_64_gnullvm",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "80e0e1e4b2f430b4"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_x86_64_gnullvm@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-190",
+   "name": "windows_x86_64_msvc",
+   "versionInfo": "0.52.6",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cfe37073c2c79b3d"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/windows_x86_64_msvc@0.52.6"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-191",
+   "name": "wit-bindgen",
+   "versionInfo": "0.57.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "cc68d177bb66b581"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/wit-bindgen@0.57.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-192",
+   "name": "x509-parser",
+   "versionInfo": "0.16.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a00b1328e50d1788"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/x509-parser@0.16.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-193",
+   "name": "yasna",
+   "versionInfo": "0.5.2",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "9331f96d9f2b20d9"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/yasna@0.5.2"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-194",
+   "name": "zerocopy",
+   "versionInfo": "0.8.57",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "2673f12b36c68687"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zerocopy@0.8.57"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-195",
+   "name": "zerocopy-derive",
+   "versionInfo": "0.8.57",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "80cac004b5361fe0"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zerocopy-derive@0.8.57"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-196",
+   "name": "zeroize",
+   "versionInfo": "1.9.1",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "68665749b94e391f"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zeroize@1.9.1"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-197",
+   "name": "zmij",
+   "versionInfo": "1.0.23",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4c09a3f614f7b28b"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zmij@1.0.23"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-198",
+   "name": "zstd",
+   "versionInfo": "0.13.3",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "a6cc04f11b4f7c0a"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zstd@0.13.3"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-199",
+   "name": "zstd-safe",
+   "versionInfo": "7.3.0",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "4c7cec7683f94b51"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zstd-safe@7.3.0"
+    }
+   ]
+  },
+  {
+   "SPDXID": "SPDXRef-Package-200",
+   "name": "zstd-sys",
+   "versionInfo": "2.1.0+zstd.1.5.7",
+   "supplier": "NOASSERTION",
+   "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+   "filesAnalyzed": false,
+   "verificationCode": {
+    "packageVerificationCodeValue": "fb592e4fe34cca45"
+   },
+   "licenseConcluded": "NOASSERTION",
+   "licenseDeclared": "NOASSERTION",
+   "copyrightText": "NOASSERTION",
+   "externalRefs": [
+    {
+     "referenceCategory": "PACKAGE-MANAGER",
+     "referenceType": "purl",
+     "referenceLocator": "pkg:cargo/zstd-sys@2.1.0+zstd.1.5.7"
+    }
+   ]
+  }
+ ],
+ "relationships": [
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-0",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-1",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-2",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-3",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-4",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-5",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-6",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-7",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-8",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-9",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-10",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-11",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-12",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-13",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-14",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-15",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-16",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-17",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-18",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-19",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-20",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-21",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-22",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-23",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-24",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-25",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-26",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-27",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-28",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-29",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-30",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-31",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-32",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-33",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-34",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-35",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-36",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-37",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-38",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-39",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-40",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-41",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-42",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-43",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-44",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-45",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-46",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-47",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-48",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-49",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-50",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-51",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-52",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-53",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-54",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-55",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-56",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-57",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-58",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-59",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-60",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-61",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-62",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-63",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-64",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-65",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-66",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-67",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-68",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-69",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-70",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-71",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-72",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-73",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-74",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-75",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-76",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-77",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-78",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-79",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-80",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-81",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-82",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-83",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-84",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-85",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-86",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-87",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-88",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-89",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-90",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-91",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-92",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-93",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-94",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-95",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-96",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-97",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-98",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-99",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-100",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-101",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-102",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-103",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-104",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-105",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-106",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-107",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-108",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-109",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-110",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-111",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-112",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-113",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-114",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-115",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-116",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-117",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-118",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-119",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-120",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-121",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-122",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-123",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-124",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-125",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-126",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-127",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-128",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-129",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-130",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-131",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-132",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-133",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-134",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-135",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-136",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-137",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-138",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-139",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-140",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-141",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-142",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-143",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-144",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-145",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-146",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-147",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-148",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-149",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-150",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-151",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-152",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-153",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-154",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-155",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-156",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-157",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-158",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-159",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-160",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-161",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-162",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-163",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-164",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-165",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-166",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-167",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-168",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-169",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-170",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-171",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-172",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-173",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-174",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-175",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-176",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-177",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-178",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-179",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-180",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-181",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-182",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-183",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-184",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-185",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-186",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-187",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-188",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-189",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-190",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-191",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-192",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-193",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-194",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-195",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-196",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-197",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-198",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-199",
+   "relationshipType": "DESCRIBES"
+  },
+  {
+   "spdxElementId": "SPDXRef-DOCUMENT",
+   "relatedSpdxElement": "SPDXRef-Package-200",
+   "relationshipType": "DESCRIBES"
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+[package]
+name = "plomid-gauntlet"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "FINAL HTAP GAUNTLET: six production benchmark families wired to live engine paths."
+
+[dependencies]
+plomid-core = { workspace = true }
+plomid-sql = { workspace = true }
+plomid-executor = { workspace = true }
+plomid-txn = { workspace = true }
+plomid-storage = { workspace = true }
+plomid-htap = { workspace = true }
+plomid-memory = { workspace = true }
+plomid-columnar = { workspace = true }
+plomid-vector = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints]
+workspace = true

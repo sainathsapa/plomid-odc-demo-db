@@ -1,0 +1,44 @@
+---
+title: "Vector limitations"
+description: "What vector search does not do in v0.1.0 — experimental types, fallbacks, and unsupported paths."
+---
+
+# Vector limitations
+
+Honest boundaries for `v0.1.0`. Anything listed here as limited, experimental, or unsupported may improve in later versions; check the versioned section of a newer release rather than assuming.
+
+## Experimental: sparse and multivector
+
+- `SPARSE_VECTOR(element, dim)` and `MULTI_VECTOR(element, max_vectors, dim)` **parse in DDL** but have **no verified literal or insert path through SQL**. Creating such a column succeeds; populating it through documented SQL does not. Status: **Experimental** — do not build on these types.
+- Sparse inverted and multivector index machinery exists, but without a SQL write path there is nothing to index from ordinary clients.
+
+## Limited: binary vectors
+
+- `VECTOR(BINARY, n)` DDL, `'0101…'` string literals, and Hamming (`<~>`) / Jaccard (`<%>`) queries are **supported**.
+- Hamming (`<~>`, `hamming_distance`) over a `USING BINARY` index is **ANN-accelerated** (multi-index hashing with exact rerank; deterministic `(distance, row_id)` ordering). Recall is approximate by design: when block probes match fewer than `k` rows, the full live set is scored instead (exact results; no speedup claimed), but when the candidate set is large enough to fill top-`k` the served hits can miss true neighbors. Measured worst case is non-word-aligned widths (e.g. `dim` 130, whose trailing partial word's block has few distinct values): recall 0.5–0.9, while widths 64/128 measured 1.0 in the same matrix.
+- Jaccard (`<%>`) is **explicitly not ANN-accelerated**: block equality carries no Jaccard signal, so Jaccard queries stay on the exact scan even when a binary index exists. Results are correct; there is no acceleration.
+- Numeric operators (`<->`, `<=>`, `<#>`) on binary columns are rejected, and bit operators on numeric columns are rejected. The errors name the mismatch.
+
+## Serving notes (all methods)
+
+- Radius (`WHERE distance(...) < bound`) ANN engages only for shapes the executor routes to the index well; pure-radius queries over plain scans use the exact predicate path. Either way results are complete — and `ivf_sq`, `ivf_pq`, and `diskann` never serve radius from their approximate wells (they decline to exact rather than risk missing rows inside the bound).
+- `CREATE/DROP INDEX` evicts cached ANN graphs: the next eligible query rebuilds from authoritative rows. Dropping an index therefore also stops acceleration immediately (no orphaned index serving).
+
+## Limited: other index methods
+
+- `ivf_flat`, `ivf_sq`, `ivf_pq`, `diskann`, and `flat` index declarations are accepted on **dense** columns (other kinds are rejected at DDL with the executable alternative named; `flat` accepts every kind as the exact baseline). Small scans may still execute exactly (the planner says so in `EXPLAIN`).
+- `ivf_sq` and `ivf_pq` are compatibility names in v0.1.0: they execute a **global quantized scan** (SQ8 codes / PQ ADC) with no coarse quantizer, no posting lists and no `nprobe` — only `ivf_flat` actually partitions. `ivf_sq` serves INT4 via documented float promotion; `ivf_pq` promotes INT8/UINT8 through float codebooks, rejects `INT4` and binary, and requires the column dimension to be a multiple of 8 (the default 8 segment count it builds with).
+- Hybrid ranking (reciprocal-rank fusion / weighted combination of vector + full-text scores) exists only as internal machinery with **no SQL surface** in `v0.1.0`. Implement hybrid retrieval in your application (two queries, one merge) instead.
+
+## Unsupported
+
+- **GPU execution.** There is no working GPU backend in `v0.1.0`; compute settings requesting GPU degrade to CPU. Do not plan capacity around hardware acceleration.
+- **`CREATE INDEX ... USING hnsw` inside an explicit transaction.** Refused with a descriptive error; create indexes in autocommit.
+- **Distributed / sharded vector search.** Single-node only; multi-region and distributed search are roadmap items.
+- **Native embedding generation.** PLOMID stores and searches vectors; it does not produce them. Bring your own model.
+- **Composite and `UNIQUE` vector indexes.** Rejected; one indexed vector column per index, non-unique.
+- **Vector index on an expression.** Index a stored column, not an expression.
+
+## Durability notes
+
+Vector data participates in the same cold-backup / restore workflow as relational data, and post-restore vector queries have been verified to return correct results. The derived ANN cache is excluded from backups by design and rebuilt from rows on reopen. DiskANN checkpoint files persist, but v0.1.0 does not reuse them to skip that rebuild. See [Backup and restore](/v0.1.0/operations/backup-restore).

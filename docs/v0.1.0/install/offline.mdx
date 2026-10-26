@@ -1,0 +1,60 @@
+---
+title: "Offline and air-gapped install"
+description: "Install PLOMID on machines without network access using pre-staged artifacts."
+---
+
+# Offline and air-gapped install
+
+**Status: Supported** via pre-staged artifacts. There is no separate "offline edition" — the same release binaries install without network access once transferred.
+
+## Prerequisites
+
+- One networked machine (to download) and transfer media for the air-gapped host.
+- The correct artifact for the target's OS/arch from the release page, **plus** `SHA256SUMS.txt`.
+
+## Procedure
+
+1. On the networked machine, download the artifact and checksums:
+   - Linux: `.tar.gz`, `.deb`, or `.rpm` for the target arch.
+2. Verify checksums **on the networked machine**:
+   ```sh
+   sha256sum -c SHA256SUMS.txt
+   ```
+3. Transfer both files to the air-gapped host (only the verified artifact; re-verify the hash after transfer).
+4. Install without network:
+   ```sh
+   # Tarball (any distro):
+   tar xzf plomid-<version>-linux-<arch>.tar.gz
+   ./plomid-server --version
+   # Debian/Ubuntu:
+   sudo apt install ./plomid_*.deb
+   # RPM distros:
+   sudo rpm -i plomid-*.rpm
+   ```
+5. Start against a local data directory and verify with a local client:
+   ```sh
+   ./plomid-server --data /var/lib/plomid/data --host 127.0.0.1 --port 5432 \
+     --username plomid --password "$PLOMID_PASSWORD"
+   psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5432/plomid" -c "SELECT version();"
+   ```
+
+## Docker without a registry
+
+```sh
+# Networked machine:
+docker pull plomid/plomid:<VERSION>
+docker save plomid/plomid:<VERSION> -o plomid-<VERSION>.tar
+
+# Air-gapped host:
+docker load -i plomid-<VERSION>.tar
+docker run -d -p 5432:5432 -e PLOMID_PASSWORD="<secret>" \
+  -v plomid-data:/var/lib/plomid/data plomid/plomid:<VERSION>
+```
+
+## Constraints
+
+- The shell installer (`install.sh`) requires network access to GitHub Releases — do not use it here.
+- Rust builds from source require a pre-populated cargo registry/vendored dependencies; prefer binaries offline.
+- Backups transfer the same way: cold-copy the data directory per [Backup and restore](/v0.1.0/operations/backup-restore).
+
+For hardened single-node operation see [Single-node offline profile](/v0.1.0/operations/profile-single-node-offline).

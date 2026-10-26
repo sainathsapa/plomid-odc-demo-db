@@ -1,0 +1,68 @@
+---
+title: "Build from source"
+description: "Build the PLOMID server and CLI from source for development and custom builds."
+---
+
+# Build from source
+
+**Status: Supported.** Use this when you need an unreleased change, a custom build, or a contributor checkout. For normal use, prefer [Native binaries](/v0.1.0/install/binaries) or [Docker](/v0.1.0/install/docker).
+
+## Prerequisites
+
+- Linux, macOS, or Windows.
+- Rust 1.99.0 or newer via [rustup](https://rustup.rs/) (`rustup toolchain install 1.99.0`). The workspace MSRV is declared by `rust-version` in `Cargo.toml`; distribution packages are usually too old.
+- A C/C++ compiler: `aws-lc-rs` builds AWS-LC from source. Debian/Ubuntu: `sudo apt-get install build-essential`; Amazon Linux 2023: `sudo dnf groupinstall -y "Development Tools"`. On Windows, install the Visual Studio Build Tools or use the MinGW-w64 toolchain matching your Rust host.
+- `psql` or another PostgreSQL client for verification.
+
+## Build
+
+```sh
+git clone https://github.com/plomid/plomid.git
+cd plomid
+cargo build -p plomid-server        # server binary → ./target/debug/plomid-server
+cargo build -p plomid-cli           # management CLI → ./target/debug/plomid
+cargo build --release -p plomid-server   # optimized binary → ./target/release/plomid-server
+```
+
+## Run
+
+```sh
+./target/release/plomid-server --data ./data --host 127.0.0.1 --port 5432 \
+  --username plomid --password "$PLOMID_PASSWORD"
+psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5432/plomid" -c "SELECT version();"
+```
+
+For day-to-day development, `./start.sh` wraps the debug build with loopback-friendly defaults (`PLOMID_DATA_DIR`, `PLOMID_HOST`, `PLOMID_PORT`, `PLOMID_USER`, `PLOMID_PASSWORD`, `PLOMID_LOG_LEVEL` overrides supported). It binds `0.0.0.0` by default with the explicit plaintext opt-in — development only.
+
+## Quality gates (contributors)
+
+```sh
+cargo build --workspace
+cargo fmt --check
+cargo clippy --workspace --all-targets -- -D warnings
+make test-ci
+cargo deny check
+```
+
+`make test-ci` (fast unit + bounded integration tiers) is the routine gate and must finish within the CI job budget; scale/soak/benchmark workloads are `#[ignore]`-gated and run only via `make test-scale` or nightly CI. See [Contributing](/v0.1.0/contributing/overview).
+
+## Cross-builds and packaging
+
+| Target | Command |
+| --- | --- |
+| Server binary (this host) | `make release` |
+| Linux binary (amd64 / arm64) | `make linux-binary` / `make linux-binary-all` |
+| Runtime Docker image | `make docker` |
+| macOS tarball + `.dmg` | `make package-mac` (needs Xcode tools) |
+
+Releases are cut with `make release-beta VERSION=<x.y.z>`, which runs every gate before tagging.
+
+## Troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| Toolchain mismatch | `rustup show` — install the workspace MSRV from `Cargo.toml` (`rust-version`, currently `1.99.0`) or newer; avoid distribution `rustc` packages. |
+| `plomid-server was not found beside ...` | Build `plomid-server` first; `plomid server start` looks for a sibling binary. |
+| Disk exhaustion during tests | `du -sh target`, clear it, sweep leaked `plomid-*` scratch dirs from `$TMPDIR`. |
+
+Next: [Quickstart](/v0.1.0/getting-started/quickstart).

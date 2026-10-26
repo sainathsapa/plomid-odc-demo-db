@@ -1,0 +1,63 @@
+---
+title: "Executor — what it can execute"
+description: "Complete dispatch map — every statement shape, which engine path, what it returns."
+---
+
+# Executor — what it can execute
+
+<Warning>
+  **Internal with public effects.** Source: `crates/executor/src/executor.rs:execute_autocommit`, `ddl.rs`, `dml.rs`, `transaction.rs`, `query/*`, `join/*`. Application developers: use SQL pages. Engine contributors: this is the map.
+</Warning>
+
+## Dispatch table
+
+| Statement | Path | Returns |
+| --- | --- | --- |
+| `SELECT` (single-table) | `query/select.rs:execute_select` | `Rows` |
+| `SELECT` (general: multi-agg/non-col GROUP BY/sets/GROUP+ORDER) | `join/*` general engine | `Rows` |
+| `VALUES` bare / `FROM (VALUES)` | `join::execute_statement` | `Rows` |
+| `UNION/INTERSECT/EXCEPT` | `join/statement.rs:execute_set_operation` (arity-checked) | `Rows` |
+| `WITH [RECURSIVE]` | `join/plan.rs:execute_with` | `Rows` |
+| scalar `(SELECT)` / `EXISTS` / `IN` / `ANY/ALL` / `ARRAY(SELECT)` | `OuterContext`, depth-guarded | value/bool/rows |
+| `INSERT` | `dml.rs:execute_insert_rows[_txn]` + `materialize_insert_source` | `Inserted(n)` / `Rows` w/ RETURNING |
+| `UPDATE` / `DELETE` | `execute_update/delete[_txn]` + `update_from::materialize_*` | `Updated/Deleted` / `Rows` |
+| `TRUNCATE` | accounted write path | `Created`-family |
+| `CREATE TABLE/VIEW/SEQ/TYPE/DOMAIN/INDEX` | `ddl.rs:execute_ddl` | `Created(name)` |
+| `ALTER TABLE` subset / `DROP` / `COMMENT` | `ddl.rs` | `Created` |
+| `BEGIN…COMMIT/ROLLBACK` groups | `transaction.rs:execute_transaction_group` | `Committed/RolledBack` + staged results |
+| `SET/SHOW/DESCRIBE/USE` | `execute_show` + session/database layers | `Rows/Set/Created` |
+| `GRANT role TO member` | stub `Created("GRANT ROLE")` | `Created` |
+| `EXPLAIN [ANALYZE]` | `query/explain.rs:explain_statement` | `Rows{QUERY PLAN}` |
+| `COPY STDIN/STDOUT` | wire frames; autocommit-without-frames → error | copy protocol |
+| `VACUUM` | accounted maintenance trigger (`ddl.rs:execute_vacuum` + `MaintenancePolicy`) | `Created`/ok |
+| `ANALYZE [(table)]` | real statistics collection (`executor.rs:analyze` → `statistics::collect`/`save`: row counts, null/distinct/min/max per column, persisted + cached). Executed over client connections too (never a wire stub); successful runs counted in `plomid_stat_admin()` | `Created("ANALYZE")` |
+| `REINDEX` | drops every cached derived ANN graph (`vector_ann::invalidate_all`) and revalidates vector index metadata; logged + counted (`plomid_stat_admin()`); the next eligible query rebuilds or falls back to exact | `Created("REINDEX")` |
+| `DO/PERFORM/LISTEN…` | no-op/accounted/stub | `Created`/ok |
+| `generate_series/unnest/json SRFs` | table-function path + `WITH ORDINALITY` | `Rows` |
+| Window/aggregate/window-agg | `window.rs:compute_window` + `aggregate.rs` | `Rows` |
+
+## Scan → filter → project → group → window → order → limit
+
+`scan.rs:value_cmp` (comparisons incl. time-normalized pruning) → `expr.rs:evaluate_predicate` (only `true` passes) → `project.rs` (`*` expansion) → `group.rs`/`aggregate.rs` (sets/rollup/cube normalized) → `window.rs` (partition sort + peer groups + frames) → `ORDER BY` (nulls default) → `LIMIT/OFFSET` (int-only). `preview_dml_count`/`validate_dml_strict` guard staged writes; `after_commit` maintenance accounting only on commit.
+
+## Automatic maintenance (honest policy)
+
+Source: `crates/executor/src/maintenance.rs:MaintenancePolicy`, `maintenance_worker.rs`.
+
+- **64-mutation bound:** a table becomes due after `DEFAULT_COMMITTED_MUTATIONS_PER_GENERATION` (64) committed row-mutations since its last pass. Production adds a 60 s minimum interval between automatic passes for the same table (`PRODUCTION_MIN_AUTO_INTERVAL`); explicit `VACUUM` is never gated.
+- **Fails closed:** automatic maintenance never fails the statement that committed before it. A failure is recorded in `last_maintenance_error` (and the worker's `inline_fallbacks`/stats), the accumulated mutations are kept, and the next commit retries. A full worker queue degrades to an inline pass, never to unbounded accumulation.
+- **No staleness signal in v0.1.0:** there is no freshness/version signal telling a reader whether a table's derived generation or its `ANALYZE` statistics are stale. Due-table accounting (`committed_mutations`, `due_tables`, `maintenance_passes`) is the only visibility. Freshness signaling is explicitly out of scope here (owned by a sibling change); do not assume one exists.
+
+**Related:** [Query pipeline](/v0.1.0/architecture/query-pipeline) · [How it works](/v0.1.0/architecture/how-it-works)
+
+## GROUP BY spill (over-budget aggregation)
+
+Source: `crates/executor/src/query/group.rs:grouped_agg_spilled` (`GROUP_SPILL_MAX_ROWS = 250_000`).
+
+- **250k threshold:** at or under 250,000 materialized input rows the grouped path runs the existing in-memory fold byte-identical; above it the input spills to bounded temp storage.
+- **2–64 hash partitions:** over budget the input is hash-partitioned by encoded group-key bytes, with `partitions = (rows / budget).clamp(2, 64)` (skew may leave a partition above budget; still correct).
+- **Pre-aggregation spill + replay:** partitions hold pre-aggregation input rows as opaque storage-codec records; each partition is re-aggregated through a fresh `StreamingGroupedAgg` (the existing feed/finish) and the per-partition results concatenated. No aggregate state is serialized.
+- **Float exactness:** every group lands wholly in one partition (pure function of the evaluated keys) and rows keep input order within a partition, so each accumulator observes the identical row subsequence as the single-pass fold; float `SUM`/`AVG` stay bit-identical with no cross-partition merge.
+- **Temp-dir cleanup:** one `SpillManager` temp dir per over-budget aggregation (`plomid-group-spill-{seq}-{pid}`); run files vanish on `Drop` and the temp dir is removed on every exit (success or structured error).
+- **Sort-vs-group spill split:** `ORDER BY` full-sort spill (`SORT_SPILL_MAX_ROWS = 250_000` in `query/select.rs`) sorts bound-sized chunks and k-way merges sorted runs with the same comparator; GROUP BY spill hash-partitions by group key and replays the aggregation fold. Same budget value, separate operators.
+- **Unspecified order without ORDER BY:** result row order without `ORDER BY` is unspecified either way (both iterate hash maps); callers compare canonically.

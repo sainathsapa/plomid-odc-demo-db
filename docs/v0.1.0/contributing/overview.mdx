@@ -1,0 +1,46 @@
+---
+title: "Contributing to PLOMID"
+description: "Build, test, review, and extend the engine — derived from the repo, not invented."
+---
+
+# Contributing to PLOMID
+
+## Local development (required gates)
+
+```sh
+cargo build --workspace
+cargo fmt --check
+cargo clippy --workspace --all-targets -- -D warnings
+make test-ci
+cargo deny check
+```
+
+Install `cargo-deny`. CI runs the same gates plus license/advisory/source policy.
+
+### Test tiers
+
+| Tier | Command | What runs | Where |
+| --- | --- | --- | --- |
+| A — fast unit | `make test-unit` | isolated `src/` unit tests, no scale/bench workloads | every PR + release |
+| B — bounded integration | `make test-integration` | all `tests/` targets (SQL, txn, storage, index, WAL/recovery, protocol, regressions); `#[ignore]` scale gates off | every PR + release |
+| C — required verification | `make test-ci` (= A + B, plus CI jobs for fmt/check/clippy/deny) | routine correctness gate, 30-min budget | every PR + release |
+| D — heavy/explicit | `make test-scale` (`--include-ignored` + scale env), `make bench-check`, `make gauntlet` | scale/load/soak/fuzz-200, criterion benches, HTAP Gauntlet | nightly schedule or manual dispatch only |
+
+Install `cargo-deny`. CI runs the same gates plus license/advisory/source policy.
+
+## Pull requests
+
+- One task per PR; preserve roadmap dependency order.
+- Tests for behavior changes; storage/WAL/recovery/MVCC/txn changes need correctness + failure-path coverage.
+- Public API/architecture changes need docs; material design decisions need an ADR (`docs/adr/` convention per `CONTRIBUTING.md`).
+- State validation, limitations, follow-ups. No secrets or forbidden engine foundations. Review via `CODEOWNERS`.
+
+## Adding SQL functionality
+
+Parser (`crates/sql/src/parser/*` + `ast.rs`) → executor (`query/*`, `join/*`, `scalar.rs`, `dml.rs`) → tests in `tests/*.sql` + `crates/*/tests`. Update [Compatibility](/v0.1.0/sql/compatibility) status and add cookbook examples. See [Repo structure](/v0.1.0/contributing/repo-structure).
+
+## Adding storage functionality
+
+`crates/storage` (layout/manager/row/btree/buffer/checksum/catalog) + `crates/wal` (format/recovery) + `crates/txn`/`mvcc` → mount/demount lifecycle + corruption/replay tests. Document as **Internal** unless promoted to a developer contract.
+
+**Structure:** [Repo structure](/v0.1.0/contributing/repo-structure)

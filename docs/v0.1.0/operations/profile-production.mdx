@@ -1,0 +1,39 @@
+---
+title: "Production deployment profile"
+description: "Hardened single-node settings for serving real clients."
+---
+
+# Production deployment profile
+
+<Warning>
+  **Beta scope.** This profile pins identity, transport, capacity, and timeouts for a **single-node, single-operator** host. It is not a multi-user production recommendation: `CREATEDB` is a destructive capability (any holder can drop any database), and column/row-level controls are absent, so shared deployment remains unsupported in v0.1.0. See [Beta status](/v0.1.0/getting-started/beta-status).
+</Warning>
+
+Defaults are already production-safe; this profile pins the decisions a production deploy must make explicitly instead of inheriting: identity, transport, capacity, and timeouts. Verify against the startup `effective_config` log (one event per knob; password redacted).
+
+```sh
+plomid-server \
+  --host 0.0.0.0 \
+  --auth scram \
+  --password "$PLOMID_PASSWORD" \
+  --tls --tls-cert /etc/plomid/cert.pem --tls-key /etc/plomid/key.pem --tls-required \
+  --max-connections 100 \
+  --statement-timeout 30s \
+  --idle-in-transaction-timeout 60s \
+  --max-copy-buffer-bytes 67108864 \
+  --max-prepared-statements 1024 \
+  --max-portals 1024
+```
+
+Or the equivalent env bundle (`PLOMID_HOST`, `PLOMID_PASSWORD`, `PLOMID_MAX_CONNECTIONS`, `PLOMID_STATEMENT_TIMEOUT`, `PLOMID_IDLE_IN_TRANSACTION_TIMEOUT`, `PLOMID_MAX_COPY_BUFFER_BYTES`, `PLOMID_MAX_PREPARED_STATEMENTS`, `PLOMID_MAX_PORTALS`).
+
+Why these: TLS-required closes the plaintext downgrade; SCRAM keeps the server free of plaintext-equivalent secrets; 100 connections bounds tasks and sockets; 30 s statements and 60 s idle transactions stop one client from holding locks or memory; the COPY/prepared/portal caps bound per-connection protocol state. Tighten further before loosening: raise a timeout with `SET` per session (analytics) rather than disabling it server-wide. Never raise connection or buffer caps "because a benchmark needs them" — size from concurrent-client and row-width measurements.
+
+## Scaling beyond 100 connections
+
+100 is the default, not a ceiling: `--max-connections 1000` (or `PLOMID_MAX_CONNECTIONS`) is one flag. Two facts govern the sizing, and both argue for a pooler (PgBouncer-style) in front rather than thousands of direct connections:
+
+- The V1 engine is single-writer: mutations serialize behind one mutex, so connections past the low hundreds queue instead of adding throughput. Scale direct connections to concurrent _active_ writers, not to total clients; let the pooler multiplex the rest.
+- Per-connection state multiplies: worst case each connection can hold its full COPY buffer plus prepared/portal state, so budget `max_connections × max_copy_buffer_bytes` against RAM (100 × 64 MiB ≈ 6.4 GiB if every connection COPYs at once — the realistic mix is far lower, but the product is the bound that must fit).
+
+Raise the cap together with the buffer math, watch `connection_rejected` (warn-level, listener kept) as the signal you sized too low, and keep timeouts tight as connection count grows — more clients means more abandoned transactions competing for the same locks.

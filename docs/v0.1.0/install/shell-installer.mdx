@@ -1,0 +1,60 @@
+---
+title: "Shell installer"
+description: "Install plomid-server on macOS or Linux from GitHub Releases with checksum enforcement."
+---
+
+# Shell installer
+
+**Status: Supported** on macOS and Linux. Windows is explicitly not supported by this script (use [Native binaries](/v0.1.0/install/binaries)).
+
+<Warning>
+  Read any install script before running it. Fetch `https://plomid.in/install.sh` (or the copy in this repository at `install.sh`), inspect it, then run the inspected file — do not pipe an unreviewed remote script directly to a shell.
+</Warning>
+
+## Prerequisites
+
+- macOS or Linux, `curl` or `wget`, `tar`, standard checksum tools.
+- Network access to GitHub Releases (for [Offline install](/v0.1.0/install/offline) otherwise).
+
+## Install
+
+```sh
+# 1. Inspect first:
+curl -fsSL https://plomid.in/install.sh -o /tmp/plomid-install.sh
+less /tmp/plomid-install.sh
+
+# 2. See what exists (no releases yet for a fresh beta tag is normal):
+sh /tmp/plomid-install.sh --list
+
+# 3. Install (skips prompts with --yes):
+sh /tmp/plomid-install.sh --yes
+```
+
+Useful variants:
+
+```sh
+sh install.sh --dry-run                     # print what would be downloaded, change nothing
+sh install.sh -v v0.1.0-beta.2 --dir ~/.local/bin   # pin a version, choose a directory
+PLOMID_VERSION=v0.1.0-beta.2 PLOMID_INSTALL_DIR=~/.local/bin sh install.sh --yes
+```
+
+The script detects `macos-arm64`, `macos-x64`, `linux-x64`, or `linux-arm64` automatically, resolves the version (default: latest release), verifies checksums, and **refuses to install on verification failure**. The install directory defaults to the first writable of `/usr/local/bin` and `$HOME/.local/bin`.
+
+## Verify
+
+```sh
+plomid-server --version
+plomid-server --data ./data --host 127.0.0.1 --port 5432 \
+  --username plomid --password "$PLOMID_PASSWORD"
+psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5432/plomid" -c "SELECT version();"
+```
+
+## Troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| `could not resolve latest tag` | No releases published yet, no network, or API rate limit — run `--list`, or pin `-v <tag>` from the releases page. |
+| `unsupported platform` (exit 2) | Windows or an unrecognized arch — use native binaries. |
+| Checksum refusal | Re-download; never force past it. |
+
+Next: [Quickstart](/v0.1.0/getting-started/quickstart).

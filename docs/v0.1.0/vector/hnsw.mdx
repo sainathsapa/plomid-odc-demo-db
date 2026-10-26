@@ -1,0 +1,46 @@
+---
+title: "HNSW approximate search"
+description: "Create, query, and tune HNSW indexes for fast approximate nearest-neighbor search."
+---
+
+# HNSW approximate search
+
+HNSW (Hierarchical Navigable Small World) is the default approximate index for dense vectors over L2, cosine, and inner-product metrics. It answers top-k queries by traversing a layered graph instead of scanning every row — much faster on large tables, with a small, tunable chance of missing a true neighbor.
+
+**Status: Supported** for dense numeric vectors × L2 / cosine / inner-product.
+
+## Create and query
+
+```sql
+-- Autocommit context (not inside BEGIN ... COMMIT)
+CREATE INDEX docs_emb_hnsw ON docs USING hnsw (embedding);
+
+SELECT id, label, embedding <-> [1.0, 0.0, 0.0] AS dist
+FROM docs
+ORDER BY embedding <-> [1.0, 0.0, 0.0]
+LIMIT 5;
+```
+
+No query rewrite is needed: the same `ORDER BY distance LIMIT k` pattern automatically considers the index. Confirm with `EXPLAIN` (see [Indexes](/v0.1.0/vector/indexes)).
+
+## Practical behavior
+
+- **Small tables ignore the index on purpose.** With hundreds of rows, a scan is faster than graph traversal. The planner reports `Index: usable` with an exact scan and moves on. This is correct behavior, not a misconfiguration.
+- **The automatic threshold is around 4096 rows** (`vector.auto_ann_min_rows`). Below it, expect exact scans; above it, expect the index to engage where eligible.
+- **Recall vs speed** is controlled by `ef_search` (candidate list size) and candidate oversampling: raise them for better recall at higher latency, lower them for speed. Start with defaults and only tune against measured recall on your data.
+- **Filtered queries** (`WHERE` + vector ordering) are served by the exact path in `v0.1.0` even when an HNSW index exists — see [Filtering](/v0.1.0/vector/filtering).
+
+## Transactions and durability
+
+- Create the index in autocommit. Creation inside an explicit transaction is refused.
+- Index builds observe a consistent snapshot: rows committed after the build starts are merged safely, and a cancelled build never publishes a half-built index.
+- Index structures are derived caches over committed rows: a restart (or backup restore) rebuilds them from snapshot rows. DiskANN persists `graph.dat`/`vectors.dat` checkpoints, but v0.1.0 does not reuse them to skip the restart rebuild (the restore verification in [Backup and restore](/v0.1.0/operations/backup-restore) covers re-querying vector data post-restore).
+- Repeatable-read snapshots decline ANN and run exact scans to preserve snapshot semantics.
+
+## When not to use HNSW
+
+- Tables under a few thousand rows (scan is already fast).
+- Evaluation baselines where recall must be exactly 100% (`SET vector.ann_enabled = off` instead).
+- Binary / sparse / multivector columns (there is no HNSW execution path for these kinds — the DDL is rejected at creation time with the executable method named; see [Limitations](/v0.1.0/vector/limitations)).
+
+See [Exact vs approximate](/v0.1.0/vector/exact-vs-approximate) for the decision framework and [Performance](/v0.1.0/vector/performance) for measuring honestly.

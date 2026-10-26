@@ -1,0 +1,128 @@
+---
+title: "Roles, users, and permissions"
+description: "CREATE ROLE/USER, GRANT/REVOKE, ALTER ROLE, enforced RBAC, privilege functions, pg_roles."
+---
+
+# Roles, users, and permissions
+
+## Model in one paragraph
+
+Beta 2 has **authentication** (SCRAM by default against per-role catalog verifiers, with first-run bootstrap from the server secret) and **enforced RBAC** (table `SELECT/INSERT/UPDATE/DELETE/TRUNCATE`, schema `USAGE/CREATE`, database `CONNECT`, DDL by ownership, database DDL by `CREATEDB`, file `COPY` superuser-only, admin operations by attribute). Denials fail with `42501 insufficient_privilege` and emit audit events. `has_*_privilege` returns real answers from the statement's privilege view.
+
+<Warning>
+  **Database DDL is privilege-gated, not owner-scoped.** `CREATE DATABASE` and `DROP DATABASE` require superuser or the `CREATEDB` role attribute; denials return `42501` and leave no state change. Per-database ownership is not tracked, so any `CREATEDB` role can drop databases it did not create — grant `CREATEDB` sparingly. See [Beta status](/v0.1.0/getting-started/beta-status).
+</Warning>
+
+## Quick start (operator)
+
+```sql
+-- as the bootstrap superuser (server --username/--password, first login binds it)
+CREATE ROLE analyst WITH LOGIN PASSWORD 'unique-secret-1';
+CREATE TABLE reports (id INTEGER PRIMARY KEY, body TEXT);
+GRANT SELECT ON reports TO analyst;
+-- analyst can now SCRAM-login and read, nothing else.
+```
+
+## CREATE ROLE / USER
+
+```text
+CREATE ROLE|USER name [LOGIN|NOLOGIN] [PASSWORD 'x']
+  [SUPERUSER|NOSUPERUSER] [CREATEDB|NOCREATEDB] [CREATEROLE|NOCREATEROLE]
+```
+
+```sql
+CREATE ROLE analyst LOGIN PASSWORD 'secret';
+CREATE USER etl LOGIN PASSWORD 'secret';
+CREATE ROLE readonly NOLOGIN;
+CREATE ROLE ops LOGIN CREATEDB CREATEROLE;
+```
+
+Passwords never persist — a verifier `(salt, iterations, hash)` is stored at creation. New roles hold **no privileges** (fail closed); the creator needs `CREATEROLE` (or superuser). Creating an _elevated_ role (`SUPERUSER`/`CREATEDB`/`CREATEROLE`) requires superuser — no creation-time self-escalation.
+
+## GRANT / REVOKE
+
+```text
+GRANT role TO member | REVOKE role FROM member
+GRANT privs ON [TABLE] t TO role | REVOKE privs ON [TABLE] t FROM role
+GRANT privs ON ALL TABLES IN SCHEMA s TO role
+REVOKE privs ON ALL TABLES IN SCHEMA s FROM role
+GRANT USAGE|CREATE ON SCHEMA s TO role
+GRANT CONNECT|CREATE ON DATABASE d TO|FROM role
+```
+
+```sql
+GRANT analyst TO etl;                       -- membership (inheritance)
+GRANT SELECT, INSERT ON reports TO analyst; -- object rights
+GRANT USAGE ON SCHEMA finance TO analyst;
+REVOKE DELETE ON reports FROM analyst;
+REVOKE CONNECT ON DATABASE geeks FROM analyst;
+```
+
+Table privs: `SELECT INSERT UPDATE DELETE TRUNCATE` (+ `ALL`). `ALL TABLES IN SCHEMA` expands to the tables present when the statement runs; tables created later are not covered. Granting needs ownership of every expanded table (or superuser); `GRANT ... TO PUBLIC` addresses every role. Dropping a table/view clears its rights (recreate starts empty); renames carry rights along. `CONNECT` is default-allow (PostgreSQL default) and withdrawable; `USAGE` on `public` is default-allow.
+
+## ALTER ROLE (rotation + administration)
+
+```text
+ALTER ROLE name [WITH] [PASSWORD 'new'] [LOGIN|NOLOGIN]
+  [SUPERUSER|NOSUPERUSER] [CREATEDB|NOCREATEDB] [CREATEROLE|NOCREATEROLE]
+```
+
+```sql
+ALTER ROLE analyst PASSWORD 'rotated-secret-2';  -- self-service or admin
+ALTER ROLE ops SUPERUSER;                        -- superusers only
+```
+
+Rotation takes effect immediately (old password stops working). Attribute changes require superuser.
+
+## DROP ROLE / USER
+
+```text
+DROP ROLE|USER [IF EXISTS] name
+```
+
+`USER` is an alias for `ROLE` (PostgreSQL). Requires `CREATEROLE` (or superuser); only a superuser may drop a superuser. Guards (PostgreSQL semantics):
+
+- Missing role without `IF EXISTS` errors (`role "x" does not exist`); with `IF EXISTS` succeeds as a no-op.
+- The bootstrap `plomid` role can never be dropped.
+- A role that owns tables/schemas or holds grants cannot be dropped — reassign/drop objects and `REVOKE` first. `REASSIGN OWNED` / `DROP OWNED` are not supported.
+- Multi-name lists (`DROP ROLE a, b`) are not supported (single name only); `CASCADE`/`RESTRICT` are accepted and ignored (ownership checks always apply).
+
+```sql
+CREATE ROLE analyst WITH LOGIN;
+DROP ROLE analyst;
+DROP ROLE IF EXISTS analyst;
+DROP USER app_login;
+```
+
+## Authentication contract
+
+| Method (`--auth`) | Who can use it |
+| --- | --- |
+| `scram` (default) | Every role with a stored verifier (audited `sha2`/`hmac`/`pbkdf2`, CSPRNG salts) |
+| `password`/cleartext | Every role with a verifier; bootstrap + legacy roles |
+| `md5` | **Deprecated downgrade path**: disabled unless `--allow-legacy-md5`; bootstrap/legacy use only, single-use-per-role (first success upgrades to verifier), every login counted (`legacy_auth_uses`) + warned. Removal planned — see below. |
+| `none` | Loopback only: trusts the startup identity, **authorization still enforced** |
+
+First login as the configured `--username` with `--password` binds the server secret to that role and promotes it to superuser (first-run setup). Five consecutive failures lock the account for five minutes (in-memory; restarts clear). All failures emit audit events + `auth_failures`; new lockouts emit `account_lockouts`; attempts rejected while locked emit `auth_locked_out`. `security_auth_diagnostics` lines record the timing and credential state for post-crash triage.
+
+## Privilege introspection (real answers)
+
+```sql
+SELECT has_table_privilege('orders', 'SELECT');
+SELECT has_table_privilege('analyst', 'orders', 'SELECT');
+SELECT has_schema_privilege('finance', 'USAGE');
+SELECT has_database_privilege('geeks', 'CONNECT');
+SELECT * FROM pg_roles;
+```
+
+Answers reflect the statement's privilege view (grants visible to the connection). Enforcement never consults these functions — it checks the live catalog directly, so tooling answers can never bypass a check.
+
+## File COPY
+
+Server-filesystem `COPY ... FROM/TO <file>` is **superuser-only** (PostgreSQL default), plus the matching table privilege. Stream `COPY FROM STDIN` needs `INSERT`; `COPY TO STDOUT` needs `SELECT`.
+
+## Limits (Beta 2, documented non-goals)
+
+No grant-option, no column privileges, no row-level security, no `SET ROLE`, no `REASSIGN OWNED`/`DROP OWNED`, no multi-name `DROP ROLE`, no client certificates, privilege changes take effect on **next connection** (catalog images load per connection — same as all DDL). MD5 is deprecated (disabled by default, `--allow-legacy-md5` only, removal planned — Phase 3 replaced all other crypto with audited crates). Crypto primitives are audited RustCrypto (`sha2`/`hmac`/`pbkdf2`/`subtle`/`base64`/`md-5`-legacy-only); this is evidence, not FIPS validation. See the [RBAC runbook](/v0.1.0/operations/rbac) for deployment guidance.
+
+**Related:** [RBAC runbook](/v0.1.0/operations/rbac) · [Run the server](/v0.1.0/operations/run-server) · [`pg_catalog`](/v0.1.0/reference/pg-catalog)

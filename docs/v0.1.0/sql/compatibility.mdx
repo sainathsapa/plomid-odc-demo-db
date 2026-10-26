@@ -1,0 +1,39 @@
+---
+title: "SQL compatibility and limitations"
+description: "Implemented, partial, unsupported, and different-behavior — so PG habits don't mislead."
+---
+
+# SQL compatibility and limitations
+
+Do not assume PostgreSQL (or any other database) behavior from similar syntax. This page is the implementation-derived record.
+
+## Implemented
+
+DDL/DML above; joins incl. lateral; subqueries incl. correlated `EXISTS`; `WITH [RECURSIVE]`; set ops; window functions with `PARTITION BY/ORDER BY/ROWS|RANGE|GROUPS` frames; `GROUPING SETS/ROLLUP/CUBE`; `DISTINCT [ON]`; `FILTER`; JSON operators/constructors/`JSON_TABLE`; temporal literals/arithmetic/`EXTRACT`; `ON CONFLICT`; `RETURNING`; `EXPLAIN [ANALYZE]`; `COPY … STDIN/STDOUT` (wire); `SET/SHOW/DESCRIBE/USE`; sequences + `nextval/currval`; `ENUM/DOMAIN/composite` types; `pg_catalog`/`information_schema` live rows. `LIKE`/`ILIKE` are case-correct (`'ABC' ILIKE 'abc'` → true) and honor `ESCAPE` on row-scan and join paths.
+
+## Partial
+
+- `FOR UPDATE` accepted, ignored.
+- `AND/OR` use is-true checks: `NULL AND TRUE → false` (differs from strict 3VL).
+- `CREATE FUNCTION/PROCEDURE/TRIGGER/EXTENSION/MATERIALIZED VIEW` parse to stubs without execution.
+- `VACUUM` runs accounted maintenance (64-mutation policy, fails closed; explicit `VACUUM` ungated). Freshness signals: `plomid_stat_counters().tables_stale` and `plomid_stat_tables().is_stale` show which tables have writes waiting to be folded into the fast copy. `ANALYZE` collects real table statistics (row/null/distinct/min/max, persisted) and both `ANALYZE` and `REINDEX` execute through the engine over client connections (recorded in `plomid_stat_admin()`); `REINDEX` drops every cached ANN graph so vector indexes rebuild lazily on the next eligible query. `LOCK/CLUSTER/REFRESH/LISTEN/NOTIFY` parse; no engine effect (`CLUSTER` and `ANALYZE` refuse inside an explicit transaction block).
+- `UPDATE…FROM` / `COPY` unsupported inside explicit transactions.
+- `CREATE/DROP DATABASE` unsupported inside explicit transactions (refused with a descriptive error); run them in autocommit.
+- `TABLE name` (shorthand `SELECT`), `TABLESAMPLE`, SQL-spelled `PREPARE`/`EXECUTE`, `RESET`/`RESET ALL`, and `DISCARD ALL` are **not supported** (syntax errors). Use `SELECT * FROM name` instead of `TABLE`; disable pooler checkout `RESET`/`DISCARD` statements or expect failures. Extended-protocol prepared statements (Parse/Bind/Describe/Execute) _are_ supported — only the SQL-spelled `PREPARE` is missing.
+- Bare `VALUES (…), (…)` as a standalone query is **not supported**; use it as an `INSERT` source or a `SELECT` union instead.
+- `LIMIT/OFFSET` only integer literal or cast.
+- Extended-protocol parameters (`$1`, `$N`) are **textual substitution, not typed Param nodes** (see below). Declared OIDs affect only binary decoding; untyped `$1` typing depends on the quoting heuristic + coercion. `$1::TYPE` executes and describes correctly; `CAST($1 AS TYPE)` executes but Describe reports UNKNOWN (use `::` for tooling). `$0`, gaps (`SELECT $2` with one value), and simple-protocol `Query` placeholders are syntax errors / left raw.
+- `AVG`/`SUM` over mixed integer/`NUMERIC`/float rows consume every value (first-non-integer decides the representation: `NUMERIC` stays exact, float stays `float8`). Mixed float+`NUMERIC` type is first-wins (documented, order-dependent by design). `AVG(DISTINCT)`/`SUM(DISTINCT)` are single-engine consistent via the join path; the single-table fast path historically ignored `DISTINCT` for `SUM`/`AVG` — now routed consistently (see aggregates page). `AVG(x ORDER BY y)` parses but ignores ordering (aggregate input order is scan order).
+- `DROP ROLE`/`DROP USER` are supported with PostgreSQL guards (must exist unless `IF EXISTS`, must own nothing, must hold no privileges, never `plomid`). `REASSIGN OWNED`/`DROP OWNED`, multi-name lists (`DROP ROLE a, b`), and `CASCADE`/`RESTRICT` semantics beyond ownership checks are not supported (accepted and ignored where parsed).
+
+## Unsupported / not available in v0.1.0
+
+Foreign-key enforcement, `RENAME DATABASE`, `setval()`, file `COPY`, cursors, stored-procedure execution, `plpgsql` beyond `DO/PERFORM/RAISE` subset, graph/blob types, multi-region/distributed, continuous aggregates/retention/downsampling, binary wire values (text only, except vector _results_ which support binary format for binary-encodable shapes; vector _parameters_ are text-only and binary params fail closed). Dense vector column types _are_ supported with literals, distance operators, top-k, and ANN — see [Vector search](/v0.1.0/vector/overview). TLS transport is supported (verified `sslmode=require` handshake) — see [TLS](/v0.1.0/operations/tls).
+
+## Different behavior worth knowing
+
+- `COUNT(DISTINCT)` dedups by `to_sql_text` (`1` ≡ `1.0`).
+- `AVG(int)` / `AVG(numeric)` return normalized `Numeric` (PG typing, OID 1700); `AVG(float4/float8)` returns `float8` (OID 701, PG typing). `SUM(int2/int4)` → `bigint`, `SUM(int8/numeric)` → `numeric`, `SUM(float)` → `float8`. `Numeric::div` uses scale `max+4` truncation (e.g. `800/3=266.6666`, not PG `266.6666666666666667`).
+- Concurrent DDL allocates IDs through process-wide atomics + durable high-water with save-time meta merge (no duplicate `TableId`/`SchemaId`); same-name `DROP` vs `CREATE` races are drop-wins via tombstones (documented).
+- Server default password is `plomid`; CLI default password is `secret`; `start.sh` default is `secret`. Always set explicitly.
+- No compatibility percentage is claimed. Wire + OID + catalog similarity does not imply semantic compatibility.

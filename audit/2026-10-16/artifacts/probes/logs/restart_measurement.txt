@@ -1,0 +1,27 @@
+boot0 accept=114ms ready=179ms
+hnsw: insert=839ms ddl=5ms
+diskann: insert=849ms ddl=5ms
+hnsw pre : cold=3231ms warm_p50=41ms miss=1 builds=1 rebuild_us=3206007 warm_hits=16
+diskann pre : cold=38740ms warm_p50=61ms miss=1 builds=1 rebuild_us=38707215 warm_hits=16
+boot0 shutdown=140ms
+boot1 accept=149ms ready=165ms
+hnsw post: count=8000 cold=3326ms warm_p50=40ms miss=1 builds=1 rebuild_us=3306113 ids_match=True overlap=10/10
+  indexes(rt_hnsw): [{'index_name': 'rt_hnsw_h', 'table_name': 'public.rt_hnsw', 'column_name': 'e', 'method': 'hnsw', 'vector_type': 'VECTOR(FLOAT32, 64)', 'state': 'READY', 'bytes_per_vector': 256}]
+diskann post: count=8000 cold=42027ms warm_p50=55ms miss=1 builds=1 rebuild_us=41994578 ids_match=True overlap=10/10
+  indexes(rt_diskann): [{'index_name': 'rt_diskann_h', 'table_name': 'public.rt_diskann', 'column_name': 'e', 'method': 'diskann', 'vector_type': 'VECTOR(FLOAT32, 64)', 'state': 'READY', 'bytes_per_vector': 256}]
+boot1 shutdown=79ms
+server_00.log: 11 diskann log lines
+    EBUG ThreadId(15) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=7 insert_row_us=10333
+    EBUG ThreadId(03) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=44 insert_row_us=9995
+    ="maintenance_pass" table="public.rt_diskann" outcome="published_fresh" delta_lag=1 total_us=82300 snapshot_us=9354 compare_us=0 flush_us=69881 compact_us=2543 index_us=3
+    2026-10-16T11:42:46.765593Z DEBUG ThreadId(14) sql::maintenance: background pass complete database=plomid table=public.rt_diskann elapsed_ms=82
+    EBUG ThreadId(15) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=6 insert_row_us=10699
+    EBUG ThreadId(03) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=28 insert_row_us=9994
+    BUG ThreadId(15) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=75 insert_row_us=12562
+    BUG ThreadId(03) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=27 insert_row_us=10526
+    UG ThreadId(15) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=103 insert_row_us=10603
+    BUG ThreadId(03) connection{connection_id=3 peer=127.0.0.1:50162}: plomid::perf: event="insert_stmt" table="public.rt_diskann" rows=1000 resolve_us=80 insert_row_us=10642
+server_01.log: 2 diskann log lines
+    6-10-16T11:43:34.273884Z DEBUG ThreadId(13) connection{connection_id=3 peer=127.0.0.1:50230}: sql::query: event="analytical_path" path="row_count" table=public.rt_diskann
+    2026-10-16T11:43:34.293568Z DEBUG ThreadId(13) connection{connection_id=3 peer=127.0.0.1:50230}: sql::vector_ann: diskann checkpoint ready; rebuilding from snapshot rows
+RESTART-MEASUREMENT DONE

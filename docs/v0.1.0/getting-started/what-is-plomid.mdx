@@ -1,0 +1,42 @@
+---
+title: "What is PLOMID?"
+description: "One logical database over multiple physical engines, with SQL as the primary interface."
+---
+
+# What is PLOMID?
+
+PLOMID is a single-node database with its own SQL engine. It owns its parser, planner surface, executor, MVCC-based transactions, storage, WAL, and PostgreSQL-protocol frontend. It does not embed another database engine. For the repository layout see [Repo structure](/v0.1.0/contributing/repo-structure).
+
+## Mental model
+
+```mermaid
+flowchart LR
+    Client["psql / DBeaver / any PG client"] -->|PG wire v3| Server["plomid-server"]
+    Server --> Exec["SQL execution"]
+    Exec --> Txn["Transactions + MVCC"]
+    Exec --> Idx["Indexes"]
+    Txn --> Store["Storage + WAL"]
+```
+
+A request moves: **parse → execute → transact → index/storage → persist (WAL + checkpoint)**. Details: [Request lifecycle](/v0.1.0/architecture/request-lifecycle).
+
+## What PLOMID is / is not (v0.1.0)
+
+| PLOMID is | PLOMID is not |
+| --- | --- |
+| SQL database with relational + JSON + temporal data | PostgreSQL (only speaks its wire protocol) |
+| Persistent engine with WAL + checkpoints + recovery | Distributed / multi-region system |
+| Single-writer transactional engine with MVCC snapshots | Graph, blob, or distributed store |
+| Local-first server + native `plomid` CLI | Managed cloud service |
+
+v0.1.0 has no cost-based planner — `EXPLAIN` describes scan/join/set shapes rather than an index-choice trace. Measure with `EXPLAIN ANALYZE` (see [Performance](/v0.1.0/operations/performance)).
+
+## Data model in one paragraph
+
+Databases contain schemas contain tables. Columns are PostgreSQL-typed (`int4`, `text`, `numeric`, `json`/`jsonb`, `timestamptz`, … — see [Types](/v0.1.0/data/types)). Rows are versioned by MVCC. Indexes (B-tree persistent, ART in-memory) accelerate equality, range, ordering, and uniqueness. JSON columns mix document and relational access in one query. Time columns use ordinary B-tree ordering plus zone-map/BRIN pruning on columnar data.
+
+## Next steps
+
+- [Installation](/v0.1.0/getting-started/installation) · [Quickstart](/v0.1.0/getting-started/quickstart)
+- [Core concepts](/v0.1.0/learn/concepts) · [Data model](/v0.1.0/learn/data-model)
+- [Architecture overview](/v0.1.0/architecture/overview)

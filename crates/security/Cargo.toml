@@ -1,0 +1,30 @@
+[package]
+name = "plomid-security"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Authentication, authorization, and audit foundations for PLOMID."
+
+[dependencies]
+plomid-core = { workspace = true }
+# Audited crypto (Beta 2 Phase 3): no hand-rolled primitives. Versions are
+# pinned in Cargo.lock; all MIT/Apache-2.0, deny-clean.
+sha2 = "0.10"
+hmac = "0.12"
+pbkdf2 = "0.12"
+subtle = "2"
+rand_core = { version = "0.9", features = ["os_rng"] }
+base64 = "0.22"
+# Legacy MD5 path only (bootstrap/legacy roles). RustCrypto-maintained;
+# use is gated behind --allow-legacy-md5 and counted (see deprecation).
+md-5 = "0.10"
+
+[lib]
+path = "src/lib.rs"
+
+[lints]
+workspace = true

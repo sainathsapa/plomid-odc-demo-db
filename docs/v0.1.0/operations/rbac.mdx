@@ -1,0 +1,62 @@
+---
+title: "RBAC runbook"
+description: "Deploying multi-user access control — bootstrap, roles, grants, lockout, audit, and limits."
+---
+
+# RBAC runbook
+
+Companion to [Roles, users, and permissions](/v0.1.0/sql/roles-permissions) (SQL surface). This page is the operator procedure.
+
+## 1. Bootstrap (first run)
+
+Start the server with an explicit secret (never the built-in on remote):
+
+```sh
+cargo run --bin plomid-server -- --data ./data --host 127.0.0.1 \
+  --username plomid --password '<unique-bootstrap-secret>' --auth scram
+```
+
+The first SCRAM login as `plomid` binds that secret to the role and promotes it to superuser. Verify:
+
+```sql
+SELECT has_table_privilege('any_table', 'SELECT');  -- true (superuser)
+SELECT * FROM plomid_stat_security();               -- auth_failures=0
+```
+
+Rotate the bootstrap secret afterwards (`ALTER ROLE plomid PASSWORD ...`) and restart the server with the new value — the catalog verifier governs logins from then on.
+
+## 2. Least-privilege onboarding
+
+```sql
+CREATE ROLE app_reader WITH LOGIN PASSWORD '<secret>';
+CREATE ROLE app_writer WITH LOGIN PASSWORD '<secret>';
+CREATE ROLE etl WITH LOGIN PASSWORD '<secret>' CREATEDB;
+GRANT USAGE ON SCHEMA public TO app_reader;   -- public USAGE is default; explicit is fine
+GRANT SELECT ON orders TO app_reader;
+GRANT SELECT, INSERT, UPDATE, DELETE ON orders TO app_writer;
+```
+
+Checklist per role: can it log in? (`LOGIN`), does it hold exactly its tables? (`has_table_privilege`), is anything `PUBLIC`-granted beyond `public.USAGE`? (default-deny everything else). `CREATEDB` is not just a create capability: because per-database ownership is not tracked, it also lets the role `DROP DATABASE` any database. Grant it only to trusted operators.
+
+## 3. Separation patterns
+
+- **Read-only service:** `LOGIN` + `SELECT` grants only. DDL/DML/file-COPY all deny with `42501`.
+- **Team lead:** own schema (`CREATE SCHEMA team; GRANT ...`), ownership gives full rights on created objects; `CREATEROLE` to onboard members (cannot promote to superuser).
+- **Revocation drill:** `REVOKE` the grant → reconnect → operation denies. Dropping a table wipes its grants; renaming carries them.
+
+## 4. Lockout and audit
+
+- 5 consecutive failures → 5-minute lockout (`account_lockouts` + log). Attempts rejected while locked increment `auth_locked_out`. In-memory: restarts clear. Deliberate (no durable self-lockout of the last superuser).
+- Every denial: `security` log line (`security_decision user=… action=… object=… decision=… reason=…`, no secrets, no catalog/grant/value leaks — denial messages read `permission denied for {object}: role "{user}" lacks {privilege}`) + counters. Audited actions: authenticate, authorize, file `COPY`, admin operations, lockouts.
+- Watch all eight counters: `SELECT auth_failures, authz_denials, account_lockouts, auth_locked_out, legacy_auth_uses, tls_connections, tls_handshake_failures, tls_plaintext_refusals FROM plomid_stat_security();`
+- The JSONL `--audit-log` (see [Configuration reference](/v0.1.0/reference/config-reference)) records the same allow/deny decisions durably with size-based rotation; without it, auditing lives in the tracing log + in-memory counters only.
+
+## 5. Connection hygiene
+
+Privilege/role/catalog changes take effect on **next connection** (per-connection catalog images — same rule as all DDL). Poolers should recycle connections after administrative changes. Long-lived sessions keep their connect-time view.
+
+## 6. What RBAC does NOT cover (do not rely on it for these)
+
+Transport without TLS (see [TLS runbook](/v0.1.0/operations/tls)), at-rest encryption, per-database ownership for `DROP DATABASE` (a `CREATEDB` role can drop any database), column/row-level control, grant delegation, client certificates, durable lockout, or any certification. MD5 is deprecated: disabled unless `--allow-legacy-md5`, single-use-per-role migration funnel, counted and warned — removal planned (Beta 3 target: delete the method, the flag, and the `md-5` dependency). Crypto primitives are audited RustCrypto; this is evidence, not FIPS validation.
+
+**Next:** [Configuration](/v0.1.0/operations/configuration) · [TLS](/v0.1.0/operations/tls)

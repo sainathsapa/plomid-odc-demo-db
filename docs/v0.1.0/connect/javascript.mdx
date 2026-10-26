@@ -1,0 +1,89 @@
+---
+title: "Connect from JavaScript and TypeScript"
+description: "Use node-postgres with PLOMID — connect, parameterized queries, transactions, and cleanup."
+---
+
+# Connect from JavaScript and TypeScript
+
+**Status: Supported** with `node-postgres` (`pg`, verified end-to-end including parameterized vector queries).
+
+## Prerequisites
+
+```sh
+npm install pg
+```
+
+Server running locally (see [Quickstart](/v0.1.0/getting-started/quickstart)). Credentials below come from environment variables.
+
+## Complete workflow
+
+```javascript
+import { Client } from "pg";
+
+const client = new Client({
+  host: process.env.PLOMID_HOST ?? "127.0.0.1",
+  port: Number(process.env.PLOMID_PORT ?? 5432),
+  database: process.env.PLOMID_DB ?? "plomid",
+  user: process.env.PLOMID_USER,
+  password: process.env.PLOMID_PASSWORD,
+});
+
+await client.connect();
+try {
+  // Parameterized query — always use $n params, never string interpolation.
+  const { rows } = await client.query(
+    "SELECT id, name FROM users WHERE id = $1;",
+    [1]
+  );
+  console.log(rows);
+
+  // Transaction with rollback on error.
+  await client.query("BEGIN");
+  try {
+    await client.query(
+      "INSERT INTO users (id, name) VALUES ($1, $2);",
+      [3, "hedy"]
+    );
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  }
+} finally {
+  await client.end();
+}
+```
+
+## Notes and gotchas
+
+- `BIGINT` arrives as **strings** by default (`{ id: '1', name: 'ada' }`). This is standard `node-postgres` behavior, not a PLOMID quirk — convert with `Number()` / `BigInt()` or configure a type parser.
+- Vector parameters are text: `["[1.0, 0.0, 0.0]", 5]` for `ORDER BY embedding <-> $1 LIMIT $2`.
+- TypeScript: type the rows at the boundary (`rows as Array<{ id: string; name: string }>`), then map to your domain types.
+
+## Pooling
+
+```javascript
+import { Pool } from "pg";
+
+const pool = new Pool({
+  host: process.env.PLOMID_HOST ?? "127.0.0.1",
+  port: Number(process.env.PLOMID_PORT ?? 5432),
+  database: process.env.PLOMID_DB ?? "plomid",
+  user: process.env.PLOMID_USER,
+  password: process.env.PLOMID_PASSWORD,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
+
+try {
+  const { rows } = await pool.query("SELECT count(*) FROM users;");
+  console.log(rows);
+} finally {
+  await pool.end();
+}
+```
+
+Keep `max` modest and aligned with server `--max-connections`; checkouts should be short-lived with statement timeouts behind them — see [Pooling and errors](/v0.1.0/connect/pooling-errors).
+
+Next: [Pooling and errors](/v0.1.0/connect/pooling-errors) · [Vector application integration](/v0.1.0/vector/application-integration).

@@ -1,0 +1,19 @@
+---
+title: "Single-node offline profile"
+description: "Air-gapped or removable-media node with small hardware."
+---
+
+# Single-node offline profile
+
+Loopback-only, edge tier, conservative checkpointing for slow disks. No network exposure means the built-in pair stays valid and TLS is unnecessary; enforcement defaults still apply so runaway statements and abandoned transactions cannot wedge the node while nobody is watching.
+
+```sh
+plomid-server \
+  --data /mnt/data \
+  --profile edge \
+  --max-connections 20 \
+  --statement-timeout 60s \
+  --idle-in-transaction-timeout 120s
+```
+
+Notes: `--profile edge` also tightens checkpoint thresholds for slow storage; longer timeouts reflect unattended batch work, still bounded. Back the node up with the offline tools (see [Backup and restore](/v0.1.0/operations/backup-restore)); derived caches (vector ANN structures) rebuild from rows on reopen.

@@ -1,0 +1,228 @@
+   Compiling plomid-storage v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/storage)
+   Compiling plomid-json v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/json)
+   Compiling plomid-types v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/types)
+   Compiling plomid-wal v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/wal)
+   Compiling plomid-txn v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/txn)
+   Compiling plomid-sql v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/sql)
+   Compiling plomid-index v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/index)
+   Compiling plomid-columnar v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/columnar)
+   Compiling plomid-executor v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/executor)
+   Compiling plomid-network v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/network)
+   Compiling plomid-gauntlet v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/gauntlet)
+   Compiling plomid-server v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/server)
+   Compiling plomid-vector v0.1.0-beta.2 (/Users/sainathsapa/dsk/PloMID/plomid/crates/vector)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 38m 22s
+     Running unittests src/lib.rs (target/debug/deps/crc32c-1c229f0f580defd8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/unit_tests.rs (target/debug/deps/unit_tests-8ef8b8a12cd8b66c)
+
+running 8 tests
+test empty_input ... ok
+test canonical_known_answer ... ok
+test bit_corruption_is_detected ... ok
+test streaming_matches_one_shot_at_arbitrary_boundaries ... ok
+test fallback_works_without_hardware ... ok
+test streaming_state_is_portable_between_implementations ... ok
+test boundary_sizes_match_reference ... ok
+test randomized_equivalence ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+     Running unittests src/lib.rs (target/debug/deps/plomid_cli-522360aacaee42b0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/plomid-7aa93f5af5e1e521)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/unit_helpers.rs (target/debug/deps/unit_helpers-1f921d57099303aa)
+
+running 3 tests
+test percentile_is_order_independent ... ok
+test json_escape_does_not_emit_raw_quotes ... ok
+test connection_options_debug_redacts_password ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/plomid_columnar-966491452b60b261)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/columnar_segments.rs (target/debug/deps/columnar_segments-2b907f58d81e348c)
+
+running 12 tests
+test materialized_null_bitmap_matches_ceil_rows_over_eight ... ok
+test rejects_invalid_magic_version_lengths_and_checksums ... ok
+test all_null_columns_report_unavailable_bounds ... ok
+test statistics_track_min_max_null_and_row_counts ... ok
+test encodes_integers_strings_bytes_and_nulls ... ok
+test encodes_empty_single_row_and_large_columns ... ok
+test readers_only_see_published_generations ... ok
+test a_reopened_store_allocates_identity_beyond_every_persisted_segment ... ok
+test published_segment_bytes_are_immutable ... ok
+test published_segment_survives_engine_restart ... ok
+test flush_uses_one_committed_snapshot_under_concurrent_mutation ... ok
+test failed_build_flush_verify_sync_publish_stay_unpublished ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+     Running tests/compaction.rs (target/debug/deps/compaction-555512457d0ec8ac)
+
+running 19 tests
+test a_single_generation_is_a_no_op ... ok
+test a_corrupt_input_generation_is_rejected_before_anything_is_written ... ok
+test an_empty_table_compacts_without_inventing_rows ... ok
+test a_released_input_is_reclaimed_and_a_still_needed_one_is_retained ... ok
+test an_active_transaction_protects_the_inputs_from_release ... ok
+test a_concurrent_write_during_compaction_is_not_lost ... ok
+test compaction_survives_a_restart_and_is_idempotent ... ok
+test compaction_over_an_update_chain_keeps_only_the_visible_row ... ok
+test a_generation_created_after_selection_is_compacted_instead_of_lost ... ok
+test b_row_id_identity_is_preserved_across_many_versions_and_compaction ... ok
+test compaction_is_isolated_per_table ... ok
+test a_full_insert_update_update_delete_chain_over_one_row_id_is_compacted ... ok
+test failure_after_publication_leaves_the_new_generation_authoritative ... ok
+test compaction_uses_the_placement_layer_and_never_assumes_a_device ... ok
+test failure_before_publication_leaves_the_old_generations_valid ... ok
+test nulls_and_variable_length_values_are_preserved ... ok
+test the_compacted_generation_lands_in_the_table_hierarchy ... ok
+test reclamation_failure_never_loses_a_required_generation ... ok
+test failure_during_release_keeps_the_published_state_valid ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.26s
+
+     Running tests/compaction_gated.rs (target/debug/deps/compaction_gated-82c6c62d3cc31448)
+
+running 8 tests
+test gated_vs_ungated_compact_overhead_is_small ... ignored, benchmark: wall-clock overhead assert over compaction; runs in CI via make test-scale
+test gated_read_aborts_when_paused_and_reads_when_open ... ok
+test gc_gated_aborts_when_paused_and_collects_when_open ... ok
+test paused_gate_refuses_at_entry_with_no_visible_change ... ok
+test cancelled_gate_aborts_before_publish_with_no_visible_change ... ok
+test expired_deadline_aborts_before_publish ... ok
+test degraded_gate_yields_at_least_once_and_still_compacts ... ok
+test open_gate_matches_ungated_behavior ... ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.17s
+
+     Running tests/compaction_journal.rs (target/debug/deps/compaction_journal-a6c9a6fdfff815f2)
+
+running 7 tests
+test resume_rejects_rows_outside_the_planned_chunks ... ok
+test journal_roundtrip_preserves_plan_state_and_chunks ... ok
+test incomplete_jobs_survive_a_restart_and_aborted_ones_do_not ... ok
+test re_release_after_a_crash_releases_nothing_new ... ok
+test re_publish_after_a_crash_is_a_no_op ... ok
+test kill_simulation_resumes_to_a_complete_compaction ... ok
+test chunk_resume_skips_done_chunks ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.55s
+
+     Running tests/encoding.rs (target/debug/deps/encoding-b8b9c72f87ab6848)
+
+running 9 tests
+test raw_layout_matches_version_one_without_frame ... ok
+test rejects_invalid_codec_invalid_lengths_and_corruption ... ok
+test rejects_truncated_and_malformed_payloads ... ok
+test auto_never_grows_a_chunk ... ok
+test round_trips_empty_and_single_value ... ok
+test round_trips_null_and_mixed_null_shapes ... ok
+test pruning_metadata_is_independent_of_encoding ... ok
+test round_trips_string_and_binary_shapes ... ok
+test round_trips_repeated_monotonic_and_random_integers ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/pruning.rs (target/debug/deps/pruning-fcbbb9a051cb5553)
+
+running 9 tests
+test empty_segment_scan_plan_is_empty ... ok
+test all_null_column_prunes_is_not_null ... ok
+test brin_adjacent_ranges_respect_exact_boundaries ... ok
+test sparse_ranges_keep_exact_bounds_and_null_state ... ok
+test sql_bridge_lowers_expressions_to_equivalent_predicates ... ok
+test clustered_data_prunes_and_unclustered_data_keeps ... ok
+test clustered_data_prunes_while_scan_stays_exact ... ok
+test brin_ranges_tile_the_segment_and_summarize_exactly_their_rows ... ok
+test pruned_scan_matches_full_scan_for_every_dataset_and_predicate ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running tests/unit_column.rs (target/debug/deps/unit_column-a711fb70630d76fd)
+
+running 7 tests
+test empty_column_reports_identity_ratio ... ok
+test column_encoding_summary_groups_by_column ... ok
+test dominant_folds_cover_most_bytes ... ok
+test old_record_padding_decodes_as_raw_advisory ... ok
+test summary_totals_come_from_chunks_not_the_advisory ... ok
+test record_round_trips_with_dominant_encoding ... ok
+test unknown_encoding_tag_is_advisory_not_an_error ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/unit_compaction.rs (target/debug/deps/unit_compaction-14942a7e86e6c6d0)
+
+running 5 tests
+test release_rule_tests::empty_active_set_releases_vacuously ... ok
+test release_rule_tests::transactions_at_or_above_the_seal_release ... ok
+test release_rule_tests::transactions_below_the_seal_pin ... ok
+test delta_scan_tests::variant_projects_deltas_to_requested_columns ... ok
+test delta_scan_tests::variant_merges_visible_deltas_over_published_generation ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+     Running tests/unit_compaction_journal.rs (target/debug/deps/unit_compaction_journal-0318fdc94f79fdb9)
+
+running 7 tests
+test chunk_progress_is_part_of_the_record ... ok
+test terminal_states_report_correctly ... ok
+test job_record_round_trips_column_policies ... ok
+test torn_and_version_skewed_records_are_rejected ... ok
+test job_record_round_trips_through_bytes ... ok
+test chunks_tile_the_row_range ... ok
+test milestone_order_is_enforced ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running tests/unit_compression.rs (target/debug/deps/unit_compression-d8b9ac8338e012e8)
+
+running 4 tests
+test tier_tests::edge_tier_defaults_to_edge_compression ... ok
+test tier_tests::hdd_defaults_to_edge_compression_on_any_tier ... ok
+test tier_tests::laptop_and_server_tiers_stay_uncompressed_on_fast_storage ... ok
+test tier_tests::unknown_ram_never_forces_the_edge_profile ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/unit_delta.rs (target/debug/deps/unit_delta-929b3a484f43442a)
+
+running 13 tests
+test compaction_advisor_fires_past_threshold ... ok
+test delta_key_scopes_by_root_and_object ... ok
+test duplicate_rows_update_exactly_one ... ok
+test clear_drops_table_deltas ... ok
+test future_commit_is_invisible_to_older_snapshot ... ok
+test chained_updates_resolve_by_row_id ... ok
+test delete_tombstone_hides_main_row ... ok
+test insert_then_delete_in_window_vanishes ... ok
+test imageless_delete_of_unknown_row_is_ignored ... ok
+test merge_rows_kernel_is_latest_wins_per_slot ... ok
+test insert_without_pre_image_appends_to_scan ... ok
+test update_with_pre_image_replaces_in_place ... ok
+test commit_watermark_reports_the_engine_value ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/unit_encoding.rs (target/debug/deps/unit_encoding-9976c3a3cf33ebc9)

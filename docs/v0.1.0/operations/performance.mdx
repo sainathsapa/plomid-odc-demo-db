@@ -1,0 +1,46 @@
+---
+title: "Performance guide"
+description: "How to think about PLOMID performance — no invented numbers."
+---
+
+# Performance guide
+
+No universal benchmark numbers are claimed. Repository benches and perf probes are development measurements under their own conditions — cite conditions when quoting them.
+
+## Levers you control
+
+1. **Index the predicate**: equality/range/order/time-window columns first; expression indexes for hot JSON paths.
+2. **Shape the query**: selective `WHERE` before joins; `LIMIT` early; prefer keyset over large `OFFSET`; `EXPLAIN ANALYZE` actuals over estimates.
+3. **Batch writes**: multi-row `VALUES`, `INSERT…SELECT`, short transactions; group commit already coalesces concurrent commits.
+4. **Mind checkpoints**: 64 MiB / 16 segments / 15 min defaults bound replay; raising thresholds defers checkpoint cost but lengthens recovery.
+5. **Measure**: `./target/debug/plomid benchmark run --iterations N --json` writes `<data_dir>/benchmarks/<run>.json` (avg/p50/p95/p99/throughput for `SELECT 1`).
+
+`./target/debug/plomid metrics` reports probe latency plus live server counters from `plomid_stat_counters()` (queries, errors, connections, slow queries, maintenance passes, checkpoints, stale tables, TLS connections/failures).
+
+## Connection cost and catalog size
+
+Each wire connection opens its own session executor, which loads the sharded catalog and the table-statistics snapshot. The sharded layout stores one small key per relation/index/view/type/domain/function instead of one page-sized blob, so load cost scales with object count and no longer fails or slows down as a single image grows.
+
+Development measurement (2026-10-21, macOS arm64, 60,000 three-column tables ≈ 7.5 MB of catalog values, no table statistics): `Executor::new` took **56–74 ms** in a release build and **217–243 ms** in a debug build. A first open of a legacy single-blob image decodes in ~31 ms (release) and pays a one-time sharded migration (~0.4 s save). Socket setup and authentication are outside these numbers. These are local measurements under stated conditions, not a universal service-level guarantee.
+
+Connection pooling remains the recommended deployment shape for short-lived clients: every new connection pays this load and gets its own statistics snapshot. It is a performance recommendation, not a correctness requirement.
+
+## Hardware tiers and SIMD
+
+At startup the server detects CPUs and memory and sizes itself: worker fan-out, memory budgets, batch sizes, and background frequency follow the tier. Container CPU/memory limits only shrink the sizing, never grow it.
+
+| Tier | When | Buffer pool pages |
+| --- | --- | --- |
+| `edge` | small devices | 256 |
+| `laptop` | default developer machines | 1024 |
+| `server` | ≥16 CPUs and ≥32 GiB RAM | 4096 |
+
+Override with `--profile {edge|laptop|server|auto}` (`PLOMID_PROFILE`); `auto` detects. Typos fail closed at startup. The active tier is reported in the startup log. Distance and analytics kernels dispatch to the widest CPU instructions the host supports (AVX-512 / AVX-2 / NEON / portable scalar) with identical results — there is no GPU execution path in v0.1.0.
+
+## Spill and memory budgets
+
+Large sorts and aggregations spill to disk instead of failing: past 250,000 rows, `ORDER BY` switches to a k-way merge and `GROUP BY` to hash-partitioned pre-aggregation, bounded by a 1 GiB per-operation temp limit (not user-configurable). Memory budgets are tiered internally (global/OLAP/maintenance/query/connection/worker/result-buffer/temp pools); over-budget operations fail with descriptive errors (`memory budget exceeded`, `spill storage exhausted`) rather than growing without bound. Large results stream with backpressure instead of buffering whole — there are no SQL cursors (`DECLARE`/`FETCH` unsupported), and none are needed for this.
+
+## HTAP governor
+
+Under memory pressure the engine protects short reads/writes first: an admission governor admits, queues, or rejects analytical work across 70/85/95% pressure bands while OLTP keeps a reserved lane, and background maintenance (compaction) pauses instead of competing with foreground queries. Watch `plomid_htap_stats()` (admission counts, pressure, spill bytes) and `plomid_stat_contention()` (mutex/gate/barrier waits) to see it act. The [HTAP Gauntlet](/v0.1.0/operations/htap-gauntlet) measures the resulting penalty — note its headline penalty is a **p99-latency ratio** (combined vs alone), not a throughput ratio.

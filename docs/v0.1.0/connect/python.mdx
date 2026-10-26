@@ -1,0 +1,92 @@
+---
+title: "Connect from Python"
+description: "Use psycopg with PLOMID — connect, parameterized queries, transactions, and cleanup."
+---
+
+# Connect from Python
+
+**Status: Supported** with `psycopg` 3 (verified end-to-end, including parameterized vector queries). `psycopg2` uses the same wire path.
+
+## Prerequisites
+
+```sh
+pip install "psycopg[binary]"
+```
+
+Server running locally with user `plomid` (see [Quickstart](/v0.1.0/getting-started/quickstart)). Credentials below come from environment variables — never hard-code them.
+
+## Complete workflow
+
+```python
+import os
+import psycopg
+
+conn = psycopg.connect(
+    host=os.environ.get("PLOMID_HOST", "127.0.0.1"),
+    port=int(os.environ.get("PLOMID_PORT", "5432")),
+    dbname=os.environ.get("PLOMID_DB", "plomid"),
+    user=os.environ["PLOMID_USER"],
+    password=os.environ["PLOMID_PASSWORD"],
+)
+try:
+    with conn.cursor() as cur:
+        # Parameterized query — always use parameters, never f-strings.
+        cur.execute("SELECT id, name FROM users WHERE id = %s;", (1,))
+        print(cur.fetchone())
+
+        # Write + transaction: commit on success, rollback on error.
+        try:
+            cur.execute(
+                "INSERT INTO users (id, name) VALUES (%s, %s);",
+                (3, "hedy"),
+            )
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+finally:
+    conn.close()
+```
+
+## Transactions and errors
+
+- `psycopg` opens a transaction implicitly: every write block ends with `conn.commit()` or `conn.rollback()`. A failed statement aborts the transaction — roll back before continuing.
+- Retry only on safe signals (connection loss, serialization-style conflicts after rollback). Never blindly retry non-idempotent writes; make them idempotent first (`ON CONFLICT DO NOTHING`, natural keys).
+- `CREATE/DROP DATABASE` cannot run inside the implicit transaction — set `autocommit=True` for those statements only.
+
+## Pooling
+
+```python
+from psycopg_pool import ConnectionPool
+
+pool = ConnectionPool(
+    "host=127.0.0.1 port=5432 dbname=plomid user=plomid password=secret",
+    min_size=2,
+    max_size=10,
+)
+try:
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT count(*) FROM users;")
+            print(cur.fetchone())
+finally:
+    pool.close()
+```
+
+Size pools to concurrent _active_ writers (the engine serializes mutations) — see [Pooling and errors](/v0.1.0/connect/pooling-errors). Statement and idle-in-transaction timeouts bound each checkout; always return connections in `finally`.
+
+## Vector queries
+
+```python
+with conn.cursor() as cur:
+    q = "[1.0, 0.0, 0.0]"
+    cur.execute(
+        "SELECT id FROM docs ORDER BY embedding <-> %s LIMIT %s;",
+        (q, 5),
+    )
+    print(cur.fetchall())
+```
+
+Vector parameters are text (`"[1.0, 0.0, 0.0]"`). More patterns: [Vector application integration](/v0.1.0/vector/application-integration).
+
+Next: [Pooling and errors](/v0.1.0/connect/pooling-errors) · [Build your first application](/v0.1.0/build/build-application).

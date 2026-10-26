@@ -1,0 +1,64 @@
+---
+title: "Run transactions"
+description: "BEGIN, COMMIT, ROLLBACK, true staging, visibility, conflicts, savepoints, and failure cases."
+---
+
+# Run transactions
+
+## Minimal
+
+```sql
+BEGIN;
+INSERT INTO users VALUES (9, 'test');
+UPDATE orders SET total = total + 1 WHERE id = 101;
+COMMIT;
+-- or ROLLBACK;
+```
+
+Options parse: `BEGIN [TRANSACTION|WORK] [ISOLATION LEVEL … | READ ONLY | …]`, `START TRANSACTION …`, `COMMIT [opts]`, `ROLLBACK [TO [SAVEPOINT] name]`, `SAVEPOINT name`, `RELEASE [SAVEPOINT] name`.
+
+## What actually happens (true staging)
+
+1. `BEGIN` opens a real MVCC transaction held by the session (write overlay + snapshot, catalog image for revert).
+2. Every statement executes **immediately into it**: constraints, defaults, sequences, and `RETURNING` resolve at statement time; reads merge the overlay over the snapshot (read-your-writes); DDL mutates the session catalog (persist deferred).
+3. `COMMIT` only validates + publishes (single WAL batch, one durability barrier, MVCC install). Nothing is re-executed — volatile expressions, defaults, and sequences ran exactly once, at statement time.
+4. `ROLLBACK` drops the overlay and restores the catalog image. Any statement error aborts the transaction immediately (only `ROLLBACK` accepted afterwards).
+
+## Isolation
+
+- `READ COMMITTED` (default): each statement refreshes to the latest committed snapshot plus own writes. Concurrent writers serialize on row/table lanes; waiters re-read fresh state before writing (lost-update protection). Unique conflicts error at statement time.
+- `REPEATABLE READ`: the `BEGIN` snapshot pins reads. Writers still re-read at lane acquisition (no serialization failures — weaker than PostgreSQL, which errors; documented).
+- `SERIALIZABLE`: rejected.
+
+Single-batch `BEGIN; …; COMMIT` text (one message, direct execute) runs the same machinery in one engine transaction. `SELECT` in explicit transactions uses the row pipeline over snapshot + overlay (no columnar/ANN/index acceleration — correctness first).
+
+## Savepoints
+
+```sql
+SAVEPOINT sp1;
+-- ...statements...
+ROLLBACK TO SAVEPOINT sp1;  -- rewinds overlay + catalog to sp1, drops later markers
+RELEASE SAVEPOINT sp1;      -- forgets the marker, keeps effects
+```
+
+Savepoints support user-directed partial rollback of _successful_ statements. Statement errors abort the whole transaction (no error-recovery via `ROLLBACK TO`).
+
+<Note>
+  Savepoints work over ordinary client connections (`psql`, drivers sending plain statements — verified). The SQL parser itself does not accept bare `SAVEPOINT`, so drivers that _prepare_ these statements may see rejection or full-rollback behavior. See [Transaction examples](/v0.1.0/transactions/examples).
+</Note>
+
+## Rules that bite
+
+- Unclosed `BEGIN` without `COMMIT`/`ROLLBACK` → `Conflict: BEGIN without COMMIT or ROLLBACK`.
+- Lone `COMMIT`/`ROLLBACK` without `BEGIN` → `Conflict: no active transaction`.
+- These cannot run inside a transaction block (PostgreSQL parity): `VACUUM`, `ANALYZE`, `CLUSTER`, `CREATE/DROP DATABASE`. `USE` (database switch) is rejected mid-transaction.
+- `COPY ... FROM/TO <file>` needs superuser (unchanged) and runs its SQL in the open transaction; stream `COPY` follows table privileges.
+- Window functions, recursive CTEs, table functions, and positional `ORDER BY` are unsupported inside explicit transactions (explicit errors, not silent fallbacks).
+- Privilege/catalog changes take effect on next connection; a transaction holds its connect-time view.
+- First lane wins on row/unique conflicts (`Conflict`); snapshot refreshes after lane acquisition (read-committed style re-evaluation).
+
+## Visibility in one paragraph
+
+Own writes always visible. Others' uncommitted writes invisible. Read-committed statements see everything committed before the statement plus own writes; repeatable-read sees the `BEGIN` image plus own writes. Committed versions visible when creator not active in your snapshot and `commit_ts <= watermark`. See [MVCC](/v0.1.0/transactions/mvcc) and [Behavior contracts](/v0.1.0/transactions/behavior-contracts).
+
+**Next:** [MVCC](/v0.1.0/transactions/mvcc) · [Troubleshoot transactions](/v0.1.0/troubleshooting/overview)

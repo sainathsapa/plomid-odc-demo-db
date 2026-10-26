@@ -1,0 +1,29 @@
+---
+title: "pg_catalog and information_schema"
+description: "What introspection sees — live rows tools can rely on."
+---
+
+# `pg_catalog` and `information_schema`
+
+Rows are live from the catalog plus current user/database — not static fixtures.
+
+Covered `pg_catalog` relations include `pg_am pg_database pg_namespace pg_collation pg_class pg_attribute pg_attrdef pg_type pg_aggregate pg_operator pg_opclass pg_amop pg_amproc pg_cast pg_statistic pg_conversion pg_language pg_enum pg_index pg_constraint pg_description pg_shdescription pg_proc pg_roles pg_user pg_group pg_tablespace pg_settings pg_show_all_settings pg_tables pg_views pg_indexes pg_matviews pg_sequences pg_sequence pg_auth_members pg_extension pg_replication_slots pg_replication_origin_status pg_stat_activity pg_stat_database pg_stat_user_tables pg_stat_all_tables pg_inherits pg_rewrite pg_depend pg_shdepend pg_trigger pg_policy pg_policies pg_statistic_ext pg_publication pg_publication_rel pg_default_acl pg_foreign_server pg_foreign_data_wrapper pg_user_mapping` plus `information_schema.{schemata,tables,columns,views,table_constraints,key_column_usage,referential_constraints,constraint_column_usage,sequences,routines,…}`.
+
+```sql
+SELECT * FROM pg_tables WHERE schemaname = 'public';
+SELECT attname, atttype FROM pg_attribute WHERE attrelid = 'users'::regclass;
+SELECT name, setting FROM pg_settings WHERE name = 'server_version';
+SELECT name, vartype, min_val, max_val FROM pg_show_all_settings WHERE name LIKE 'vector.%';
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
+SELECT version(), current_database(), current_schema(), current_user, session_user;
+```
+
+`pg_settings` carries 7 rows (`server_version 14.0`, `server_version_num 140000`, `server_encoding`/`client_encoding UTF8`, `standard_conforming_strings on`, `TimeZone UTC`, `search_path "$user", public`) with columns `name, setting, unit`. `pg_show_all_settings` adds bounds columns (`name, vartype, min_val, max_val, enumvals, context`), including all 9 `vector.*` knobs.
+
+## `plomid_*` inspection functions
+
+Fourteen table functions (callable bare or with `()`) expose engine internals as rows — see [Logging & diagnostics](/v0.1.0/operations/logging-diagnostics) for the field lists that matter day-to-day:
+
+`plomid_stat_counters`, `plomid_stat_security`, `plomid_stat_analytical`, `plomid_stat_tables`, `plomid_htap_stats`, `plomid_vector_stats`, `plomid_stat_transactions`, `plomid_stat_wal`, `plomid_stat_contention`, `plomid_stat_buffer`, `plomid_stat_columnar`, `plomid_vector_backend`, `plomid_stat_admin`, `plomid_vector_indexes`.
+
+Session params (wire startup): `server_version 17.0/170000`, `server/client_encoding UTF8`, `DateStyle ISO MDY`, `IntervalStyle postgres`, `TimeZone UTC`, `search_path "$user",public`. Note `SHOW server_version` / `pg_settings` report `14.0` instead — see [SHOW](/v0.1.0/sql/show-describe). Verified by the wire integration tests (psql/DBeaver-style catalog + `$1` Describe). Missing relations beyond the served list error — see [Compatibility](/v0.1.0/sql/compatibility).

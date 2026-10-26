@@ -1,0 +1,19 @@
+---
+title: "Extension contract"
+description: "How to extend PLOMID without a plugin system — and why there is none."
+---
+
+# Extension contract
+
+There is no dynamic plugin API by design: no `dlopen`, no operator registry with third-party entries, no version negotiation. Every extension point below is a compile-time convention with a closed set of implementations, each pinned by tests. This keeps the unsafe boundary (`crc32c`, SIMD kernels), the error catalog, and the lock order auditable without reasoning about unknown third-party code.
+
+## What "extension" means here
+
+1. **New data modality** (the only true extension path): add a `PgValue` payload variant + `PgType` OID in `plomid-types`, codecs/casts beside the existing ones, behavior in a modality crate at the `plomid-json` layer (depends on core + types only, never parser/executor), syntax in the parser, dispatch in the executor. See `types/src/lib.rs`, `sql/src/lib.rs`, `json/src/lib.rs`.
+2. **New index method**: extend the closed `IndexKind` enum (`vector/src/index`) plus capability matrix, persistence format with version gate, and recall/parity tests. No runtime registration.
+3. **New operators/functions**: extend the builtin singleton registries (`types/src/ops.rs`, `types/src/func.rs`); the executor delegates to the singletons.
+4. **New hardware kernel**: add a backend behind the existing `VectorOps` / checksum dispatch with a scalar fallback, bit-identical parity tests, and `SAFETY` + feature-gate documentation. See the unsafe policy below.
+
+## Unsafe policy (normative)
+
+`unsafe` is confined to reviewed hardware/checksum surfaces (`crc32c` intrinsics, SIMD kernels). Everything else forbids it crate-wide, and no new `unsafe` enters storage/MVCC/txn/executor for micro-optimizations. Any new `unsafe` requires all six: `SAFETY` comment, invariant statement, architecture fallback, parity test, failure test, and Miri consideration. `forbid(unsafe_code)` in all other crates enforces this at compile time.

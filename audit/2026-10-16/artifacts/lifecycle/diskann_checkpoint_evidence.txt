@@ -1,0 +1,11 @@
+# DiskANN checkpoint files persisted by the compact restart measurement
+# (8k x dim64, dir: .../opencode/audit16-restart/data)
+total 7712
+drwxr-xr-x@ 4 sainathsapa  staff      128 Oct 16 17:14 .
+drwxr-xr-x@ 3 sainathsapa  staff       96 Oct 16 17:12 ..
+-rw-r--r--@ 1 sainathsapa  staff   736960 Oct 16 17:14 graph.dat
+-rw-r--r--@ 1 sainathsapa  staff  2176000 Oct 16 17:14 vectors.dat
+
+# server_01.log diskann lines
+428:2026-10-16T11:43:34.273884Z DEBUG ThreadId(13) connection{connection_id=3 peer=127.0.0.1:50230}: sql::query: event="analytical_path" path="row_count" table=public.rt_diskann
+445:2026-10-16T11:43:34.293568Z DEBUG ThreadId(13) connection{connection_id=3 peer=127.0.0.1:50230}: sql::vector_ann: diskann checkpoint ready; rebuilding from snapshot rows

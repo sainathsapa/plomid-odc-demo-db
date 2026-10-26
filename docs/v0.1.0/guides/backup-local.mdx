@@ -1,0 +1,54 @@
+---
+title: "Back up and restore a local database"
+description: "Cold backup, inspection, clean restore, and post-restore verification for local development."
+---
+
+# Back up and restore a local database
+
+**Goal:** a verified restorable copy of a local database. **Prerequisites:** the server binary on `PATH`, a data directory, a shell. **Model:** cold full backup only — no hot backups, no incremental, no point-in-time recovery in `v0.1.0`. The server must not be writing during the copy; the offline tools enforce this with a lock instead of copying under a live writer.
+
+## 1. Back up
+
+```sh
+plomid-server backup --data ./data --to ./backups/plomid-2026-10-14
+```
+
+The tool quiesces the engine (open, checkpoint, close) and copies in one fenced step, finishing with a manifest (`PLOMID_BACKUP_MANIFEST`). Exit codes: `0` ok, `1` usage, `2` target live or refused, `3` operation failed (message on stderr). A backup without a manifest is **interrupted** — discard it, never restore from it.
+
+Excluded by design: `*.tmp` staged files and the derived vector ANN cache (rebuilt from rows on reopen).
+
+## 2. Inspect
+
+```sh
+plomid-server backup-inspect --backup ./backups/plomid-2026-10-14
+```
+
+Read-only: prints manifest format version, file count, bytes, timestamp. Mismatched expectations here (wrong size, stale timestamp) mean the backup step did not do what you think — investigate before relying on it.
+
+## 3. Restore to a clean directory
+
+```sh
+plomid-server restore --from ./backups/plomid-2026-10-14 --to ./restored
+```
+
+Restore refuses non-clean destinations — restoring over a live database is blocked as rollback policy, not a limitation to work around. For upgrades: cold backup on the old binary → restore to a clean directory with the new binary → verify; version-skewed images fail with `Unsupported` rather than silently downgrading.
+
+## 4. Verify (do not skip)
+
+```sh
+plomid-server --data ./restored --host 127.0.0.1 --port 5433 \
+  --username plomid --password "$PLOMID_PASSWORD"
+psql "postgresql://plomid:$PLOMID_PASSWORD@localhost:5433/plomid" \
+  -c "SELECT count(*) FROM users;" \
+  -c "SELECT id FROM docs ORDER BY embedding <-> [1.0,0.0,0.0] LIMIT 1;"
+```
+
+Checklist: row counts and checksums (`COUNT(*)`, `SUM`), one index lookup, one transaction (`BEGIN … COMMIT`), one new write followed by a second reopen. Vector data re-queries correctly post-restore (verified); the ANN cache rebuilds from rows automatically.
+
+## 5. Schedule it
+
+- Full copies only — budget disk and time proportional to the database.
+- `COPY TO` output, audit logs, and TLS keys are **not** part of a database backup — back those up separately.
+- Keep the pre-upgrade backup until the new version is verified in service; rollback is restoring that backup to a clean directory (there is no in-place downgrade).
+
+Reference: [Backup and restore](/v0.1.0/operations/backup-restore) · [Single-node offline profile](/v0.1.0/operations/profile-single-node-offline).

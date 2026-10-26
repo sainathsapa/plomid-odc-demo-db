@@ -1,0 +1,38 @@
+---
+title: "Data types"
+description: "Every column type in v0.1.0 — names, OIDs, literals, arrays, and user types."
+---
+
+# Data types
+
+Every type below works in DDL, casts, and expressions. PostgreSQL-isms that resolve but carry limited semantics are grouped at the bottom — they store and cast correctly but don't imply full PostgreSQL behavior for the type.
+
+| Family | Names | Notes |
+| --- | --- | --- |
+| Integers | \`smallint | int2`, `integer | int | int4`, `bigint | int8\` | `serial` variants auto-create a backing sequence per table |
+| Float | \`real | float4`, `double | float8` (`double precision\`) | NaN sorts after infinity (`sort_key`) |
+| Exact | \`numeric | decimal | dec[(n[,m])]\` | exact add/sub/mul/div |
+| Text | `text`, \`varchar | character varying[(n)]`, `CHAR→varchar\` | `bpchar/name/xml` runtime values exist |
+| Bool | \`boolean | bool\` | `TRUE/FALSE` |
+| Date/time | `date`, \`time [with | without tz]`, `timestamp […]`, `timestamptz`, `interval\` | micros since 2000-01-01; see [Temporal](/v0.1.0/data/temporal) |
+| JSON | `json`, `jsonb` | text vs canonical binary storage |
+| UUID | `uuid` |  |
+| Binary | `bytea`, `bit`, `varbit` (`bit varying`), `B'…'` literals |  |
+| Network | `inet`, `cidr`, `macaddr`, `macaddr8` | address storage and casts |
+| Full-text markers | `tsvector`, `tsquery` | resolve and store; no text-search index in v0.1.0 |
+| Geometric/range | `point…circle`, `int4range` (+ `int8range`, `numrange`, `tsrange`, `tstzrange`, `daterange` as storable/castable), multiranges | range constructors exist for `int4range`/`int4multirange`; other ranges store and cast |
+| Arrays | `TYPE[]` | `ARRAY[…]`, `arr[i]` 1-based |
+| User | `CREATE TYPE … AS ENUM / AS (cols)`, `CREATE DOMAIN …` | OIDs from 16384 |
+| Catalog/system | `oid`, `regclass`, `regtype`, `regproc`, `regprocedure`, `regoper`, `regoperator`, `regconfig`, `regdictionary`, `regrole`, `regnamespace`, `regcollation`, `tid`, `xid`, `cid`, `pg_lsn`, `pg_snapshot`, `aclitem`, `money`, `int2vector`, `oidvector` | resolve for catalog queries, casts, and function signatures; not general-purpose column types — prefer the families above for application data |
+
+Pseudo-types are rejected as column types (`record` only via `ROW(…)` values). Length/precision modifiers (`(n)`/`(n,m)`) are preserved through casts and DDL. Multi-word names (`double precision`, `character varying`, `timestamp with time zone`) work everywhere single-word names do.
+
+```sql
+CREATE TABLE t (
+  a INT, b BIGINT, c NUMERIC(12,2), d TEXT, e VARCHAR(10),
+  f BOOLEAN, g DATE, h TIMESTAMPTZ, i INTERVAL, j JSONB, k TEXT[], l UUID
+);
+SELECT 1::bigint, 'x'::text, '[1,2]'::jsonb, B'0101';
+```
+
+**Related:** [Type conversion](/v0.1.0/sql/expressions) · [Constraints](/v0.1.0/data/constraints)

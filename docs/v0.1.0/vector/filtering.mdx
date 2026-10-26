@@ -1,0 +1,57 @@
+---
+title: "Filtered vector search"
+description: "Combine relational WHERE filters with vector ordering for metadata-constrained retrieval."
+---
+
+# Filtered vector search
+
+Real retrieval is rarely "nearest of everything" — it is "nearest of the guides", "nearest of this tenant's documents", "nearest active product". Combine an ordinary `WHERE` clause with vector ordering:
+
+```sql
+SELECT id, label
+FROM docs
+WHERE category = 'guide'
+ORDER BY embedding <-> [1.0, 0.0, 0.0]
+LIMIT 2;
+```
+
+## Behavior in v0.1.0
+
+- **Status: Supported.** Filters apply correctly alongside vector ranking at small and medium scale (verified with `WHERE category = ...` + `ORDER BY <-> LIMIT`).
+- Filtered queries are served by the **exact path** even when an HNSW index exists — the engine declines ANN for filtered plans and computes exact distances over matching rows. Results are correct; very large filtered scans are not index-accelerated.
+- All ordinary filter forms work: equality, ranges, `IN`, `AND`/`OR`, `IS NULL`, JSON operators on metadata columns. There is no separate "filter DSL" — it is just SQL.
+
+## Patterns
+
+```sql
+-- Tenant isolation + similarity
+SELECT id, title
+FROM chunks
+WHERE tenant_id = 42
+ORDER BY embedding <=> '[...]'::text -- placeholder; pass real literals or params
+LIMIT 5;
+```
+
+Prefer passing the query vector as a driver parameter rather than interpolating text (see [Application integration](/v0.1.0/vector/application-integration)).
+
+```sql
+-- Recency-bounded retrieval
+SELECT id, title
+FROM chunks
+WHERE tenant_id = 42 AND updated_at > now() - INTERVAL '30 days'
+ORDER BY embedding <-> [0.2, 0.8, 0.1]
+LIMIT 5;
+
+-- Excluding the query document itself
+SELECT id, title
+FROM chunks
+WHERE id != 123
+ORDER BY embedding <-> [0.2, 0.8, 0.1]
+LIMIT 5;
+```
+
+## Design guidance
+
+- Put everything filterable (tenant, category, visibility, timestamps) in **ordinary columns with ordinary indexes**. The vector column holds only the embedding.
+- Selective filters (few matching rows) are fast — exact search only ranks the matches.
+- Unselective filters (most rows match) cost about the same as an unfiltered exact scan; add an HNSW index for the unfiltered shape and accept exact evaluation for the filtered shape, or pre-partition (e.g. per-tenant tables) if filtered latency dominates.

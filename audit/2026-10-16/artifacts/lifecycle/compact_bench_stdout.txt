@@ -1,0 +1,29 @@
+vector lifecycle bench: bin=/Users/sainathsapa/dsk/PloMID/plomid/target/release/plomid-server
+  sizes=[2000, 8000] dim=64 methods=['hnsw', 'diskann'] queries=8 out=/private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/results
+  boot 0: accept=110ms ready=175ms
+--- hnsw n=2000 ---
+  ddl=4ms cold=271ms warm_p50=7.7ms rebuild=9ms recall@10=1.00 miss=1 builds=1 hits=12
+  explain: Vector: Vector Exact scan on VECTOR(FLOAT32, 64) metric <-> limit 10
+--- hnsw n=8000 ---
+  ddl=5ms cold=1728ms warm_p50=31.7ms rebuild=41ms recall@10=0.90 miss=1 builds=1 hits=12
+  explain: Vector: Vector ANN scan on VECTOR(FLOAT32, 64) metric <-> limit 10
+--- diskann n=2000 ---
+  ddl=5ms cold=10431ms warm_p50=12.5ms rebuild=14ms recall@10=0.00 miss=1 builds=1 hits=12
+  explain: Vector: Vector Exact scan on VECTOR(FLOAT32, 64) metric <-> limit 10
+--- diskann n=8000 ---
+  ddl=5ms cold=36811ms warm_p50=41.9ms rebuild=54ms recall@10=0.20 miss=1 builds=1 hits=12
+  explain: Vector: Vector ANN scan on VECTOR(FLOAT32, 64) metric <-> limit 10
+shutdown_ms=123
+  boot 1: accept=135ms ready=163ms
+  restart hnsw n=2000: state=READY cold=298ms warm_p50=7.6ms miss=1 builds=1
+  restart hnsw n=8000: state=READY cold=1758ms warm_p50=29.9ms miss=1 builds=1
+  restart diskann n=2000: state=READY cold=11457ms warm_p50=11.4ms miss=1 builds=1
+  restart diskann n=8000: state=READY cold=40394ms warm_p50=41.4ms miss=1 builds=1
+| method | n | ddl_ms | cold_ms | warm_p50_ms | rebuild_ms | restart_cold_ms | restart_warm_p50 | recall@k | state |
+|---|---|---|---|---|---|---|---|---|---|
+| hnsw | 2000 | 4 | 271 | 7.7 | 9 | 298 | 7.6 | 1.00 | READY |
+| hnsw | 8000 | 5 | 1728 | 31.7 | 41 | 1758 | 29.9 | 0.90 | READY |
+| diskann | 2000 | 5 | 10431 | 12.5 | 14 | 11457 | 11.4 | 0.00 | READY |
+| diskann | 8000 | 5 | 36811 | 41.9 | 54 | 40394 | 41.4 | 0.20 | READY |
+wrote /private/var/folders/49/bjpspnbx333d6_2g0tyjh7540000gn/T/opencode/audit16-lifecompact/results/lifecycle.json and lifecycle.md
+BENCH-EXIT=0

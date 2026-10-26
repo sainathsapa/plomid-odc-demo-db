@@ -1,0 +1,40 @@
+---
+title: "Configuration reference"
+description: "Dense table of every v0.1.0 option."
+---
+
+# Configuration reference
+
+See [Configuration](/v0.1.0/operations/configuration) for grouped guidance. This page is the dense lookup.
+
+| Name | Flag | Env | Type | Default | Required | Valid | Behavior |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| host | `--host/-H` | `PLOMID_HOST` | addr | `127.0.0.1` | no | IP/hostname | bind; remote needs TLS or opt-in |
+| port | `--port/-p` | `PLOMID_PORT` | u16 | `5432` | no | 1–65535 |  |
+| data dir | `--data/-D` | `PLOMID_DATA_DIR` | path | `./data` | no | dir | created |
+| username | `--username/-U` | `PLOMID_USER` | string | `plomid` | no | non-empty | auth identity |
+| password | `--password/-W` | `PLOMID_PASSWORD` | string | `plomid` server / `secret` CLI+start.sh | yes in practice | secret, non-default on remote | never logged; the built-in `plomid` is refused on non-loopback binds |
+| log level | `--log-level` | `PLOMID_LOG_LEVEL`/`RUST_LOG` | enum | `info` | no | trace/debug/info/warn/error |  |
+| auth | `--auth` | `PLOMID_AUTH` | enum | `scram` | no | scram/password/md5/none | `none` loopback only (trusts identity, still authorizes); md5 = deprecated, needs `--allow-legacy-md5` |
+| legacy md5 | `--allow-legacy-md5` | `PLOMID_ALLOW_LEGACY_MD5` | flag | off | no | — | explicit downgrade switch; startup warns, logins counted |
+| tls | `--tls` | — | flag | off | no | — | rustls handshake; needs cert+key (validated at startup) |
+| tls cert/key | `--tls-cert/--tls-key` | `PLOMID_TLS_CERT/KEY` | path | `""` | with `--tls` | PEM files | empty/unparsable/expired/mismatched → exit 1 |
+| tls required | `--tls-required` | — | flag | off | no | — | w/o `--tls` → error; plaintext refused with FATAL 28000 |
+| WAL bytes | `--checkpoint-wal-bytes` | `PLOMID_CHECKPOINT_WAL_BYTES` | bytes | `67108864` | no | u64, 0=off |  |
+| segments | `--checkpoint-segments` | `PLOMID_CHECKPOINT_SEGMENTS` | u64 | `16` | no | 0=off |  |
+| interval | `--checkpoint-interval-secs` | `PLOMID_CHECKPOINT_INTERVAL_SECS` | secs | `900` | no | 0=off |  |
+| remote plaintext | `--allow-remote-plaintext` | `PLOMID_ALLOW_INSECURE_REMOTE` | flag | off | remote w/o TLS | — | explicit opt-in |
+| no auto ckpt | `--no-auto-checkpoint` | — | flag | off | no | — | disables policy |
+| max connections | `--max-connections` | `PLOMID_MAX_CONNECTIONS` | usize | `100` | no | ≥1 | semaphore permits; rejections fail closed, listener kept |
+| statement timeout | `--statement-timeout` | `PLOMID_STATEMENT_TIMEOUT` | duration | `30s` | no | `0`=off, else ms/s/min/h | stamped as the session default; per-session `SET` overrides |
+| idle-in-txn timeout | `--idle-in-transaction-timeout` | `PLOMID_IDLE_IN_TRANSACTION_TIMEOUT` | duration | `60s` | no | `0`=off | abandoned transactions release locks |
+| COPY buffer | `--max-copy-buffer-bytes` | `PLOMID_MAX_COPY_BUFFER_BYTES` | bytes | `67108864` | no | ≥1 | per-connection accumulation; past the cap the COPY aborts |
+| prepared cap | `--max-prepared-statements` | `PLOMID_MAX_PREPARED_STATEMENTS` | usize | `1024` | no | ≥1 | per connection; past the cap Parse fails |
+| portal cap | `--max-portals` | `PLOMID_MAX_PORTALS` | usize | `1024` | no | ≥1 | per connection; past the cap Bind fails |
+| COPY dir | `--copy-dir` | `PLOMID_COPY_DIR` | path | `<data-dir>/copy` | no | dir | file `COPY` paths are jailed here; symlinks / non-dirs fail closed |
+| audit log | `--audit-log` | `PLOMID_AUDIT_LOG` | path | unset (disabled) | no | file | append-only JSONL, fsynced with size rotation; open failure exits 1 |
+| profile | `--profile` | `PLOMID_PROFILE` | enum | `auto` | no | edge/laptop/server/auto | hardware tier override; typos fail closed; `edge` tightens checkpoint thresholds |
+
+`lock_timeout` is accepted via `SET` for protocol compatibility but is not separately enforced: gate waits have no cheap hook, and the statement deadline bounds total time for queries that reach a poll point. Frontend message framing stays capped at 64 MiB. Spill is bounded per operation (1 GiB temp limit, not user-configurable); sort/aggregate spills past 250,000 rows fall back to disk automatically. The maintenance queue is a bounded channel (one queued-or-running item per table, full degrades to inline); workers and memory follow the hardware tier (cgroup-aware).
+
+Engine: `pool_capacity` by tier (edge 256 / laptop 1024 / server 4096 pages), `segment 8 MiB`, `WAL segment 8 MiB`.

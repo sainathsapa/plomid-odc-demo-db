@@ -1,0 +1,128 @@
+# 
+# © 2026 PLOMID Technologies INDIA
+# PLOMID — Platform for Modern Intelligence and Data
+# Author: Sainath Sapa
+# Email: info.djsai@gmail.com
+# GitHub: https://github.com/sainathsapa
+# Organization: https://github.com/plomid
+name: 🚀 CI
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["v*"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  # Fresh CI runners never reuse in-run incremental artifacts across steps,
+  # and incremental bloat is unbounded on disk (tens of GiB observed on dev
+  # machines). Disable it so the 14 GiB runners spend disk on test binaries,
+  # not on incremental caches the rust-cache action would otherwise store.
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  fmt:
+    name: 🎨 fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@70dec6087f2cb6bab9fbac4da23160afbe848e91 # 1.99.0
+        with:
+          components: rustfmt
+      - run: make fmt-check
+
+  check:
+    name: 🔍 check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@70dec6087f2cb6bab9fbac4da23160afbe848e91 # 1.99.0
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      # lib+tests only: benches (22 criterion targets) are on-demand via nightly scale.
+      - run: make check-ci
+
+  clippy:
+    name: 📎 clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@70dec6087f2cb6bab9fbac4da23160afbe848e91 # 1.99.0
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      # lib+tests only: benches excluded (see check-ci).
+      - run: make clippy-ci
+
+  deny:
+    name: 🛡️ deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: EmbarkStudios/cargo-deny-action@b66acf5e9fe20f8aba065be86778a8a4c846f902 # v2
+        with:
+          # Fails only; advisories are reported by the action output.
+          command: check
+          arguments: --all-features
+
+  test:
+    name: "🧪 test (tiers A+B: unit + bounded integration)"
+    runs-on: ubuntu-latest
+    # Required correctness gate: `make test-ci` (= Tier A lib tests +
+    # Tier B bounded integration). #[ignore] scale gates stay off (no
+    # --include-ignored) and no PLOMID_SCALE_ROWS/FUZZ/EXTENDED is set.
+    # Scale (100K/300K matrix, 1M soak, fuzz-200) + benches run only in
+    # nightly scale (workflow_dispatch/schedule via make test-scale).
+    # Routine budget: 30 minutes total (warm rust-cache assumed; a cold
+    # cache rebuilds ~400 test binaries and may exceed it — that is a
+    # cache-miss signal, not a hang: it fails loudly, never silently).
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@70dec6087f2cb6bab9fbac4da23160afbe848e91 # 1.99.0
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      # Disk forensics: record filesystem + inode capacity and workspace
+      # size BEFORE the build so an out-of-space failure is diagnosable.
+      - name: 💾 disk baseline
+        run: df -h; df -i; du -sh target 2>/dev/null || echo "no target/ yet"
+      # ~14 GiB runners: preinstalled dotnet/android/ghc/codeql eat ~10 GiB.
+      # Free it before the workspace test build or the runner dies mid-link.
+      - run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h
+      - run: make test-ci
+      # Disk after tests: binary + generated-fixture footprint.
+      - name: 💾 disk after tests
+        run: df -h; df -i; du -sh target
+      # Test scratch dirs (temp_dir()/plomid-*) leak when a test panics or
+      # the job times out. Always sweep them and re-report disk, so the next
+      # job — and the failure log — shows the true footprint. A timeout or
+      # out-of-space failure still fails this job (never converted to green).
+      - name: 🧹 sweep test scratch + report disk
+        if: always()
+        run: |
+          rm -rf "${TMPDIR:-/tmp}"/plomid-* "${RUNNER_TEMP:-/tmp}"/plomid-* ./target/tmp/plomid-* 2>/dev/null || true
+          df -h; df -i; du -sh target
+
+  test-arm:
+    name: 🧪 test (arm)
+    runs-on: ubuntu-24.04-arm
+    # ARM parity: SIMD backends differ by ISA, so the hw parity suite (fast,
+    # 10 tests, no scale) must run natively here — plus the hw unit shards.
+    # No --include-ignored, no scale env. Kept small; the full scale rip
+    # lives in nightly scale only. (The old dedicated `vector` job was
+    # dropped as a duplicate: `cargo test --workspace` in `test` above
+    # already runs the whole plomid-vector suite on every push.)
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@70dec6087f2cb6bab9fbac4da23160afbe848e91 # 1.99.0
+      - uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c # v2
+      - run: cargo test -p plomid-hw --test parity
+      - run: cargo test -p plomid-hw --test unit_profile
+      - run: cargo test -p plomid-hw --test unit_runtime
+      - name: 🧹 sweep test scratch + report disk
+        if: always()
+        run: |
+          rm -rf "${TMPDIR:-/tmp}"/plomid-* "${RUNNER_TEMP:-/tmp}"/plomid-* ./target/tmp/plomid-* 2>/dev/null || true
+          df -h; df -i
+

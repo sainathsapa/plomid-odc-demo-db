@@ -1,0 +1,117 @@
+[workspace]
+members = [
+    "crates/core",
+    "crates/crc32c",
+    "crates/storage",
+    "crates/wal",
+    "crates/mvcc",
+    "crates/txn",
+    "crates/sql",
+    "crates/optimizer",
+    "crates/json",
+    "crates/executor",
+    "crates/network",
+    "crates/security",
+    "crates/server",
+    "crates/cli",
+    "crates/types",
+    "crates/columnar",
+    "crates/index",
+    "crates/filters",
+    "crates/htap",
+    "crates/hw",
+    "crates/spill",
+    "crates/stream",
+    "crates/memory",
+    "crates/gauntlet",
+    "crates/vector",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0-beta.2"
+edition = "2021"
+rust-version = "1.99.0"
+license = "Apache-2.0"
+authors = ["Sainath Sapa <info.djsai@gmail.com>", "PLOMID Technologies INDIA"]
+repository = "https://github.com/plomid/plomid"
+homepage = "https://github.com/plomid/plomid"
+description = "PLOMID enterprise universal database platform."
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+# Clippy pin-downs for toolchain drift: newer clippy releases keep adding
+# pedantic/nursery style lints (casts, const-fn, match ergonomics) that fire
+# on long-established codebase idioms. The `as`-cast idiom, `pub(crate)`
+# visibility, and expression shapes below are deliberate project style —
+# changing hundreds of hot paths to satisfy a linter upgrade adds risk for
+# zero behavioral value. Real correctness lints stay at default (deny via
+# `-D warnings` in CI), so any *new* lint that actually catches bugs still
+# fails the build until triaged here.
+[workspace.lints.clippy]
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_precision_loss = "allow"
+redundant_pub_crate = "allow"
+missing_const_for_fn = "allow"
+single_match_else = "allow"
+collapsible_if = "allow"
+comparison_chain = "allow"
+manual_clamp = "allow"
+decimal_bitwise_operands = "allow"
+identity_op = "allow"
+# `chunks_exact(N)` with a constant N is the deliberate project idiom in
+# hot paths (SIMD kernels, SHA-256, codecs, storage framing): the 1.99
+# `chunks_exact_to_as_chunks` rewrite is equivalent but touches ~70 sites
+# including `unsafe` NEON/AVX2 kernels and crypto, where an untested
+# mechanical migration adds risk for zero behavioral value. Revisit only
+# alongside a running test suite, per the policy above.
+chunks_exact_to_as_chunks = "allow"
+
+# Single-sourced internal crate versions. Members depend on each other with
+# `{ workspace = true }` so `cargo-deny`'s `wildcards = "deny"` gate (and
+# version bumps) see one pinned version instead of 49 version-less paths.
+# NOTE: keep these versions in lockstep with [workspace.package] version —
+# `make release-beta` bumps both (search for 0.1.0-beta.2).
+[workspace.dependencies]
+plomid-core = { version = "0.1.0-beta.2", path = "crates/core" }
+plomid-storage = { version = "0.1.0-beta.2", path = "crates/storage" }
+plomid-wal = { version = "0.1.0-beta.2", path = "crates/wal" }
+plomid-mvcc = { version = "0.1.0-beta.2", path = "crates/mvcc" }
+plomid-txn = { version = "0.1.0-beta.2", path = "crates/txn" }
+plomid-sql = { version = "0.1.0-beta.2", path = "crates/sql" }
+plomid-optimizer = { version = "0.1.0-beta.2", path = "crates/optimizer" }
+plomid-json = { version = "0.1.0-beta.2", path = "crates/json" }
+plomid-executor = { version = "0.1.0-beta.2", path = "crates/executor" }
+plomid-network = { version = "0.1.0-beta.2", path = "crates/network" }
+plomid-security = { version = "0.1.0-beta.2", path = "crates/security" }
+plomid-server = { version = "0.1.0-beta.2", path = "crates/server" }
+plomid-cli = { version = "0.1.0-beta.2", path = "crates/cli" }
+plomid-types = { version = "0.1.0-beta.2", path = "crates/types" }
+plomid-columnar = { version = "0.1.0-beta.2", path = "crates/columnar" }
+plomid-index = { version = "0.1.0-beta.2", path = "crates/index" }
+plomid-filters = { version = "0.1.0-beta.2", path = "crates/filters" }
+plomid-htap = { version = "0.1.0-beta.2", path = "crates/htap" }
+plomid-hw = { version = "0.1.0-beta.2", path = "crates/hw" }
+plomid-spill = { version = "0.1.0-beta.2", path = "crates/spill" }
+plomid-stream = { version = "0.1.0-beta.2", path = "crates/stream" }
+plomid-gauntlet = { version = "0.1.0-beta.2", path = "crates/gauntlet" }
+plomid-vector = { version = "0.1.0-beta.2", path = "crates/vector" }
+crc32c = { version = "0.1.0-beta.2", path = "crates/crc32c" }
+plomid-memory = { version = "0.1.0-beta.2", path = "crates/memory" }
+
+# Test profile: line tables only, no full debuginfo. The workspace builds
+# ~370 debug test binaries; full debuginfo filled the 14 GiB CI runners
+# (linker Bus error, then the runner itself out of disk). Backtraces keep
+# file:line; all 2,430 tests run exactly the same.
+[profile.test]
+debug = "line-tables-only"
+
+# The server is commonly deployed as a single release binary. Thin LTO and a
+# single codegen unit improve hot parser/executor/storage paths while keeping
+# release build times reasonable.
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

@@ -1,0 +1,67 @@
+---
+title: "Run the PLOMID server"
+description: "Foreground, start.sh, Docker, lifecycle, and shutdown behavior."
+---
+
+# Run the PLOMID server
+
+## Foreground (established workflow)
+
+```sh
+./start.sh [data_dir] [host] [port] [user] [password]
+# env overrides: PLOMID_DATA_DIR PLOMID_HOST PLOMID_PORT PLOMID_USER PLOMID_PASSWORD PLOMID_LOG_LEVEL
+```
+
+Defaults: `DATA_DIR=./data HOST=0.0.0.0 PORT=5432 USER=plomid PASSWORD=secret LOG_LEVEL=info`. Non-loopback hosts get `--allow-remote-plaintext` + warning (credentials in clear without TLS). Direct binary:
+
+```sh
+cargo run --bin plomid-server -- --data ./data --host 127.0.0.1 --port 5432 \
+  --username plomid --password secret --log-level info
+make run   # release binary, loopback, ./data
+```
+
+## Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Mounting : mount(root)
+    Closed --> Mounting : create(root) then mount
+    Mounting --> Ready : Device→Format→Metadata→Checkpoint→Recovery→Catalog→Generation
+    Mounting --> Failed : any stage fails
+    Ready --> Demounting : demount()
+    Demounting --> Closed : StopMutations→Flush→Checkpoint→Sync→Close
+    Demounting --> Failed : failure
+    Failed --> Closed : release
+```
+
+Mount validates the data directory before serving (device → format → metadata → checkpoint → recovery → catalog → ready; failure refuses startup rather than serving partial state). Shutdown stops writes, drains live connections (5 s grace), checkpoints, syncs, and closes — the next start replays any WAL tail automatically.
+
+## Docker
+
+```sh
+make docker && make docker-run PORT=5432
+make docker-logs && make docker-stop
+```
+
+Image: Debian slim, user `plomid:10001`, only `plomid-server`, volume `/var/lib/plomid/data`, `HEALTHCHECK bash /dev/tcp/…`, env `PLOMID_HOST=0.0.0.0` (no insecure opt-in baked in — pass `-e PLOMID_ALLOW_INSECURE_REMOTE=1` on trusted networks, or mount TLS material; see the [TLS runbook](/v0.1.0/operations/tls)).
+
+## Connect
+
+```mermaid
+flowchart TB
+    subgraph You["your machine or server"]
+        CLI["plomid CLI"] --- APP["your app"] --- BI["psql / DBeaver"]
+    end
+    You -->|"TCP 5432"| SRV["plomid-server"]
+    SRV --> VOL[("data volume\nWAL + catalog + packs")]
+```
+
+```sh
+psql "postgresql://plomid:secret@localhost:5432/plomid"
+./target/debug/plomid server status --port 5432
+```
+
+Auth: `scram` (default, per-role catalog verifiers via audited RustCrypto: SHA-256/HMAC/PBKDF2, PBKDF2 4096/32) | `password/cleartext` | `md5` (deprecated downgrade path: disabled unless `--allow-legacy-md5`, single bootstrap/legacy use, counted) | `none/disabled` (loopback only, identity trusted, authorization still enforced). First login as `--username` binds the server secret and promotes to superuser; rotate after. 5 failures → 5-min lockout. TLS via rustls: `--tls --tls-cert/--tls-key` (optional) or + `--tls-required` (plaintext refused, FATAL 28000). Non-loopback binds refuse the built-in password — set a unique `PLOMID_PASSWORD`. Full setup: [TLS runbook](/v0.1.0/operations/tls) · [RBAC runbook](/v0.1.0/operations/rbac).
+
+**Next:** [Configuration](/v0.1.0/operations/configuration) · [CLI](/v0.1.0/operations/cli)

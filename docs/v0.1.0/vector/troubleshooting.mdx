@@ -1,0 +1,59 @@
+---
+title: "Vector troubleshooting"
+description: "Fix dimension errors, rejected index builds, empty results, and slow vector queries."
+---
+
+# Vector troubleshooting
+
+## `vector dimension mismatch`
+
+```text
+ERROR: invalid argument for function l2_distance: vector dimension mismatch
+```
+
+The query vector and the column disagree. Check the declared dimension:
+
+```sql
+-- The column was declared with 3 dimensions; this query passes 2:
+SELECT [1.0, 0.0] <-> [1.0, 0.0, 0.0];
+```
+
+Fix: pad/truncate the query vector to the column's dimension, or recreate the table with the model's true dimension. Dimension errors also appear at `INSERT` when a literal has the wrong element count.
+
+## `invalid input syntax for type vector`
+
+Covers non-numeric elements in dense literals (`[1.0, 'x']`), `NaN`/`Infinity`, out-of-range integers for quantized columns, and dense-bracket literals into `BINARY` columns (`vector kind mismatch: value is Dense, column is Binary` — use the `'0101…'` string form instead).
+
+## `CREATE VECTOR index inside explicit transactions is not yet supported`
+
+```sql
+BEGIN;
+CREATE INDEX docs_emb_hnsw ON docs USING hnsw (embedding);  -- refused
+COMMIT;
+```
+
+Fix: run `CREATE INDEX` in autocommit (a plain statement from `psql` or a driver without an open transaction). Note many drivers wrap statements in transactions implicitly — with `psycopg`, either use autocommit mode or execute the DDL outside the transaction block. Extended-protocol clients hitting `CREATE/DROP DATABASE` inside a transaction see the analogous `cannot be executed inside a transaction block` error.
+
+## Empty or missing results
+
+- `NULL` embeddings never match: add `WHERE embedding IS NOT NULL` to confirm whether nulls are the cause.
+- A `LIMIT` without `ORDER BY distance` returns arbitrary rows — check the query shape.
+- Filtering to a category with no rows returns no rows regardless of vector similarity — check the filter alone first (`SELECT count(*) ... WHERE <filter>`).
+
+## Slow queries
+
+1. `EXPLAIN` the query: exact scan or index path? Small tables deliberately scan — that is not a bug.
+2. Check `SHOW vector.ann_enabled;` — `off` forces exact scans.
+3. Check row count against `vector.auto_ann_min_rows` (default 4096): below it, exact is expected.
+4. Filtered queries always run exact in `v0.1.0` — narrow the filter or partition the data.
+5. Never benchmark on a debug build; use the release binary.
+
+## `function "inner_product" is not supported`
+
+There is no `inner_product` function. Use `dot_product(a, b)` for the plain dot product, `neg_inner_product(a, b)` for the negated form, or the `<#>` operator. See [Distance operators](/v0.1.0/vector/distance-operators).
+
+## Still stuck?
+
+- [Similarity search](/v0.1.0/vector/similarity-search) for query shape reference.
+- [Limitations](/v0.1.0/vector/limitations) to check whether the path is experimental.
+- [Troubleshooting](/v0.1.0/troubleshooting/overview) for server-level diagnostics.

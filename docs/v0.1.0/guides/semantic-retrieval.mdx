@@ -1,0 +1,73 @@
+---
+title: "Build semantic retrieval with vectors"
+description: "End-to-end guide — chunked documents, stored embeddings, filtered similarity search, and verified results."
+---
+
+# Build semantic retrieval with vectors
+
+**Goal:** a tiny semantic KB that answers "most similar guide about X". **Prerequisites:** server running, `psql`, the `docs` table pattern from [Vector quickstart](/v0.1.0/vector/quickstart). **Assumes:** predefined example vectors (no model key needed). In production, replace them with your embedding model's output at the same dimension.
+
+## 1. Model the KB
+
+```sql
+DROP TABLE IF EXISTS kb_chunks;
+CREATE TABLE kb_chunks (
+  id        BIGINT PRIMARY KEY,
+  doc_id    BIGINT NOT NULL,
+  title     TEXT NOT NULL,
+  category  TEXT NOT NULL,
+  body      TEXT NOT NULL,
+  embedding VECTOR(FLOAT32, 3)
+);
+CREATE INDEX kb_chunks_category_idx ON kb_chunks (category);
+```
+
+One row per chunk (not per document): retrieval precision comes from chunking. Metadata (`doc_id`, `category`) stays in ordinary columns.
+
+## 2. Load chunks with embeddings
+
+```sql
+INSERT INTO kb_chunks VALUES
+  (1, 100, 'Reset your password', 'guide', 'Open settings, choose reset, follow the email link.', [1.0, 0.0, 0.0]),
+  (2, 100, 'Password rules',      'guide', 'Twelve characters, mixed case, rotated yearly.',        [0.9, 0.1, 0.0]),
+  (3, 200, 'Quarterly revenue',   'ref',   'Q3 revenue by region with year-over-year deltas.',      [0.0, 1.0, 0.0]),
+  (4, 200, 'Churn note',          'ref',   'Churn concentrated in single-seat plans.',               [0.1, 0.9, 0.0]);
+```
+
+Production pipeline: chunk source docs → embed each chunk with your model → insert rows with the returned vectors. PLOMID never generates embeddings; it stores and searches them.
+
+## 3. Retrieve: filter, then rank
+
+```sql
+SELECT id, title, embedding <=> [1.0, 0.0, 0.0] AS dist
+FROM kb_chunks
+WHERE category = 'guide'
+ORDER BY embedding <=> [1.0, 0.0, 0.0]
+LIMIT 2;
+```
+
+Expected: rows 1 and 2 (the guides), closest first. The application then feeds `title + body` of the hits to the answer step (prompt, template, UI).
+
+## 4. Scale the pattern
+
+```sql
+CREATE INDEX kb_chunks_emb_hnsw ON kb_chunks USING hnsw (embedding);
+```
+
+Same query shape — the index engages as rows grow (see [HNSW](/v0.1.0/vector/hnsw)). Keep the category index: filtered retrieval leans on it while vector ordering runs exact over the matches.
+
+## 5. Verify quality
+
+- Baseline recall: `SET vector.ann_enabled = off;` re-run, diff the top-k lists. Investigate any miss before tuning.
+- Inspect plans with `EXPLAIN` — confirm which path served each query shape.
+- Test edge cases: empty category (zero rows, not an error), `NULL` embeddings excluded, dimension mismatch on new model versions (migrate the column, never silently truncate).
+
+## Common failures
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `dimension mismatch` after a model change | New model, new width | Recreate column at the new dim; re-embed all chunks. |
+| Irrelevant hits | Chunks too large / metadata missing | Smaller chunks, richer `WHERE` filters. |
+| Slow filtered queries at scale | Exact evaluation over many matches | Narrower filters, per-tenant partitions, or HNSW for the unfiltered shape. |
+
+Next: [Vector application integration](/v0.1.0/vector/application-integration) · [Exact vs approximate](/v0.1.0/vector/exact-vs-approximate).

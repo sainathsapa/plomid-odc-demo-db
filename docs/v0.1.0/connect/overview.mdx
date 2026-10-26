@@ -1,0 +1,61 @@
+---
+title: "Connect to PLOMID"
+description: "Connection parameters, connection strings, credentials, and driver compatibility."
+---
+
+# Connect to PLOMID
+
+PLOMID speaks PostgreSQL wire protocol v3, so standard PostgreSQL drivers connect without plugins. This page covers parameters and compatibility; language guides show complete workflows.
+
+```mermaid
+flowchart LR
+    APP["your application\n(Python / JS / any PG driver)"] -->|"wire protocol v3\nSCRAM auth"| SRV["plomid-server\n127.0.0.1:5432"]
+    SRV --> Q["parse → plan → execute\nsame path, every client"]
+    Q --> R["rows"]
+    R --> APP
+```
+
+## Parameters
+
+| Parameter | Default | Notes |
+| --- | --- | --- |
+| Host | `127.0.0.1` | Loopback needs no opt-in; non-loopback requires TLS or the explicit plaintext opt-in. |
+| Port | `5432` | Override with `--port` / `PLOMID_PORT`. |
+| Database | `plomid` | Created at first start; more via `CREATE DATABASE`. |
+| Username | `plomid` | Override with `--username` / `PLOMID_USER`. |
+| Password | `plomid` (server default) | **Always set explicitly** (`--password` / `PLOMID_PASSWORD`); `start.sh` uses `secret`. |
+
+Connection string form:
+
+```text
+postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+```
+
+```sh
+psql "postgresql://plomid:secret@localhost:5432/plomid"
+```
+
+## Credentials, safely
+
+- Never embed passwords in code. Read them from environment variables or a secret manager (`PLOMID_PASSWORD` in the examples below).
+- Prefer SCRAM authentication (the default). MD5 is a deprecated compatibility path requiring an explicit opt-in; `none` is loopback-only.
+- Server startup refuses weak combinations fail-closed: the built-in password on a remote bind, missing TLS where required, and `none` auth remotely each abort startup with a remediation message.
+
+## Driver compatibility (verified)
+
+| Ecosystem | Driver | Status | Guide |
+| --- | --- | --- | --- |
+| SQL shell | `psql` | **Supported** (simple + extended protocol, prepared statements) | [psql](/v0.1.0/connect/psql) |
+| Python | `psycopg` 3 (and `psycopg2`) | **Supported** (queries, parameters, vector params as text) | [Python](/v0.1.0/connect/python) |
+| JavaScript/TypeScript | `node-postgres` (`pg`) | **Supported** (queries, `$n` params, vector params as text) | [JavaScript](/v0.1.0/connect/javascript) |
+| Other PostgreSQL drivers | Any wire-v3 client | **Expected** (same protocol) but **unverified per-driver** — test your driver's prepared-statement and type-inference behavior before committing to it. | — |
+
+Wire compatibility does not imply every PostgreSQL feature works: binary wire values are text-only (except vector results), and some statements parse to stubs. See [SQL compatibility](/v0.1.0/sql/compatibility). There is **no official PLOMID SDK** — the guides above use existing PostgreSQL drivers.
+
+Known driver-visible behaviors: `BIGINT` arrives as strings in `node-postgres` (standard driver behavior — parse or set a type parser); vector parameters must be sent as text (`"[1.0, 0.0, 0.0]"`); `CREATE/DROP DATABASE` cannot run inside an explicit transaction block.
+
+## Next steps
+
+- [psql](/v0.1.0/connect/psql) · [Python](/v0.1.0/connect/python) · [JavaScript](/v0.1.0/connect/javascript)
+- [Pooling, timeouts, and errors](/v0.1.0/connect/pooling-errors) — productionize connections.
+- [Build your first application](/v0.1.0/build/build-application) — complete small app.

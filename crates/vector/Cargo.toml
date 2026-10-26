@@ -1,0 +1,39 @@
+[package]
+name = "plomid-vector"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "PLOMID vector subsystem: types, codecs, SIMD math, exact/ANN search, HNSW/IVF/PQ/SQ/DiskANN, sparse/binary/multi-vector, hybrid fusion, MVCC/storage adapters."
+
+[lib]
+path = "src/lib.rs"
+
+[[bench]]
+name = "vector_search"
+harness = false
+
+[[bench]]
+name = "htap_interference"
+harness = false
+
+[lints]
+workspace = true
+
+[features]
+default = ["simd"]
+simd = []
+avx2 = []
+avx512 = []
+neon = []
+sve = []
+gpu = []
+
+[dependencies]
+plomid-hw = { workspace = true }
+
+[dev-dependencies]
+criterion = "0.5"
